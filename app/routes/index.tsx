@@ -7,11 +7,7 @@ export default function Index() {
   return (
     <main>
       {user ? (
-        <Link
-          to="/notes"
-        >
-          View Notes for {user.email}
-        </Link>
+       <p>Signed in as {user.email}</p>
       ) : (
         <div>
           <Link
