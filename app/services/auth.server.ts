@@ -2,24 +2,28 @@
 import { Authenticator } from "remix-auth";
 import { FormStrategy } from "remix-auth-form";
 import { DiscordStrategy } from "remix-auth-socials";
+import { EmailLinkStrategy } from "remix-auth-email-link";
 import invariant from "tiny-invariant";
 import { createDiscordProfile } from "~/models/discordProfile.server";
 import {
+  createUser,
   getUserByEmail,
   User,
   verifyLogin,
 } from "~/models/user.server";
 import { sessionStorage, discordSessionStorage } from "./session.server";
-
-export let authenticator = new Authenticator<User>(sessionStorage);
-export let discordAuthenticator = new Authenticator<User>(
-  discordSessionStorage
-);
+import { sendMagicLinkEmail } from "./email.server";
 
 invariant(process.env.DISCORD_CLIENT_ID, "DISCORD_CLIENT_ID must be set");
 invariant(
   process.env.DISCORD_CLIENT_SECRET,
   "DISCORD_CLIENT_SECRET must be set"
+);
+invariant(process.env.MAGIC_LINK_SECRET, "MAGIC_LINK_SECRET must be set");
+
+export let authenticator = new Authenticator<User>(sessionStorage);
+export let discordAuthenticator = new Authenticator<User>(
+  discordSessionStorage
 );
 
 authenticator.use(
@@ -40,6 +44,35 @@ authenticator.use(
     return user;
   }),
   "user-pass"
+);
+
+authenticator.use(
+  new EmailLinkStrategy(
+    {
+      sendEmail: sendMagicLinkEmail,
+      secret: process.env.MAGIC_LINK_SECRET,
+      callbackURL: "/magic",
+    },
+
+    async ({
+      email,
+      form,
+      magicLinkVerify,
+    }: {
+      email: string;
+      form: FormData;
+      magicLinkVerify: boolean;
+    }) => {
+      let user = await getUserByEmail(email);
+
+      if (!user) {
+        createUser(email);
+      }
+
+      invariant(user, "user not found");
+      return user;
+    }
+  )
 );
 
 discordAuthenticator.use(
