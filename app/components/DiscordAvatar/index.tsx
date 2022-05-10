@@ -4,7 +4,7 @@ const DiscordAvatar = styled('img', {
     width: "$3",
     height: "$3",
     borderRadius: "50%",
-    border: "2px solid lightgrey",
+    border: "2px solid darkslategrey",
     margin: "$2 $2 $2 0",
     alignSelf: "center"
   });

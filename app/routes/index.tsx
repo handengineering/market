@@ -12,7 +12,7 @@ export default function Index() {
       ) : (
         <div>
           <Link to="/join">
-            <Button>Sign up</Button>
+            <Button color="primary">Sign up</Button>
           </Link>
           <Link to="/login">
             <Button>Log In</Button>

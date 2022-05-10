@@ -47,13 +47,13 @@ export default function Screen() {
             <p>Signed in as {user.email}</p>
 
             <Link to="/logout">
-              <Button>Log Out</Button>
+              <Button color="danger">Log Out</Button>
             </Link>
           </>
         ) : (
           <div>
             <Link to="/join">
-              <Button>Sign up</Button>
+              <Button color="primary">Sign up</Button>
             </Link>
             <Link to="/login">
               <Button>Log In</Button>
@@ -83,7 +83,7 @@ export default function Screen() {
         </DiscordStatusWrapper>
 
         <Form method="post" action="/auth/discord">
-          <Button>Connect Discord</Button>
+          <Button color="primary">Connect Discord</Button>
         </Form>
       </Main>
     </AppContainer>

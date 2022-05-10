@@ -1,16 +1,27 @@
 import { styled } from "~/styles/stitches.config";
 
-const Button = styled('button', {
-    backgroundColor: 'lightgray',
-    borderRadius: '2px',
-    fontSize: '13px',
-    padding: '6px 24px',
-    margin: '6px',
-    border: 'none',
-    cursor: 'pointer',
-    '&:hover': {
-      backgroundColor: 'darkgray',
+const Button = styled("button", {
+  backgroundColor: "lightgray",
+  borderRadius: "8px",
+  fontSize: "$2",
+  padding: "$1 $2",
+  marginBottom: "$3",
+  border: "none",
+  cursor: "pointer",
+  "&:hover": {
+    backgroundColor: "darkgray",
+  },
+  variants: {
+    color: {
+      primary: {
+        backgroundColor: "midnightblue",
+        color: "white"
+      },
+      danger: {
+        backgroundColor: "tomato",
+      },
     },
-  });
+  },
+});
 
-  export default Button;
+export default Button;

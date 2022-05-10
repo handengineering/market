@@ -17,7 +17,7 @@ export default function Screen() {
         autoComplete="current-password"
         required
       />
-      <Button>Sign In</Button>
+      <Button color="primary">Sign In</Button>
     </Form>
   );
 }
