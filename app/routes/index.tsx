@@ -1,4 +1,5 @@
 import { Link } from "@remix-run/react";
+import Button from "~/components/Button";
 
 import { useOptionalUser } from "~/utils";
 
@@ -7,18 +8,14 @@ export default function Index() {
   return (
     <main>
       {user ? (
-       <p>Signed in as {user.email}</p>
+        <p>Signed in as {user.email}</p>
       ) : (
         <div>
-          <Link
-            to="/join"
-          >
-            Sign up
+          <Link to="/join">
+            <Button>Sign up</Button>
           </Link>
-          <Link
-            to="/login"
-          >
-            Log In
+          <Link to="/login">
+            <Button>Log In</Button>
           </Link>
         </div>
       )}
