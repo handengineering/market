@@ -1,50 +1,54 @@
-app = "market-1eca"
+# fly.toml file generated for market on 2022-05-10T11:09:57+01:00
+
+app = "market"
+
 kill_signal = "SIGINT"
 kill_timeout = 5
-processes = [ ]
+processes = []
 
 [experimental]
-allowed_public_ports = [ ]
-auto_rollback = true
-cmd = "start.sh"
-entrypoint = "sh"
+  allowed_public_ports = []
+  auto_rollback = true
+  cmd = "start.sh"
+  entrypoint = "sh"
 
 [mounts]
-source = "data"
-destination = "/data"
+  destination = "/data"
+  source = "market_data"
 
 [[services]]
-internal_port = 8_080
-processes = [ "app" ]
-protocol = "tcp"
-script_checks = [ ]
+  internal_port = 8080
+  processes = ["app"]
+  protocol = "tcp"
+  script_checks = []
 
   [services.concurrency]
-  hard_limit = 25
-  soft_limit = 20
-  type = "connections"
-
-  [[services.ports]]
-  handlers = [ "http" ]
-  port = 80
-  force_https = true
-
-  [[services.ports]]
-  handlers = [ "tls", "http" ]
-  port = 443
-
-  [[services.tcp_checks]]
-  grace_period = "1s"
-  interval = "15s"
-  restart_limit = 0
-  timeout = "2s"
+    hard_limit = 25
+    soft_limit = 20
+    type = "connections"
 
   [[services.http_checks]]
-  interval = 10_000
-  grace_period = "5s"
-  method = "get"
-  path = "/healthcheck"
-  protocol = "http"
-  timeout = 2_000
-  tls_skip_verify = false
-  headers = { }
+    grace_period = "5s"
+    interval = 10000
+    method = "get"
+    path = "/healthcheck"
+    protocol = "http"
+    timeout = 2000
+    tls_skip_verify = false
+
+    [services.http_checks.headers]
+
+  [[services.ports]]
+    force_https = true
+    handlers = ["http"]
+    port = 80
+
+  [[services.ports]]
+    handlers = ["tls", "http"]
+    port = 443
+
+  [[services.tcp_checks]]
+    grace_period = "1s"
+    interval = "15s"
+    restart_limit = 0
+    timeout = "2s"
