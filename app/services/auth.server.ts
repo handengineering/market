@@ -65,10 +65,6 @@ authenticator.use(
     }) => {
       let user = await getUserByEmail(email);
 
-      if (!user) {
-        createUser(email);
-      }
-
       invariant(user, "user not found");
       return user;
     }
