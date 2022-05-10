@@ -9,6 +9,7 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
+import { globalStyles } from "./styles/globalStyles";
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
@@ -18,6 +19,9 @@ export const meta: MetaFunction = () => ({
 
 
 export default function App() {
+
+  globalStyles();
+  
   return (
     <html lang="en" className="h-full">
       <head>
