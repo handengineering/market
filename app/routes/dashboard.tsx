@@ -26,7 +26,7 @@ type DiscordGuilds = Array<DiscordGuild>;
 export default function Screen() {
   const { user, result } = useLoaderData() as LoaderData;
 
-  const hasJoinedDiscord = result.some(discordGuild => discordGuild.id === matchingDiscordId);
+  const hasJoinedDiscord = result.length >= 1 && result.some(discordGuild => discordGuild.id === matchingDiscordId);
 
   return (
     <main>
@@ -35,8 +35,8 @@ export default function Screen() {
       <h2>You {hasJoinedDiscord ? "are" : "are not"} a member of our Discord</h2>
 
       <h2>
-        Signed in discord user is{" "}
-        {user ? user.discordDisplayName : "no user found"}
+       
+        {user.discordDisplayName ? `Signed in as ${user.discordDisplayName}` : "Not signed into Discord"}
       </h2>
       {user.discordDisplayAvatarURL && (
         <img
