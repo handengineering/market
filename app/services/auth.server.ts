@@ -3,6 +3,7 @@ import { Authenticator } from "remix-auth";
 import { FormStrategy } from "remix-auth-form";
 import { DiscordStrategy } from "remix-auth-socials";
 import invariant from "tiny-invariant";
+import { createDiscordProfile } from "~/models/discordProfile.server";
 import {
   getUserByEmail,
   updateUserDiscord,
@@ -17,12 +18,14 @@ export let discordAuthenticator = new Authenticator<User>(
 );
 
 invariant(process.env.DISCORD_CLIENT_ID, "DISCORD_CLIENT_ID must be set");
-invariant(process.env.DISCORD_CLIENT_SECRET, "DISCORD_CLIENT_SECRET must be set");
-
+invariant(
+  process.env.DISCORD_CLIENT_SECRET,
+  "DISCORD_CLIENT_SECRET must be set"
+);
 
 authenticator.use(
   new FormStrategy(async ({ form }) => {
-    let email = form.get("email"); 
+    let email = form.get("email");
     let password = form.get("password");
 
     invariant(typeof email === "string", "email must be a string");
@@ -49,7 +52,6 @@ discordAuthenticator.use(
       scope: ["identify", "email", "guilds"],
     },
     async ({ accessToken, profile }) => {
-
       invariant(profile, "profile not found");
 
       const { emails, displayName, id, __json } = profile;
@@ -67,14 +69,15 @@ discordAuthenticator.use(
         `can't get original user by email: ${discordUserEmail}`
       );
 
-      const updatedUser = await updateUserDiscord(
-        originalUser.id,
+      createDiscordProfile(
         id,
+        originalUser.id,
         displayName,
         avatar,
         accessToken
       );
-      return updatedUser;
+
+      return originalUser;
     }
   ),
   "discord"

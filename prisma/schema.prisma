@@ -8,17 +8,27 @@ generator client {
 }
 
 model User {
-  id    String @id @default(cuid())
-  email String @unique
+  id             String          @id @default(cuid())
+  email          String          @unique
+  discordProfile DiscordProfile?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  password                Password?
-  discordId               String?   @unique
-  discordDisplayName      String?   @unique
-  discordDisplayAvatarURL String?   @unique
-  discordAuthToken        String?   @unique
+  password Password?
+
+}
+
+model DiscordProfile {
+  id               String @id @unique
+  user             User   @relation(fields: [userId], references: [id])
+  userId           String @unique
+  displayName      String
+  displayAvatarUrl String
+  authToken        String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Password {
