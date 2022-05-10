@@ -6,7 +6,6 @@ import invariant from "tiny-invariant";
 import { createDiscordProfile } from "~/models/discordProfile.server";
 import {
   getUserByEmail,
-  updateUserDiscord,
   User,
   verifyLogin,
 } from "~/models/user.server";
