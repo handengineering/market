@@ -19,9 +19,12 @@ export const {
       red500: "hsl(352,100%,62%)",
     },
     space: {
-      1: "5px",
-      2: "10px",
-      3: "15px",
+        1: "0.5rem",
+        2: "0.75rem",
+        3: "1rem",
+        4: "1.125rem",
+        5: "1.5rem",
+        6: "2.25rem",
     },
     fontSizes: {
       1: "0.5rem",
@@ -30,7 +33,7 @@ export const {
       4: "1.125rem",
       5: "1.5rem",
       6: "2.25rem",
-    },
+    },    
     fonts: {
       untitled: "Untitled Sans, apple-system, sans-serif",
       mono: "Söhne Mono, menlo, monospace",
@@ -38,7 +41,15 @@ export const {
     fontWeights: {},
     lineHeights: {},
     letterSpacings: {},
-    sizes: {},
+    sizes: {
+
+        1: "2rem",
+        2: "3rem",
+        3: "4rem",
+        4: "4.5rem",
+        5: "6rem",
+        6: "9rem",
+    },
     borderWidths: {},
     borderStyles: {},
     radii: {},

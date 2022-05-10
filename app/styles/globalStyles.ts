@@ -48,7 +48,7 @@ export const baseTypography = globalCss({
     lineHeight: 1.5,
     color: "#000000",
   },
-  p: { fontSize: "$3",marginBottom: "1rem" },
+  p: { fontSize: "$3", marginBottom: "1rem" },
   "h1, h2, h3, h4, h5": {
     marginBottom: "1rem",
     fontFamily: "'Helvetica', 'sans-serif'",
@@ -66,8 +66,17 @@ export const baseTypography = globalCss({
   small: { fontSize: "$1" },
 });
 
+export const baseLayout = globalCss({
+  "body, html": {
+    height: "100%",
+  },
+  "*": {
+    boxSizing: "border-box",
+  },
+});
 
 export const globalStyles = () => {
-    cssReset();
-    baseTypography();
+  cssReset();
+  baseTypography();
+  baseLayout();
 };

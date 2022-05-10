@@ -1,7 +1,13 @@
 import { DiscordProfile } from "@prisma/client";
-import { Form, useLoaderData } from "@remix-run/react";
+import { Form, Link, useLoaderData } from "@remix-run/react";
 import { LoaderFunction } from "@remix-run/server-runtime";
+import AppContainer from "~/components/AppContainer";
 import Button from "~/components/Button";
+import DiscordAvatar from "~/components/DiscordAvatar";
+import DiscordStatusTextFields from "~/components/DiscordStatusTextFields";
+import DiscordStatusWrapper from "~/components/DiscordStatusWrapper";
+import Main from "~/components/Main";
+import Sidebar from "~/components/Sidebar";
 import { getDiscordProfileByUserId } from "~/models/discordProfile.server";
 import { User } from "~/models/user.server";
 import { authenticator } from "~/services/auth.server";
@@ -34,27 +40,53 @@ export default function Screen() {
     result.some((discordGuild) => discordGuild.id === matchingDiscordId);
 
   return (
-    <main>
-      <h1>Welcome {user ? user.email : "no user found"}</h1>
+    <AppContainer>
+      <Sidebar>
+        {user ? (
+          <>
+            <p>Signed in as {user.email}</p>
 
-      <h2>
-        You {hasJoinedDiscord ? "are" : "are not"} a member of our Discord
-      </h2>
+            <Link to="/logout">
+              <Button>Log Out</Button>
+            </Link>
+          </>
+        ) : (
+          <div>
+            <Link to="/join">
+              <Button>Sign up</Button>
+            </Link>
+            <Link to="/login">
+              <Button>Log In</Button>
+            </Link>
+          </div>
+        )}
+      </Sidebar>
+      <Main>
+        <h1>Welcome {user ? user.email : "no user found"}</h1>
+        <DiscordStatusWrapper>
+          {discordProfile && discordProfile.displayAvatarUrl && (
+            <DiscordAvatar
+              src={`https://cdn.discordapp.com/avatars/${discordProfile.id}/${discordProfile.displayAvatarUrl}`}
+            />
+          )}
+          <DiscordStatusTextFields>
+            <span>
+              {discordProfile && discordProfile.displayName
+                ? `Signed in as ${discordProfile.displayName}`
+                : "Not signed into Discord"}
+            </span>
 
-      <h2>
-        {discordProfile && discordProfile.displayName
-          ? `Signed in as ${discordProfile.displayName}`
-          : "Not signed into Discord"}
-      </h2>
-      {discordProfile && discordProfile.displayAvatarUrl && (
-        <img
-          src={`https://cdn.discordapp.com/avatars/${discordProfile.id}/${discordProfile.displayAvatarUrl}`}
-        />
-      )}
-      <Form method="post" action="/auth/discord">
-        <Button>Connect Discord</Button>
-      </Form>
-    </main>
+            <span>
+              You {hasJoinedDiscord ? "are" : "are not"} a member of our Discord
+            </span>
+          </DiscordStatusTextFields>
+        </DiscordStatusWrapper>
+
+        <Form method="post" action="/auth/discord">
+          <Button>Connect Discord</Button>
+        </Form>
+      </Main>
+    </AppContainer>
   );
 }
 
