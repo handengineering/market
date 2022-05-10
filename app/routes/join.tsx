@@ -11,6 +11,13 @@ import { createUserSession } from "~/services/session.server";
 
 import { createUser, getUserByEmail } from "~/models/user.server";
 import { safeRedirect, validateEmail } from "~/utils";
+import Input from "~/components/Input";
+import Button from "~/components/Button";
+import Card from "~/components/Card";
+import AppContainer from "~/components/AppContainer";
+import Main from "~/components/Main";
+import Label from "~/components/Label";
+import ErrorText from "~/components/ErrorText";
 
 export const loader: LoaderFunction = async ({ request }) => {
   return json({});
@@ -90,62 +97,75 @@ export default function Join() {
   }, [actionData]);
 
   return (
-    <div>
-      <Form method="post">
-        <div>
-          <label htmlFor="email">Email address</label>
-          <div>
-            <input
-              ref={emailRef}
-              id="email"
-              required
-              autoFocus={true}
-              name="email"
-              type="email"
-              autoComplete="email"
-              aria-invalid={actionData?.errors?.email ? true : undefined}
-              aria-describedby="email-error"
-            />
-            {actionData?.errors?.email && (
-              <div id="email-error">{actionData.errors.email}</div>
-            )}
-          </div>
-        </div>
+    <AppContainer>
+      <Main>
+        <Card position="center">
+          <Form method="post">
+            <div>
+              <Label htmlFor="email">Email address</Label>
+              <div>
+                <Input
+                  fullWidth
+                  ref={emailRef}
+                  id="email"
+                  required
+                  autoFocus={true}
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  aria-invalid={actionData?.errors?.email ? true : undefined}
+                  aria-describedby="email-error"
+                />
+                {actionData?.errors?.email && (
+                  <ErrorText id="email-error">{actionData.errors.email}</ErrorText>
+                )}
+              </div>
+            </div>
 
-        <div>
-          <label htmlFor="password">Password</label>
-          <div>
-            <input
-              id="password"
-              ref={passwordRef}
-              name="password"
-              type="password"
-              autoComplete="new-password"
-              aria-invalid={actionData?.errors?.password ? true : undefined}
-              aria-describedby="password-error"
-            />
-            {actionData?.errors?.password && (
-              <div id="password-error">{actionData.errors.password}</div>
-            )}
-          </div>
-        </div>
+            <div>
+              <Label htmlFor="password">Password</Label>
+              <div>
+                <Input
+                  fullWidth
+                  id="password"
+                  ref={passwordRef}
+                  name="password"
+                  type="password"
+                  autoComplete="new-password"
+                  aria-invalid={actionData?.errors?.password ? true : undefined}
+                  aria-describedby="password-error"
+                />
+                {actionData?.errors?.password && (
+                  <ErrorText id="password-error">{actionData.errors.password}</ErrorText>
+                )}
+              </div>
+            </div>
 
-        <input type="hidden" name="redirectTo" value={redirectTo} />
-        <button type="submit">Create Account</button>
-        <div>
-          <div>
-            Already have an account?{" "}
-            <Link
-              to={{
-                pathname: "/login",
-                search: searchParams.toString(),
-              }}
-            >
-              Log in
-            </Link>
-          </div>
-        </div>
-      </Form>
-    </div>
+            <Input
+              fullWidth
+              type="hidden"
+              name="redirectTo"
+              value={redirectTo}
+            />
+            <Button fullWidth color="primary" type="submit">
+              Create Account
+            </Button>
+            <div>
+              <div>
+                Already have an account?{" "}
+                <Link
+                  to={{
+                    pathname: "/login",
+                    search: searchParams.toString(),
+                  }}
+                >
+                  Log in
+                </Link>
+              </div>
+            </div>
+          </Form>
+        </Card>
+      </Main>
+    </AppContainer>
   );
 }

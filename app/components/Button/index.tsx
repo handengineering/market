@@ -15,10 +15,15 @@ const Button = styled("button", {
     color: {
       primary: {
         backgroundColor: "midnightblue",
-        color: "white"
+        color: "white",
       },
       danger: {
         backgroundColor: "tomato",
+      },
+    },
+    fullWidth: {
+      true: {
+        width: "100%",
       },
     },
   },
