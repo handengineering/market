@@ -14,7 +14,11 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  password Password?
+  password                Password?
+  discordId               String?   @unique
+  discordDisplayName      String?   @unique
+  discordDisplayAvatarURL String?   @unique
+  discordAuthToken        String?   @unique
 }
 
 model Password {
