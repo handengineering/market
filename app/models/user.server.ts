@@ -28,6 +28,26 @@ export async function createUser(email: User["email"], password: string) {
   });
 }
 
+export async function updateUserDiscord(
+  id: User["id"],
+  discordId: string,
+  discordDisplayName: string,
+  discordDisplayAvatarURL: string,
+  discordAuthToken: string
+) {
+  return prisma.user.update({
+    where: {
+      id: id,
+    },
+    data: {
+      discordId: discordId,
+      discordDisplayName: discordDisplayName,
+      discordDisplayAvatarURL: discordDisplayAvatarURL,
+      discordAuthToken: discordAuthToken
+    },
+  });
+}
+
 export async function deleteUserByEmail(email: User["email"]) {
   return prisma.user.delete({ where: { email } });
 }
