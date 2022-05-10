@@ -1,24 +1,49 @@
 // app/routes/login.tsx
 import { Form } from "@remix-run/react";
 import { ActionFunction, LoaderFunction } from "@remix-run/server-runtime";
+import AppContainer from "~/components/AppContainer";
 import Button from "~/components/Button";
+import Card from "~/components/Card";
+import Input from "~/components/Input";
+import Label from "~/components/Label";
+import Main from "~/components/Main";
 import { authenticator } from "~/services/auth.server";
 
 // First we create our UI with the form doing a POST and the inputs with the
 // names we are going to use in the strategy
 export default function Screen() {
-  
   return (
-    <Form method="post">
-      <input type="email" name="email" required />
-      <input
-        type="password"
-        name="password"
-        autoComplete="current-password"
-        required
-      />
-      <Button color="primary">Sign In</Button>
-    </Form>
+    <AppContainer>
+      <Main>
+        <Card position="center">
+          <h2>Sign in</h2>
+          <div>
+            <Form method="post">
+              <div>
+                <Label htmlFor="email">Email address</Label>
+                <div>
+                  <Input fullWidth type="email" name="email" required />
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="password">Password</Label>
+
+                <div>
+                  <Input
+                  fullWidth
+                    type="password"
+                    name="password"
+                    autoComplete="current-password"
+                    required
+                  />
+                </div>
+              </div>
+              <Button fullWidth color="primary">Log in</Button>
+            </Form>
+          </div>
+        </Card>
+      </Main>
+    </AppContainer>
   );
 }
 

@@ -100,6 +100,8 @@ export default function Join() {
     <AppContainer>
       <Main>
         <Card position="center">
+        <h2>Join</h2>
+
           <Form method="post">
             <div>
               <Label htmlFor="email">Email address</Label>

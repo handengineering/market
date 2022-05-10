@@ -42,6 +42,7 @@ export default function Screen() {
   return (
     <AppContainer>
       <Sidebar>
+        <h1>Hand Engineering Market</h1>
         {user ? (
           <>
             <p>Signed in as {user.email}</p>
@@ -62,7 +63,6 @@ export default function Screen() {
         )}
       </Sidebar>
       <Main>
-        <h1>Welcome {user ? user.email : "no user found"}</h1>
         <DiscordStatusWrapper>
           {discordProfile && discordProfile.displayAvatarUrl && (
             <DiscordAvatar
