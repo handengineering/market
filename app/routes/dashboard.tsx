@@ -8,7 +8,9 @@ import DiscordStatusTextFields from "~/components/DiscordStatusTextFields";
 import DiscordStatusWrapper from "~/components/DiscordStatusWrapper";
 import Main from "~/components/Main";
 import Sidebar from "~/components/Sidebar";
-import { getDiscordProfileByUserId } from "~/models/discordProfile.server";
+import {
+  getDiscordProfileByUserId,
+} from "~/models/discordProfile.server";
 import { User } from "~/models/user.server";
 import { authenticator } from "~/services/auth.server";
 
@@ -82,9 +84,15 @@ export default function Screen() {
           </DiscordStatusTextFields>
         </DiscordStatusWrapper>
 
-        <Form method="post" action="/auth/discord">
-          <Button color="primary">Connect Discord</Button>
-        </Form>
+        {!hasJoinedDiscord ? (
+          <Form method="post" action="/auth/discord">
+            <Button color="primary">Connect Discord Profile</Button>
+          </Form>
+        ) : (
+          <Form method="post" action={`/discordProfile/${discordProfile.id}/delete`}>
+            <Button color="danger">Remove Discord Profile</Button>
+          </Form>
+        )}
       </Main>
     </AppContainer>
   );

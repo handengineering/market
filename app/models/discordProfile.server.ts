@@ -1,3 +1,4 @@
+import { DiscordProfile } from "@prisma/client";
 import { prisma } from "~/db.server";
 import { User } from "./user.server";
 
@@ -25,4 +26,8 @@ export async function getDiscordProfileByUserId(id: User["id"]) {
 
 export async function deleteDiscordProfileByUserId(id: User["id"]) {
   return prisma.discordProfile.delete({ where: { userId: id  } });
+}
+
+export async function deleteDiscordProfileById(id: DiscordProfile["id"]) {
+  return prisma.discordProfile.delete({ where: { id: id  } });
 }
