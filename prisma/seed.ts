@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import { seedRoles } from "./seedRoles";
 
 const prisma = new PrismaClient();
 
@@ -13,7 +14,7 @@ async function seed() {
 
   const hashedPassword = await bcrypt.hash("racheliscool", 10);
 
-  const user = await prisma.user.create({
+  await prisma.user.create({
     data: {
       email,
       password: {
@@ -22,6 +23,15 @@ async function seed() {
         },
       },
     },
+  });
+
+  seedRoles.map(async (seedRole) => {
+    await prisma.role.create({
+      data: {
+        name: seedRole.name,
+        permissions: seedRole.permissions,
+      },
+    });
   });
 
   console.log(`Database has been seeded. 🌱`);
