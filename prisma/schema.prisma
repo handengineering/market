@@ -17,6 +17,7 @@ model User {
 
   password Password?
 
+  raffleEntries RaffleEntry[]
 }
 
 model DiscordProfile {
@@ -29,6 +30,24 @@ model DiscordProfile {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Raffle {
+  id            String        @id @default(cuid())
+  name          String
+  raffleEntries RaffleEntry[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model RaffleEntry {
+  id       String @id @default(cuid())
+  raffle   Raffle @relation(fields: [raffleId], references: [id], onDelete: Cascade)
+  raffleId String @unique
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique
 }
 
 model Password {
