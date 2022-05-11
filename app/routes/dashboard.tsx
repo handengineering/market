@@ -17,13 +17,13 @@ const guildId = "605444240016801879";
 
 type LoaderData = {
   user: User;
-  discordProfile: DiscordProfile;
+  discordProfile: DiscordProfile | null;
   result: DiscordGuildMember | null;
 };
 
 export default function Screen() {
   const { user, discordProfile, result } = useLoaderData() as LoaderData;
-  const hasJoinedDiscord = result && result.user && result.user.id === discordProfile.id;
+  const hasJoinedDiscord = discordProfile && result && result.user && result.user.id === discordProfile.id;
 
   return (
     <AppContainer>
@@ -99,18 +99,14 @@ export let loader: LoaderFunction = async ({ request }) => {
     Authorization: `Bot ${discordBotToken}`,
   };
 
-  invariant(discordProfile, `DiscordProfile not found for user ${user.id}`);
-
-  let discordGuildMember = await fetch(
+  let discordGuildMember = discordProfile && await fetch(
     `https://discordapp.com/api/guilds/${guildId}/members/${discordProfile.id}`,
     {
       headers: authHeaders,
     }
   );
 
-  const result = await discordGuildMember.json();
-
-  console.log(result);
+  const result: DiscordGuildMember | null = discordGuildMember && await discordGuildMember.json();
 
   return { user, discordProfile, result };
 };
