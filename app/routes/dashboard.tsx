@@ -1,6 +1,7 @@
 import { DiscordProfile } from "@prisma/client";
 import { Form, Link, useLoaderData } from "@remix-run/react";
 import { LoaderFunction } from "@remix-run/server-runtime";
+import invariant from "tiny-invariant";
 import AppContainer from "~/components/AppContainer";
 import Button from "~/components/Button";
 import DiscordAvatar from "~/components/DiscordAvatar";
@@ -8,38 +9,21 @@ import DiscordStatusTextFields from "~/components/DiscordStatusTextFields";
 import DiscordStatusWrapper from "~/components/DiscordStatusWrapper";
 import Main from "~/components/Main";
 import Sidebar from "~/components/Sidebar";
-import {
-  getDiscordProfileByUserId,
-} from "~/models/discordProfile.server";
+import { DiscordGuildMember, getDiscordProfileByUserId } from "~/models/discordProfile.server";
 import { User } from "~/models/user.server";
 import { authenticator } from "~/services/auth.server";
 
-const matchingDiscordId = "605444240016801879";
+const guildId = "605444240016801879";
 
 type LoaderData = {
   user: User;
   discordProfile: DiscordProfile;
-  result: DiscordGuilds;
+  result: DiscordGuildMember | null;
 };
-
-type DiscordGuild = {
-  id: string;
-  name: string;
-  icon: string;
-  owner: boolean;
-  permissions: number;
-  features: Array<string>;
-  permissions_new: string;
-};
-
-type DiscordGuilds = Array<DiscordGuild>;
 
 export default function Screen() {
   const { user, discordProfile, result } = useLoaderData() as LoaderData;
-
-  const hasJoinedDiscord =
-    result.length >= 1 &&
-    result.some((discordGuild) => discordGuild.id === matchingDiscordId);
+  const hasJoinedDiscord = result && result.user && result.user.id === discordProfile.id;
 
   return (
     <AppContainer>
@@ -89,7 +73,10 @@ export default function Screen() {
             <Button color="primary">Connect Discord Profile</Button>
           </Form>
         ) : (
-          <Form method="post" action={`/discordProfile/${discordProfile.id}/delete`}>
+          <Form
+            method="post"
+            action={`/discordProfile/${discordProfile.id}/delete`}
+          >
             <Button color="danger">Remove Discord Profile</Button>
           </Form>
         )}
@@ -99,6 +86,9 @@ export default function Screen() {
 }
 
 export let loader: LoaderFunction = async ({ request }) => {
+  invariant(process.env.DISCORD_BOT_TOKEN, "DISCORD_BOT_TOKEN must be set");
+
+  let discordBotToken = process.env.DISCORD_BOT_TOKEN;
   let user = await authenticator.isAuthenticated(request, {
     failureRedirect: "/login",
   });
@@ -106,17 +96,21 @@ export let loader: LoaderFunction = async ({ request }) => {
   const discordProfile = await getDiscordProfileByUserId(user.id);
 
   const authHeaders = {
-    Authorization: `Bearer ${discordProfile && discordProfile.authToken}`,
+    Authorization: `Bot ${discordBotToken}`,
   };
 
-  let discordGuilds = await fetch(
-    "https://discordapp.com/api/users/@me/guilds",
+  invariant(discordProfile, `DiscordProfile not found for user ${user.id}`);
+
+  let discordGuildMember = await fetch(
+    `https://discordapp.com/api/guilds/${guildId}/members/${discordProfile.id}`,
     {
       headers: authHeaders,
     }
   );
 
-  const result = await discordGuilds.json();
+  const result = await discordGuildMember.json();
+
+  console.log(result);
 
   return { user, discordProfile, result };
 };

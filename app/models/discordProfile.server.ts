@@ -2,6 +2,32 @@ import { DiscordProfile } from "@prisma/client";
 import { prisma } from "~/db.server";
 import { User } from "./user.server";
 
+export type DiscordGuild = {
+  id: string;
+  name: string;
+  icon: string;
+  owner: boolean;
+  permissions: number;
+  features: Array<string>;
+  permissions_new: string;
+};
+
+export type DiscordUser = {
+  id: string;
+};
+
+export type DiscordGuildMember = {
+  user?: DiscordUser;
+  nick: string;
+  icon: string;
+  owner: boolean;
+  permissions: number;
+  features: Array<string>;
+  permissions_new: string;
+};
+
+export type DiscordGuilds = Array<DiscordGuild>;
+
 export async function createDiscordProfile(
   id: string,
   userId: string,
@@ -25,9 +51,9 @@ export async function getDiscordProfileByUserId(id: User["id"]) {
 }
 
 export async function deleteDiscordProfileByUserId(id: User["id"]) {
-  return prisma.discordProfile.delete({ where: { userId: id  } });
+  return prisma.discordProfile.delete({ where: { userId: id } });
 }
 
 export async function deleteDiscordProfileById(id: DiscordProfile["id"]) {
-  return prisma.discordProfile.delete({ where: { id: id  } });
+  return prisma.discordProfile.delete({ where: { id: id } });
 }
