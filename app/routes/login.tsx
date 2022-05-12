@@ -1,4 +1,4 @@
-import { useLoaderData, Form, useActionData, Link } from "@remix-run/react";
+import { useLoaderData, Form, Link } from "@remix-run/react";
 import {
   ActionFunction,
   ErrorBoundaryComponent,
@@ -54,8 +54,6 @@ export const ErrorBoundary: ErrorBoundaryComponent = ({error}) => {
 // app/routes/login.tsx
 export default function Login() {
   let { magicLinkSent } = useLoaderData<LoaderData>();
-  let actionData = useActionData<ActionData>();
-  const errors = actionData?.errors;
 
   return (
     <AppContainer>
