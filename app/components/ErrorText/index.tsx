@@ -1,7 +1,8 @@
 import { styled } from "~/styles/stitches.config";
 
 const ErrorText = styled("p", {
-  fontSize: "$1",
+  fontSize: "$3",
+  marginBottom: "0",
   color: "tomato",
 });
 
