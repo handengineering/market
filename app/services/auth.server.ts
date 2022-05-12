@@ -6,13 +6,13 @@ import { EmailLinkStrategy } from "remix-auth-email-link";
 import invariant from "tiny-invariant";
 import { createDiscordProfile } from "~/models/discordProfile.server";
 import {
-  createUser,
   getUserByEmail,
   User,
   verifyLogin,
 } from "~/models/user.server";
 import { sessionStorage, discordSessionStorage } from "./session.server";
 import { sendMagicLinkEmail } from "./email.server";
+import { verifyEmailAddress } from '~/services/verifier.server'
 
 invariant(process.env.DISCORD_CLIENT_ID, "DISCORD_CLIENT_ID must be set");
 invariant(
@@ -49,6 +49,7 @@ authenticator.use(
 authenticator.use(
   new EmailLinkStrategy(
     {
+      verifyEmailAddress,
       sendEmail: sendMagicLinkEmail,
       secret: process.env.MAGIC_LINK_SECRET,
       callbackURL: "/magic",
