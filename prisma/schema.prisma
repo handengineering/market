@@ -11,26 +11,26 @@ model User {
   id             String           @id @default(cuid())
   email          String           @unique
   password       Password?
-  userRoles      UserRoles?
+  userRoles      UserRole[]
   raffleEntries  RaffleEntry[]
   DiscordProfile DiscordProfile[]
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
 }
 
-model UserRoles {
+model UserRole {
   id     String @id @default(cuid())
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String @unique
-  roles  Role[]
+  role   Role   @relation(fields: [roleId], references: [id])
+  roleId String @unique
 }
 
 model Role {
   id          String     @id @default(cuid())
   name        String
   permissions Int
-  UserRoles   UserRoles? @relation(fields: [userRolesId], references: [id])
-  userRolesId String?
+  UserRoles   UserRole[]
 }
 
 model DiscordProfile {

@@ -1,7 +1,4 @@
-const permissions = {
-  default: 1 << 0,
-  administrator: 1 << 1,
-};
+import permissions from "./permissions";
 
 export const seedRoles = [
   {
