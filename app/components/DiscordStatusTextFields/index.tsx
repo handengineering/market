@@ -4,7 +4,6 @@ const DiscordStatusTextFields = styled('div', {
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
-    color: "white",
   });
 
 export default DiscordStatusTextFields;
