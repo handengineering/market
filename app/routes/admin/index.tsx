@@ -23,9 +23,9 @@ export let loader: LoaderFunction = async ({ request }) => {
 
   const roles = await getRolesByUserId(user.id);
 
-  const hasPermissions = !!roles.filter((role) => {
+  const hasPermissions = roles.some((role) => {
     return role.permissions & permissions.administrator;
-  }).length;
+  });
 
   if (!hasPermissions) {
     return redirect("/dashboard");
