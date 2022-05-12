@@ -13,7 +13,8 @@ services:
     networks:
       - market-be
     ports:
-      - "3000:3000"
+      - "${PORT}:${PORT}"
+      - "9229:9229"
     volumes:
       - type: bind
         source: .

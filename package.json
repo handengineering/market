@@ -9,7 +9,7 @@
     "build": "run-s build:*",
     "build:remix": "remix build",
     "dev": "run-p dev:*",
-    "dev:remix": "cross-env NODE_ENV=development binode --require ./mocks -- @remix-run/dev:remix dev",
+    "dev:remix": "cross-env NODE_ENV=development binode --require ./mocks --inspect=0.0.0.0 -- @remix-run/dev:remix dev",
     "format": "prettier --write .",
     "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint .",
     "setup": "prisma migrate dev && prisma db seed",
