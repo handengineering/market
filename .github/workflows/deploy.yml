@@ -86,6 +86,9 @@ jobs:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v3
 
+      - name: 🏄 Copy test env vars
+        run: cp .env.example .env
+
       - name: ⎔ Setup node
         uses: actions/setup-node@v3
         with:
@@ -96,10 +99,14 @@ jobs:
         with:
           useLockFile: false
 
+      - name: 🐳 Docker compose
+        # the sleep is just there to give time for postgres to get started
+        run: docker-compose up -d && sleep 3
+        env:
+          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/postgres"
+
       - name: 🛠 Setup Database
         run: npx prisma migrate reset --force
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       - name: ⚙️ Build
         run: npm run build

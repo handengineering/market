@@ -6,7 +6,7 @@ services:
     command: ["/bin/bash", "-c", "npx prisma migrate dev && npm run dev"]
     container_name: market_be
     environment:
-      DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@database:5432/${POSTGRES_DB}?schema=public"
+      DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@database:5432/${POSTGRES_DB}"
     image: market-backend
     links:
       - database
@@ -21,8 +21,8 @@ services:
         target: /myapp
   database:
     container_name: market_db
-    expose:
-      - 5432
+    ports:
+      - "5432:5432"
     image: postgres:${POSTGRES_VERSION:-latest}
     networks:
       - market-be
