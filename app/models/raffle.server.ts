@@ -1,6 +1,5 @@
-import { Raffle } from "@prisma/client";
 import { prisma } from "~/db.server";
-
+import type { Raffle } from "@prisma/client";
 export type { Raffle } from "@prisma/client";
 
 export async function createRaffle(name: Raffle["name"]) {

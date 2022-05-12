@@ -1,6 +1,7 @@
-import { DiscordProfile } from "@prisma/client";
 import { prisma } from "~/db.server";
-import { User } from "./user.server";
+import type { DiscordProfile } from "@prisma/client";
+import type { User } from "./user.server";
+export type { DiscordProfile } from "@prisma/client";
 
 export type DiscordGuild = {
   id: string;

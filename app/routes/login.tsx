@@ -1,10 +1,5 @@
 import { useLoaderData, Form, Link } from "@remix-run/react";
-import {
-  ActionFunction,
-  ErrorBoundaryComponent,
-  json,
-  LoaderFunction,
-} from "@remix-run/server-runtime";
+import { json } from "@remix-run/server-runtime";
 import AppContainer from "~/components/AppContainer";
 import Button from "~/components/Button";
 import Card from "~/components/Card";
@@ -14,6 +9,11 @@ import Label from "~/components/Label";
 import Main from "~/components/Main";
 import { authenticator } from "~/services/auth.server";
 import { sessionStorage } from "~/services/session.server";
+import type {
+  ActionFunction,
+  ErrorBoundaryComponent,
+  LoaderFunction,
+} from "@remix-run/server-runtime";
 
 type LoaderData = {
   magicLinkSent?: boolean;
@@ -38,7 +38,7 @@ export let action: ActionFunction = async ({ request }) => {
   });
 };
 
-export const ErrorBoundary: ErrorBoundaryComponent = ({error}) => {
+export const ErrorBoundary: ErrorBoundaryComponent = ({ error }) => {
   return (
     <AppContainer>
       <Main>
@@ -48,7 +48,7 @@ export const ErrorBoundary: ErrorBoundaryComponent = ({error}) => {
         </Card>
       </Main>
     </AppContainer>
-  )
+  );
 };
 
 // app/routes/login.tsx

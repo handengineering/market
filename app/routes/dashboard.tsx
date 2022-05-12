@@ -1,6 +1,4 @@
-import { DiscordProfile } from "@prisma/client";
 import { Form, Link, useLoaderData } from "@remix-run/react";
-import { LoaderFunction } from "@remix-run/server-runtime";
 import invariant from "tiny-invariant";
 import AppContainer from "~/components/AppContainer";
 import Button from "~/components/Button";
@@ -9,14 +7,17 @@ import DiscordStatusTextFields from "~/components/DiscordStatusTextFields";
 import DiscordStatusWrapper from "~/components/DiscordStatusWrapper";
 import Main from "~/components/Main";
 import Sidebar from "~/components/Sidebar";
-import {
-  DiscordGuildMember,
-  getDiscordProfileByUserId,
-} from "~/models/discordProfile.server";
-import { User } from "~/models/user.server";
+import { getDiscordProfileByUserId } from "~/models/discordProfile.server";
 import { authenticator } from "~/services/auth.server";
-import { getRaffles, Raffle } from "~/models/raffle.server";
+import { getRaffles } from "~/models/raffle.server";
 import Card from "~/components/Card";
+import type { LoaderFunction } from "@remix-run/server-runtime";
+import type { User } from "~/models/user.server";
+import type {
+  DiscordGuildMember,
+  DiscordProfile,
+} from "~/models/discordProfile.server";
+import type { Raffle } from "~/models/raffle.server";
 
 const guildId = "605444240016801879";
 
@@ -100,7 +101,7 @@ export default function Screen() {
           <ul>
             {raffles.map((raffle) => {
               return (
-                <li>
+                <li key={raffle.id}>
                   {raffle.name} {raffle.id}
                 </li>
               );

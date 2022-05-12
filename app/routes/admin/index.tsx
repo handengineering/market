@@ -1,11 +1,12 @@
-import { User } from "@prisma/client";
 import { Link } from "@remix-run/react";
-import { LoaderFunction, redirect } from "@remix-run/server-runtime";
 import permissions from "prisma/permissions";
 import AppContainer from "~/components/AppContainer";
 import Main from "~/components/Main";
 import { getRolesByUserId } from "~/models/role.server";
 import { authenticator } from "~/services/auth.server";
+import { redirect } from "@remix-run/server-runtime";
+import type { LoaderFunction } from "@remix-run/server-runtime";
+import type { User } from "~/models/user.server";
 
 export default function Index() {
   return (

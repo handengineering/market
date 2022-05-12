@@ -1,8 +1,8 @@
-import type { SendEmailFunction } from "remix-auth-email-link";
-import { User } from "~/models/user.server";
 import invariant from "tiny-invariant";
 import formData from "form-data";
 import Mailgun from "mailgun.js";
+import type { SendEmailFunction } from "remix-auth-email-link";
+import type { User } from "~/models/user.server";
 
 const mailgun = new Mailgun(formData);
 
@@ -37,5 +37,5 @@ export let sendMagicLinkEmail: SendEmailFunction<User> = async (options) => {
       console.log(error);
     });
 
-    console.log(result)
+  console.log(result);
 };
