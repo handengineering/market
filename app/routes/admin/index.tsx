@@ -1,4 +1,5 @@
 import { User } from "@prisma/client";
+import { Link } from "@remix-run/react";
 import { LoaderFunction, redirect } from "@remix-run/server-runtime";
 import permissions from "prisma/permissions";
 import AppContainer from "~/components/AppContainer";
@@ -11,6 +12,11 @@ export default function Index() {
     <AppContainer>
       <Main>
         <h1>Admin Panel</h1>
+        <ul>
+          <li>
+            <Link to="/admin/raffle/new">Create New Raffle</Link>
+          </li>
+        </ul>
       </Main>
     </AppContainer>
   );
