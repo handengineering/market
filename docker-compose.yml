@@ -1,27 +1,42 @@
-version: "1.0"
 services:
-  app:
-    build: .
-    container_name: app
+  backend:
+    build:
+      context: .
+      dockerfile: dev.Dockerfile
+    command: ["/bin/bash", "-c", "npx prisma migrate dev && npm run dev"]
+    container_name: market_be
+    environment:
+      DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@database:5432/${POSTGRES_DB}?schema=public"
+    image: market-backend
     links:
-      - postgres
+      - database
+    networks:
+      - market-be
     ports:
-      - "8080:8080"
-    env_file:
-      - .env
-          
-  postgres:
-    container_name: postgres
-    ports:
-      - "5432:5432"
+      - "${PORT}:${PORT}"
+      - "9229:9229"
+    volumes:
+      - type: bind
+        source: .
+        target: /myapp
+  database:
+    container_name: market_db
+    expose:
+      - 5432
     image: postgres:${POSTGRES_VERSION:-latest}
+    networks:
+      - market-be
     volumes:
       - type: volume
         source: postgres-data
         target: /var/lib/postgresql/data
         volume:
           nocopy: true
-    env_file:
-      - .env
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: ${POSTGRES_DB}
+networks:
+  market-be:
 volumes:
   postgres-data:
