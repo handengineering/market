@@ -8,7 +8,20 @@
         "type": "node",
         "request": "attach",
         "name": "Docker: Attach to Node",
-        "remoteRoot": "/myapp"
+        "remoteRoot": "/myapp",
+        "sourceMaps": true,
+        "outFiles": [
+          "${workspaceFolder}/build/*.js",
+          "!**/node_modules/**"
+        ]
+    },
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "Debug Frontend",
+      "url": "http://localhost:8080",
+      "webRoot": "${workspaceFolder}/app",
+      "sourceMaps": true
     }
   ]
 }
