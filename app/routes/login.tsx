@@ -1,43 +1,60 @@
-import { useLoaderData, Form } from "@remix-run/react";
+import { useLoaderData, Form, Link } from "@remix-run/react";
 import {
   ActionFunction,
+  ErrorBoundaryComponent,
   json,
   LoaderFunction,
 } from "@remix-run/server-runtime";
 import AppContainer from "~/components/AppContainer";
 import Button from "~/components/Button";
 import Card from "~/components/Card";
+import ErrorText from "~/components/ErrorText";
 import Input from "~/components/Input";
 import Label from "~/components/Label";
 import Main from "~/components/Main";
 import { authenticator } from "~/services/auth.server";
 import { sessionStorage } from "~/services/session.server";
 
+type LoaderData = {
+  magicLinkSent?: boolean;
+};
+
 export let loader: LoaderFunction = async ({ request }) => {
-  await authenticator.isAuthenticated(request, { successRedirect: "/dashboard" });
+  await authenticator.isAuthenticated(request, {
+    successRedirect: "/dashboard",
+  });
   let session = await sessionStorage.getSession(request.headers.get("Cookie"));
   // This session key `auth:magiclink` is the default one used by the EmailLinkStrategy
   // you can customize it passing a `sessionMagicLinkKey` when creating an
   // instance.
-  if (session.has("auth:magiclink")) return json({ magicLinkSent: true });
-  return json({ magicLinkSent: false });
+  if (session.has("auth:magiclink"))
+    return json<LoaderData>({ magicLinkSent: true });
+  return json<LoaderData>({ magicLinkSent: false });
 };
 
 export let action: ActionFunction = async ({ request }) => {
-  // The success redirect is required in this action, this is where the user is
-  // going to be redirected after the magic link is sent, note that here the
-  // user is not yet authenticated, so you can't send it to a private page.
   await authenticator.authenticate("email-link", request, {
-    successRedirect: "/dashboard",
-    // If this is not set, any error will be throw and the ErrorBoundary will be
-    // rendered.
-    failureRedirect: "/login",
+    successRedirect: "/login",
   });
+};
+
+export const ErrorBoundary: ErrorBoundaryComponent = ({error}) => {
+  return (
+    <AppContainer>
+      <Main>
+        <Card position="center">
+          <ErrorText>{error.message}</ErrorText>
+          <Link to="/login">Try a different email?</Link>
+        </Card>
+      </Main>
+    </AppContainer>
+  )
 };
 
 // app/routes/login.tsx
 export default function Login() {
-  let { magicLinkSent } = useLoaderData<{ magicLinkSent: boolean }>();
+  let { magicLinkSent } = useLoaderData<LoaderData>();
+
   return (
     <AppContainer>
       <Main>

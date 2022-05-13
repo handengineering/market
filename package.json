@@ -8,6 +8,7 @@
     "postinstall": "remix setup node",
     "build": "run-s build:*",
     "build:remix": "remix build",
+    "docker": "NODE_ENV=development docker-compose up -d",
     "dev": "run-p dev:*",
     "dev:remix": "cross-env NODE_ENV=development binode --require ./mocks --inspect=0.0.0.0 -- @remix-run/dev:remix dev",
     "format": "prettier --write .",
@@ -20,7 +21,12 @@
     "pretest:e2e:run": "npm run build",
     "test:e2e:run": "cross-env PORT=8811 start-server-and-test start:mocks http://localhost:8811 \"cypress run\"",
     "typecheck": "tsc -b && tsc -b cypress",
-    "validate": "run-p \"test -- --run\" lint typecheck test:e2e:run"
+    "validate": "run-p \"test -- --run\" lint typecheck test:e2e:run",
+    "db:start": "docker compose up -d postgres",
+    "db:stop": "docker compose down",
+    "db:update": "prisma migrate dev",
+    "db:reset": "prisma migrate reset --force",
+    "db:check": "docker ps"
   },
   "prettier": {},
   "eslintIgnore": [
@@ -36,6 +42,7 @@
     "@remix-run/server-runtime": "^1.4.3",
     "@stitches/react": "^1.2.8",
     "bcryptjs": "^2.4.3",
+    "burner-email-providers": "^1.0.67",
     "form-data": "^4.0.0",
     "mailgun.js": "^6.0.1",
     "react": "^17.0.2",

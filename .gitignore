@@ -3,6 +3,7 @@ node_modules
 /build
 /public/build
 .env
+.docker-compose.yml
 
 /cypress/screenshots
 /cypress/videos

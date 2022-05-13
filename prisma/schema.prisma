@@ -8,16 +8,29 @@ generator client {
 }
 
 model User {
-  id             String          @id @default(cuid())
-  email          String          @unique
-  discordProfile DiscordProfile?
+  id             String           @id @default(cuid())
+  email          String           @unique
+  password       Password?
+  userRoles      UserRole[]
+  raffleEntries  RaffleEntry[]
+  DiscordProfile DiscordProfile[]
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+}
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model UserRole {
+  id     String @id @default(cuid())
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique
+  role   Role   @relation(fields: [roleId], references: [id])
+  roleId String @unique
+}
 
-  password Password?
-
-  raffleEntries RaffleEntry[]
+model Role {
+  id          String     @id @default(cuid())
+  name        String
+  permissions Int
+  UserRoles   UserRole[]
 }
 
 model DiscordProfile {

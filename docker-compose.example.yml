@@ -1,0 +1,27 @@
+version: "1.0"
+services:
+  app:
+    build: .
+    container_name: app
+    links:
+      - postgres
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+          
+  postgres:
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    image: postgres:${POSTGRES_VERSION:-latest}
+    volumes:
+      - type: volume
+        source: postgres-data
+        target: /var/lib/postgresql/data
+        volume:
+          nocopy: true
+    env_file:
+      - .env
+volumes:
+  postgres-data:
