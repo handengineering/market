@@ -1,12 +1,18 @@
-import { Link } from "@remix-run/react";
+import { Link, useLoaderData } from "@remix-run/react";
+import type { LoaderFunction } from "@remix-run/server-runtime";
 import AppContainer from "~/components/AppContainer";
 import Button from "~/components/Button";
 import Main from "~/components/Main";
+import type { User } from "~/models/user.server";
+import { authenticator } from "~/services/auth.server";
 
-import { useOptionalUser } from "~/utils";
+type LoaderData = {
+  user: User;
+};
 
 export default function Index() {
-  const user = useOptionalUser();
+  const { user } = useLoaderData() as LoaderData;
+
   return (
     <AppContainer>
       <Main>
@@ -17,8 +23,7 @@ export default function Index() {
           <div>
             <Link to="/join">
               <Button color="primary">Sign up</Button>
-            </Link>
-            {" "}
+            </Link>{" "}
             <Link to="/login">
               <Button>Log In</Button>
             </Link>
@@ -28,3 +33,9 @@ export default function Index() {
     </AppContainer>
   );
 }
+
+export let loader: LoaderFunction = async ({ request }) => {
+  let user = await authenticator.isAuthenticated(request);
+
+  return { user };
+};

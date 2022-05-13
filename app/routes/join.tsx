@@ -1,16 +1,18 @@
 import type {
   ActionFunction,
+  ErrorBoundaryComponent,
   LoaderFunction,
   MetaFunction,
 } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { Form, Link, useActionData, useSearchParams } from "@remix-run/react";
+import {
+  Form,
+  Link,
+  useActionData,
+  useLoaderData,
+  useSearchParams,
+} from "@remix-run/react";
 import * as React from "react";
-
-import { createUserSession } from "~/services/session.server";
-
-import { createUser, getUserByEmail } from "~/models/user.server";
-import { safeRedirect, validateEmail } from "~/utils";
 import Input from "~/components/Input";
 import Button from "~/components/Button";
 import Card from "~/components/Card";
@@ -18,60 +20,35 @@ import AppContainer from "~/components/AppContainer";
 import Main from "~/components/Main";
 import Label from "~/components/Label";
 import ErrorText from "~/components/ErrorText";
+import { authenticator } from "~/services/auth.server";
+import { sessionStorage } from "~/services/session.server";
 
-export const loader: LoaderFunction = async ({ request }) => {
-  return json({});
+type LoaderData = {
+  magicLinkSent?: boolean;
 };
 
-interface ActionData {
+type ActionData = {
   errors: {
     email?: string;
-    password?: string;
   };
-}
+};
+
+export let loader: LoaderFunction = async ({ request }) => {
+  await authenticator.isAuthenticated(request, {
+    successRedirect: "/dashboard",
+  });
+  let session = await sessionStorage.getSession(request.headers.get("Cookie"));
+  // This session key `auth:magiclink` is the default one used by the EmailLinkStrategy
+  // you can customize it passing a `sessionMagicLinkKey` when creating an
+  // instance.
+  if (session.has("auth:magiclink"))
+    return json<LoaderData>({ magicLinkSent: true });
+  return json<LoaderData>({ magicLinkSent: false });
+};
 
 export const action: ActionFunction = async ({ request }) => {
-  const formData = await request.formData();
-  const email = formData.get("email");
-  const password = formData.get("password");
-  const redirectTo = safeRedirect(formData.get("redirectTo"), "/");
-
-  if (!validateEmail(email)) {
-    return json<ActionData>(
-      { errors: { email: "Email is invalid" } },
-      { status: 400 }
-    );
-  }
-
-  if (typeof password !== "string") {
-    return json<ActionData>(
-      { errors: { password: "Password is required" } },
-      { status: 400 }
-    );
-  }
-
-  if (password.length < 8) {
-    return json<ActionData>(
-      { errors: { password: "Password is too short" } },
-      { status: 400 }
-    );
-  }
-
-  const existingUser = await getUserByEmail(email);
-  if (existingUser) {
-    return json<ActionData>(
-      { errors: { email: "A user already exists with this email" } },
-      { status: 400 }
-    );
-  }
-
-  const user = await createUser(email, password);
-
-  return createUserSession({
-    request,
-    userId: user.id,
-    remember: false,
-    redirectTo,
+  await authenticator.authenticate("email-link", request, {
+    successRedirect: "/join",
   });
 };
 
@@ -81,18 +58,29 @@ export const meta: MetaFunction = () => {
   };
 };
 
+export const ErrorBoundary: ErrorBoundaryComponent = ({ error }) => {
+  return (
+    <AppContainer>
+      <Main>
+        <Card position="center">
+          <ErrorText>{error.message}</ErrorText>
+          <Link to="/join">Try a different email?</Link>
+        </Card>
+      </Main>
+    </AppContainer>
+  );
+};
+
 export default function Join() {
   const [searchParams] = useSearchParams();
   const redirectTo = searchParams.get("redirectTo") ?? undefined;
   const actionData = useActionData() as ActionData;
+  let { magicLinkSent } = useLoaderData<LoaderData>();
   const emailRef = React.useRef<HTMLInputElement>(null);
-  const passwordRef = React.useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
     if (actionData?.errors?.email) {
       emailRef.current?.focus();
-    } else if (actionData?.errors?.password) {
-      passwordRef.current?.focus();
     }
   }, [actionData]);
 
@@ -100,7 +88,7 @@ export default function Join() {
     <AppContainer>
       <Main>
         <Card position="center">
-        <h2>Join</h2>
+          <h2>Join Hand Engineering Market</h2>
 
           <Form method="post">
             <div>
@@ -119,26 +107,9 @@ export default function Join() {
                   aria-describedby="email-error"
                 />
                 {actionData?.errors?.email && (
-                  <ErrorText id="email-error">{actionData.errors.email}</ErrorText>
-                )}
-              </div>
-            </div>
-
-            <div>
-              <Label htmlFor="password">Password</Label>
-              <div>
-                <Input
-                  fullWidth
-                  id="password"
-                  ref={passwordRef}
-                  name="password"
-                  type="password"
-                  autoComplete="new-password"
-                  aria-invalid={actionData?.errors?.password ? true : undefined}
-                  aria-describedby="password-error"
-                />
-                {actionData?.errors?.password && (
-                  <ErrorText id="password-error">{actionData.errors.password}</ErrorText>
+                  <ErrorText id="email-error">
+                    {actionData.errors.email}
+                  </ErrorText>
                 )}
               </div>
             </div>
@@ -149,10 +120,16 @@ export default function Join() {
               name="redirectTo"
               value={redirectTo}
             />
-            <Button fullWidth color="primary" type="submit">
-              Create Account
-            </Button>
+
+            {magicLinkSent ? (
+              "Magic link has been sent!"
+            ) : (
+              <Button fullWidth color="primary" type="submit">
+                Create Account
+              </Button>
+            )}
             <div>
+              <hr />
               <div>
                 Already have an account?{" "}
                 <Link

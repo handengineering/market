@@ -5,7 +5,7 @@ import { DiscordStrategy } from "remix-auth-socials";
 import { EmailLinkStrategy } from "remix-auth-email-link";
 import invariant from "tiny-invariant";
 import { createDiscordProfile } from "~/models/discordProfile.server";
-import { getUserByEmail, verifyLogin } from "~/models/user.server";
+import { createUser, getUserByEmail, verifyLogin } from "~/models/user.server";
 import { sessionStorage, discordSessionStorage } from "./session.server";
 import { sendMagicLinkEmail } from "./email.server";
 import { verifyEmailAddress } from "~/services/verifier.server";
@@ -63,7 +63,8 @@ authenticator.use(
     }) => {
       let user = await getUserByEmail(email);
 
-      invariant(user, "user not found");
+      if (!user) return await createUser(email);
+
       return user;
     }
   )
