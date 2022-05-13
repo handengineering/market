@@ -1,9 +1,6 @@
-import { User } from "@prisma/client";
 import { Form } from "@remix-run/react";
 import {
-  ActionFunction,
   json,
-  LoaderFunction,
   redirect,
 } from "@remix-run/server-runtime";
 import permissions from "prisma/permissions";
@@ -16,6 +13,11 @@ import Main from "~/components/Main";
 import { createRaffle } from "~/models/raffle.server";
 import { getRolesByUserId } from "~/models/role.server";
 import { authenticator } from "~/services/auth.server";
+import type {
+  ActionFunction,
+  LoaderFunction,
+} from "@remix-run/server-runtime";
+import type { User } from "~/models/user.server";
 
 export default function Index() {
   return (
