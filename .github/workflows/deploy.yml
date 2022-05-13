@@ -86,32 +86,11 @@ jobs:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v3
 
-      - name: 🏄 Copy test env vars
-        run: cp .env.example .env
+      - name: Start docker
+        run: docker-compose up -d
 
-      - name: ⎔ Setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
-
-      - name: 📥 Download deps
-        uses: bahmutov/npm-install@v1
-        with:
-          useLockFile: false
-
-      - name: 🛠 Setup Database
-        run: npx prisma migrate reset --force
-
-      - name: ⚙️ Build
-        run: npm run build
-
-      - name: 🌳 Cypress run
-        uses: cypress-io/github-action@v3
-        with:
-          start: npm run start:mocks
-          wait-on: "http://localhost:8811"
-        env:
-          PORT: "8811"
+      - name: run cypress tests
+        run: npm run cypress:docker
 
   build:
     name: 🐳 Build
