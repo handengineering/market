@@ -11,8 +11,6 @@ export let sendMagicLinkEmail: SendEmailFunction<User> = async (options) => {
 
   let subject = "Here's your Magic sign-in link";
 
-  console.log("Trying to send email");
-
   const msg = {
     to: options.emailAddress, // Change to your recipient
     from: "contact@hand.engineering", // Change to your verified sender
@@ -20,10 +18,6 @@ export let sendMagicLinkEmail: SendEmailFunction<User> = async (options) => {
     text: "Click here to login onto Hand Engineering Market",
     html: `<a href="${options.magicLink}">Click here to login onto Hand Engineering Market</a>`,
   };
-
-  console.log(msg);
-
-  console.log(process.env.SENDGRID_API_KEY);
 
   const mg = mailgun.client({
     username: "api",
