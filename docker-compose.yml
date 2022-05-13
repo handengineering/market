@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: dev.Dockerfile
-    command: ["/bin/bash", "-c", "./wait-for-it.sh database:5432 && npx prisma migrate dev && npm run dev"]
+    command: ["/bin/bash", "-c", "./wait-for-it.sh database:5432 && npm ci && npx prisma migrate dev && npm run dev"]
     container_name: market_be
     environment:
       DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@database:5432/${POSTGRES_DB}?schema=public"
