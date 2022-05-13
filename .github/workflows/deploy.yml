@@ -86,16 +86,16 @@ jobs:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v3
 
-      - name: Use default env file
+      - name: 🌳 Use default env file
         run: cp .env.example .env
 
-      - name: run npm install
+      - name: 📦 Run npm install
         run: npm ci
 
       - name: Start docker
         run: docker-compose up -d
 
-      - name: run cypress tests
+      - name: 🧪 Run cypress tests
         run: npm run cypress:docker
 
   build:
