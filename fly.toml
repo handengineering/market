@@ -1,20 +1,18 @@
-# fly.toml file generated for market on 2022-05-10T11:09:57+01:00
-
 app = "market"
 
 kill_signal = "SIGINT"
 kill_timeout = 5
 processes = []
 
+[env]
+  PORT = "8080"
+
+[deploy]
+  release_command = "npx prisma migrate deploy"
+
 [experimental]
   allowed_public_ports = []
   auto_rollback = true
-  cmd = "start.sh"
-  entrypoint = "sh"
-
-[mounts]
-  destination = "/data"
-  source = "market_data"
 
 [[services]]
   internal_port = 8080
@@ -27,21 +25,10 @@ processes = []
     soft_limit = 20
     type = "connections"
 
-  [[services.http_checks]]
-    grace_period = "5s"
-    interval = 10000
-    method = "get"
-    path = "/healthcheck"
-    protocol = "http"
-    timeout = 2000
-    tls_skip_verify = false
-
-    [services.http_checks.headers]
-
   [[services.ports]]
-    force_https = true
     handlers = ["http"]
     port = 80
+    force_https = true
 
   [[services.ports]]
     handlers = ["tls", "http"]
@@ -52,3 +39,13 @@ processes = []
     interval = "15s"
     restart_limit = 0
     timeout = "2s"
+
+  [[services.http_checks]]
+    interval = 10000
+    grace_period = "5s"
+    method = "get"
+    path = "/healthcheck"
+    protocol = "http"
+    timeout = 2000
+    tls_skip_verify = false
+    [services.http_checks.headers]
