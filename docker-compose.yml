@@ -20,6 +20,7 @@ services:
     ports:
       - "${PORT}:${PORT}"
       - "9229:9229"
+      - "5555:5555"
     volumes:
       - type: volume
         source: node_modules
