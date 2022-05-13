@@ -1,4 +1,4 @@
-import { useLoaderData, Form, Link } from "@remix-run/react";
+import { useLoaderData, Form, Link, useSearchParams } from "@remix-run/react";
 import { json } from "@remix-run/server-runtime";
 import AppContainer from "~/components/AppContainer";
 import Button from "~/components/Button";
@@ -53,6 +53,7 @@ export const ErrorBoundary: ErrorBoundaryComponent = ({ error }) => {
 
 // app/routes/login.tsx
 export default function Login() {
+  const [searchParams] = useSearchParams();
   let { magicLinkSent } = useLoaderData<LoaderData>();
 
   return (
@@ -60,7 +61,7 @@ export default function Login() {
       <Main>
         <Card position="center">
           <Form action="/login" method="post">
-            <h2>Log in to your account.</h2>
+            <h2>Log In to Hand Engineering Market</h2>
             <div>
               <Label htmlFor="email">Email address</Label>
               <Input fullWidth id="email" type="email" name="email" required />
@@ -72,6 +73,20 @@ export default function Login() {
                 Email a login link
               </Button>
             )}
+            <div>
+              <hr />
+              <div>
+                Don't have an account?{" "}
+                <Link
+                  to={{
+                    pathname: "/join",
+                    search: searchParams.toString(),
+                  }}
+                >
+                  Join
+                </Link>
+              </div>
+            </div>
           </Form>
         </Card>
       </Main>
