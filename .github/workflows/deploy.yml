@@ -89,6 +89,9 @@ jobs:
       - name: Use default env file
         run: cp .env.example .env
 
+      - name: run npm install
+        run: npm ci
+
       - name: Start docker
         run: docker-compose up -d
 
