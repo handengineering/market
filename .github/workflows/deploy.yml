@@ -86,6 +86,9 @@ jobs:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v3
 
+      - name: Use default env file
+        run: cp .env.example .env
+
       - name: Start docker
         run: docker-compose up -d
 
