@@ -9,6 +9,7 @@ describe("smoke tests", () => {
     const loginForm = {
       email: `${faker.internet.userName()}@example.com`,
     };
+
     cy.then(() => ({ email: loginForm.email })).as("user");
 
     cy.visit("/");
