@@ -21,6 +21,9 @@ services:
       - "${PORT}:${PORT}"
       - "9229:9229"
     volumes:
+      - type: volume
+        source: node_modules
+        target: /myapp/node_modules
       - type: bind
         source: .
         target: /myapp
@@ -45,3 +48,4 @@ networks:
   market-be:
 volumes:
   postgres-data:
+  node_modules:
