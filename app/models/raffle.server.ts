@@ -11,5 +11,9 @@ export async function createRaffle(name: Raffle["name"]) {
 }
 
 export async function getRaffles() {
-    return prisma.raffle.findMany()
+  return prisma.raffle.findMany();
+}
+
+export async function getRaffleById(id: Raffle["id"]) {
+  return prisma.raffle.findUnique({ where: { id } });
 }
