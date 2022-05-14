@@ -57,10 +57,10 @@ model Raffle {
 model RaffleEntry {
   id       String @id @default(cuid())
   raffle   Raffle @relation(fields: [raffleId], references: [id], onDelete: Cascade)
-  raffleId String @unique
+  raffleId String
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String @unique
+  userId String
 }
 
 model Password {

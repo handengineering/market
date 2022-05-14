@@ -29,8 +29,7 @@ type LoaderData = {
 };
 
 export default function Screen() {
-  const { user, raffles, discordProfile, result } =
-    useLoaderData() as LoaderData;
+  const { user, discordProfile, result } = useLoaderData() as LoaderData;
   const hasJoinedDiscord =
     discordProfile &&
     result &&
@@ -96,18 +95,6 @@ export default function Screen() {
             </Form>
           )}
         </Card>
-        <Card>
-          <h2>Raffles</h2>
-          <ul>
-            {raffles.map((raffle) => {
-              return (
-                <li key={raffle.id}>
-                  {raffle.name} {raffle.id}
-                </li>
-              );
-            })}
-          </ul>
-        </Card>
       </Main>
     </AppContainer>
   );
@@ -139,7 +126,5 @@ export let loader: LoaderFunction = async ({ request }) => {
   const result: DiscordGuildMember | null =
     discordGuildMember && (await discordGuildMember.json());
 
-  const raffles: Raffle[] = await getRaffles();
-
-  return { user, raffles, discordProfile, result };
+  return { user, discordProfile, result };
 };
