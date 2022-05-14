@@ -99,6 +99,12 @@ jobs:
         with:
           useLockFile: false
 
+      - name: 🐳 Docker compose
+        # the sleep is just there to give time for postgres to get started
+        run: docker-compose up -d && sleep 3
+        env:
+          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/postgres"
+
       - name: 🛠 Setup Database
         run: npx prisma migrate reset --force
 

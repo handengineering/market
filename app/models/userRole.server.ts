@@ -1,8 +1,7 @@
-import { UserRole } from "@prisma/client";
 import { prisma } from "~/db.server";
-import { Role } from "./role.server";
-import { User } from "./user.server";
-
+import type { UserRole } from "@prisma/client";
+import type { Role } from "./role.server";
+import type { User } from "./user.server";
 export type { UserRole } from "@prisma/client";
 
 export async function getUserRolesByUserId(id: User["id"]) {

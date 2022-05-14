@@ -8,6 +8,7 @@
     "postinstall": "remix setup node",
     "build": "run-s build:*",
     "build:remix": "remix build",
+    "cypress:docker": "docker compose exec backend npx cypress install && cross-env PORT=8080 cypress run",
     "docker": "NODE_ENV=development docker-compose up -d",
     "dev": "run-p dev:*",
     "dev:remix": "cross-env NODE_ENV=development binode --require ./mocks --inspect=0.0.0.0 -- @remix-run/dev:remix dev",

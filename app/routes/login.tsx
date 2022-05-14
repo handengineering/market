@@ -1,10 +1,5 @@
-import { useLoaderData, Form, Link } from "@remix-run/react";
-import {
-  ActionFunction,
-  ErrorBoundaryComponent,
-  json,
-  LoaderFunction,
-} from "@remix-run/server-runtime";
+import { useLoaderData, Form, Link, useSearchParams } from "@remix-run/react";
+import { json } from "@remix-run/server-runtime";
 import AppContainer from "~/components/AppContainer";
 import Button from "~/components/Button";
 import Card from "~/components/Card";
@@ -14,6 +9,11 @@ import Label from "~/components/Label";
 import Main from "~/components/Main";
 import { authenticator } from "~/services/auth.server";
 import { sessionStorage } from "~/services/session.server";
+import type {
+  ActionFunction,
+  ErrorBoundaryComponent,
+  LoaderFunction,
+} from "@remix-run/server-runtime";
 
 type LoaderData = {
   magicLinkSent?: boolean;
@@ -38,7 +38,7 @@ export let action: ActionFunction = async ({ request }) => {
   });
 };
 
-export const ErrorBoundary: ErrorBoundaryComponent = ({error}) => {
+export const ErrorBoundary: ErrorBoundaryComponent = ({ error }) => {
   return (
     <AppContainer>
       <Main>
@@ -48,11 +48,12 @@ export const ErrorBoundary: ErrorBoundaryComponent = ({error}) => {
         </Card>
       </Main>
     </AppContainer>
-  )
+  );
 };
 
 // app/routes/login.tsx
 export default function Login() {
+  const [searchParams] = useSearchParams();
   let { magicLinkSent } = useLoaderData<LoaderData>();
 
   return (
@@ -60,7 +61,7 @@ export default function Login() {
       <Main>
         <Card position="center">
           <Form action="/login" method="post">
-            <h2>Log in to your account.</h2>
+            <h2>Log In to Hand Engineering Market</h2>
             <div>
               <Label htmlFor="email">Email address</Label>
               <Input fullWidth id="email" type="email" name="email" required />
@@ -72,6 +73,20 @@ export default function Login() {
                 Email a login link
               </Button>
             )}
+            <div>
+              <hr />
+              <div>
+                Don't have an account?{" "}
+                <Link
+                  to={{
+                    pathname: "/join",
+                    search: searchParams.toString(),
+                  }}
+                >
+                  Join
+                </Link>
+              </div>
+            </div>
           </Form>
         </Card>
       </Main>

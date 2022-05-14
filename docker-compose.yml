@@ -3,10 +3,15 @@ services:
     build:
       context: .
       dockerfile: dev.Dockerfile
-    command: ["/bin/bash", "-c", "npx prisma migrate dev && npm run dev"]
+    command:
+      [
+        "/bin/bash",
+        "-c",
+        "./wait-for-it.sh database:5432 && npx prisma migrate dev && npm run dev",
+      ]
     container_name: market_be
     environment:
-      DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@database:5432/${POSTGRES_DB}?schema=public"
+      DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@database:5432/${POSTGRES_DB}"
     image: market-backend
     links:
       - database
@@ -15,14 +20,18 @@ services:
     ports:
       - "${PORT}:${PORT}"
       - "9229:9229"
+      - "5555:5555"
     volumes:
+      - type: volume
+        source: node_modules
+        target: /myapp/node_modules
       - type: bind
         source: .
         target: /myapp
   database:
     container_name: market_db
-    expose:
-      - 5432
+    ports:
+      - "5432:5432"
     image: postgres:${POSTGRES_VERSION:-latest}
     networks:
       - market-be
@@ -40,3 +49,4 @@ networks:
   market-be:
 volumes:
   postgres-data:
+  node_modules:

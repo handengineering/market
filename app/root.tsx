@@ -1,4 +1,3 @@
-import { ErrorBoundaryComponent, MetaFunction } from "@remix-run/node";
 import {
   Links,
   LiveReload,
@@ -8,6 +7,7 @@ import {
   ScrollRestoration,
 } from "@remix-run/react";
 import { globalStyles } from "./styles/globalStyles";
+import type { ErrorBoundaryComponent, MetaFunction } from "@remix-run/node";
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
