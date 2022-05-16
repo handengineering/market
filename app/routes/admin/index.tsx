@@ -2,11 +2,9 @@ import { Link } from "@remix-run/react";
 import permissions from "prisma/permissions";
 import AppContainer from "~/components/AppContainer";
 import Main from "~/components/Main";
-import { getRolesByUserId } from "~/models/role.server";
-import { authenticator } from "~/services/auth.server";
-import { redirect } from "@remix-run/server-runtime";
 import type { LoaderFunction } from "@remix-run/server-runtime";
-import type { User } from "~/models/user.server";
+import { redirect } from "@remix-run/server-runtime";
+import { checkPermissions } from "~/services/permissions.server";
 
 export default function Index() {
   return (
@@ -24,18 +22,10 @@ export default function Index() {
 }
 
 export let loader: LoaderFunction = async ({ request }) => {
-  let user: User = await authenticator.isAuthenticated(request, {
-    failureRedirect: "/login",
-  });
+  const hasPermissions = await checkPermissions(
+    request,
+    permissions.administrator
+  );
 
-  const roles = await getRolesByUserId(user.id);
-
-  const hasPermissions = roles.some((role) => {
-    return role.permissions & permissions.administrator;
-  });
-
-  if (!hasPermissions) {
-    return redirect("/dashboard");
-  }
-  return user;
+  if (!hasPermissions) return redirect("/dashboard");
 };

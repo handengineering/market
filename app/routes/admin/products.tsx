@@ -1,14 +1,24 @@
 import { useLoaderData } from "@remix-run/react";
 import type { LoaderFunction } from "@remix-run/server-runtime";
+import { redirect } from "@remix-run/server-runtime";
+import permissions from "prisma/permissions";
 import type { Product } from "~/models/ecommerce-provider.server";
 import commerce from "~/services/commerce.server";
+import { checkPermissions } from "~/services/permissions.server";
 
 type LoaderData = {
   hasNextPage: boolean;
   products: Product[];
 };
 
-export const loader: LoaderFunction = async () => {
+export const loader: LoaderFunction = async ({ request }) => {
+  const hasPermissions = await checkPermissions(
+    request,
+    permissions.administrator
+  );
+
+  if (!hasPermissions) return redirect("/dashboard");
+
   const productsResponse = await commerce.getProducts(
     "en",
     undefined,
