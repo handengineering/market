@@ -22,6 +22,7 @@ import Label from "~/components/Label";
 import ErrorText from "~/components/ErrorText";
 import { authenticator } from "~/services/auth.server";
 import { sessionStorage } from "~/services/session.server";
+import FormWrapper from "~/components/FormWrapper";
 
 type LoaderData = {
   magicLinkSent?: boolean;
@@ -86,64 +87,53 @@ export default function Join() {
 
   return (
     <AppContainer>
-      <Main>
-        <Card position="center">
-          <h2>Join Hand Engineering Market</h2>
+      <Main centerItems>
+        <h1>Join Hand Engineering Market</h1>
 
+        <FormWrapper>
           <Form method="post">
             <div>
               <Label htmlFor="email">Email address</Label>
-              <div>
-                <Input
-                  fullWidth
-                  ref={emailRef}
-                  id="email"
-                  required
-                  autoFocus={true}
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  aria-invalid={actionData?.errors?.email ? true : undefined}
-                  aria-describedby="email-error"
-                />
-                {actionData?.errors?.email && (
-                  <ErrorText id="email-error">
-                    {actionData.errors.email}
-                  </ErrorText>
-                )}
-              </div>
+              <Input
+                ref={emailRef}
+                id="email"
+                required
+                autoFocus={true}
+                name="email"
+                type="email"
+                autoComplete="email"
+                aria-invalid={actionData?.errors?.email ? true : undefined}
+                aria-describedby="email-error"
+              />
+              {actionData?.errors?.email && (
+                <ErrorText id="email-error">
+                  {actionData.errors.email}
+                </ErrorText>
+              )}
             </div>
 
-            <Input
-              fullWidth
-              type="hidden"
-              name="redirectTo"
-              value={redirectTo}
-            />
+            <Input type="hidden" name="redirectTo" value={redirectTo} />
 
             {magicLinkSent ? (
               "Magic link has been sent!"
             ) : (
-              <Button fullWidth color="primary" type="submit">
+              <Button color="primary" type="submit">
                 Create Account
               </Button>
             )}
-            <div>
-              <hr />
-              <div>
-                Already have an account?{" "}
-                <Link
-                  to={{
-                    pathname: "/login",
-                    search: searchParams.toString(),
-                  }}
-                >
-                  Log in
-                </Link>
-              </div>
-            </div>
           </Form>
-        </Card>
+        </FormWrapper>
+        <div>
+          Already have an account?{" "}
+          <Link
+            to={{
+              pathname: "/login",
+              search: searchParams.toString(),
+            }}
+          >
+            Log in
+          </Link>
+        </div>
       </Main>
     </AppContainer>
   );

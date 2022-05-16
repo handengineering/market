@@ -7,22 +7,18 @@ const Button = styled("button", {
   padding: "$1 $2",
   border: "none",
   cursor: "pointer",
+  width: "100%",
   "&:hover": {
     backgroundColor: "darkgray",
   },
   variants: {
     color: {
       primary: {
-        backgroundColor: "midnightblue",
+        backgroundColor: "$reflexBlue",
         color: "white",
       },
       danger: {
         backgroundColor: "tomato",
-      },
-    },
-    fullWidth: {
-      true: {
-        width: "100%",
       },
     },
   },

@@ -14,6 +14,7 @@ import type {
   ErrorBoundaryComponent,
   LoaderFunction,
 } from "@remix-run/server-runtime";
+import FormWrapper from "~/components/FormWrapper";
 
 type LoaderData = {
   magicLinkSent?: boolean;
@@ -58,37 +59,36 @@ export default function Login() {
 
   return (
     <AppContainer>
-      <Main>
-        <Card position="center">
+      <Main centerItems>
+        <h1>Log In to Hand Engineering Market</h1>
+
+        <FormWrapper>
           <Form action="/login" method="post">
-            <h2>Log In to Hand Engineering Market</h2>
             <div>
               <Label htmlFor="email">Email address</Label>
-              <Input fullWidth id="email" type="email" name="email" required />
+              <div>
+                <Input id="email" type="email" name="email" required />
+              </div>
             </div>
             {magicLinkSent ? (
               "Magic link has been sent!"
             ) : (
-              <Button fullWidth color="primary">
-                Email a login link
-              </Button>
+              <Button color="primary">Email a login link</Button>
             )}
-            <div>
-              <hr />
-              <div>
-                Don't have an account?{" "}
-                <Link
-                  to={{
-                    pathname: "/join",
-                    search: searchParams.toString(),
-                  }}
-                >
-                  Join
-                </Link>
-              </div>
-            </div>
           </Form>
-        </Card>
+        </FormWrapper>
+
+        <div>
+          Don't have an account?{" "}
+          <Link
+            to={{
+              pathname: "/join",
+              search: searchParams.toString(),
+            }}
+          >
+            Join
+          </Link>
+        </div>
       </Main>
     </AppContainer>
   );
