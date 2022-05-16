@@ -9,6 +9,9 @@ const Input = styled("input", {
   fontSize: "$2",
   padding: "$1 $2",
   marginBottom: "$3",
+  "&:focus": {
+    outline: "none",
+  },
 });
 
 export default Input;
