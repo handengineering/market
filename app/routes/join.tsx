@@ -97,6 +97,7 @@ export default function Join() {
                 ref={emailRef}
                 id="email"
                 placeholder="Email"
+                aria-label="email"
                 required
                 autoFocus={true}
                 name="email"

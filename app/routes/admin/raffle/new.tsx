@@ -1,8 +1,5 @@
 import { Form } from "@remix-run/react";
-import {
-  json,
-  redirect,
-} from "@remix-run/server-runtime";
+import { json, redirect } from "@remix-run/server-runtime";
 import permissions from "prisma/permissions";
 import AppContainer from "~/components/AppContainer";
 import Button from "~/components/Button";
@@ -13,10 +10,7 @@ import Main from "~/components/Main";
 import { createRaffle } from "~/models/raffle.server";
 import { getRolesByUserId } from "~/models/role.server";
 import { authenticator } from "~/services/auth.server";
-import type {
-  ActionFunction,
-  LoaderFunction,
-} from "@remix-run/server-runtime";
+import type { ActionFunction, LoaderFunction } from "@remix-run/server-runtime";
 import type { User } from "~/models/user.server";
 
 export default function Index() {
@@ -29,9 +23,9 @@ export default function Index() {
             <h2>Create New Raffle</h2>
             <div>
               <Label htmlFor="name">Name</Label>
-              <Input fullWidth name="name" type="text" />
+              <Input name="name" type="text" />
             </div>
-            <Button fullWidth type="submit" color="primary">
+            <Button type="submit" color="primary">
               Create New Raffle
             </Button>
           </Form>

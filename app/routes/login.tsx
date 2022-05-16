@@ -71,6 +71,7 @@ export default function Login() {
                 type="email"
                 name="email"
                 placeholder="Email"
+                aria-label="email"
                 required
               />
             </div>

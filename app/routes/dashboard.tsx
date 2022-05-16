@@ -9,7 +9,6 @@ import Main from "~/components/Main";
 import Sidebar from "~/components/Sidebar";
 import { getDiscordProfileByUserId } from "~/models/discordProfile.server";
 import { authenticator } from "~/services/auth.server";
-import { getRaffles } from "~/models/raffle.server";
 import Card from "~/components/Card";
 import type { LoaderFunction } from "@remix-run/server-runtime";
 import type { User } from "~/models/user.server";
