@@ -49,7 +49,7 @@ services:
     image: "redis:alpine"
     networks:
       - market-be
-    command: redis-server --requirepass ${REDIS_PASSWORD}
+    command: redis-server --requirepass redis
     expose:
       - "6379"
     volumes:
