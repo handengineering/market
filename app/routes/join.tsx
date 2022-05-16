@@ -88,15 +88,15 @@ export default function Join() {
   return (
     <AppContainer>
       <Main centerItems>
-        <h1>Join Hand Engineering Market</h1>
-
+        <h1>Hand Engineering Market</h1>
+        <h2>Join</h2>
         <FormWrapper>
           <Form method="post">
             <div>
-              <Label htmlFor="email">Email address</Label>
               <Input
                 ref={emailRef}
                 id="email"
+                placeholder="Email"
                 required
                 autoFocus={true}
                 name="email"

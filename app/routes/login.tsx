@@ -60,15 +60,19 @@ export default function Login() {
   return (
     <AppContainer>
       <Main centerItems>
-        <h1>Log In to Hand Engineering Market</h1>
+        <h1>Hand Engineering Market</h1>
+        <h2>Login</h2>
 
         <FormWrapper>
           <Form action="/login" method="post">
             <div>
-              <Label htmlFor="email">Email address</Label>
-              <div>
-                <Input id="email" type="email" name="email" required />
-              </div>
+              <Input
+                id="email"
+                type="email"
+                name="email"
+                placeholder="Email"
+                required
+              />
             </div>
             {magicLinkSent ? (
               "Magic link has been sent!"
