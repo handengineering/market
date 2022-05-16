@@ -8,8 +8,8 @@ export async function getUserRolesByUserId(id: User["id"]) {
   return prisma.userRole.findMany({ where: { userId: id } });
 }
 
-export async function getUserRoleByRoleId(id: Role["id"]) {
-  return prisma.userRole.findUnique({ where: { roleId: id } });
+export async function getUserRolesByRoleId(id: Role["id"]) {
+  return prisma.userRole.findMany({ where: { roleId: id } });
 }
 
 export async function getUserRoleById(id: UserRole["id"]) {
