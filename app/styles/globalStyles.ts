@@ -73,6 +73,9 @@ export const baseLayout = globalCss({
   "*": {
     boxSizing: "border-box",
   },
+  form: {
+    width: "100%",
+  },
 });
 
 export const globalStyles = () => {
