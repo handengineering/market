@@ -48,13 +48,9 @@ export default function LoginId() {
       <h2>{raffle && raffle.name}</h2>
       <Form method="post">
         {!raffleEntry ? (
-          <Button fullWidth color="primary">
-            Enter Raffle
-          </Button>
+          <Button color="primary">Enter Raffle</Button>
         ) : (
-          <Button fullWidth disabled>
-            Raffle Entry Sent
-          </Button>
+          <Button disabled>Raffle Entry Sent</Button>
         )}
       </Form>
     </Card>
