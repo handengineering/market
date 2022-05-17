@@ -48,7 +48,7 @@ export default function Raffles() {
 
   return (
     <>
-      <h1>Hand Engineering Raffles</h1>
+      <h2>All Raffles</h2>
       <Grid>
         {rafflesWithMatchingProducts &&
           rafflesWithMatchingProducts.map((raffle) => {
