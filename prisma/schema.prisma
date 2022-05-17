@@ -48,6 +48,7 @@ model DiscordProfile {
 model Raffle {
   id            String        @id @default(cuid())
   name          String
+  productSlugs  String[]
   raffleEntries RaffleEntry[]
 
   createdAt DateTime @default(now())
