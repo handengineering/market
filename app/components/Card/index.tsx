@@ -14,11 +14,16 @@ const Card = styled("div", {
     position: {
       center: {
         alignSelf: "center",
-        justifySelf: "center"
-      }
-    }
-  }
-  
+        justifySelf: "center",
+      },
+    },
+    align: {
+      center: {
+        alignItems: "center",
+        justifyContent: "center",
+      },
+    },
+  },
 });
 
 export default Card;
