@@ -1,27 +1,17 @@
 import { useLoaderData } from "@remix-run/react";
 import type { LoaderFunction } from "@remix-run/server-runtime";
-import { redirect } from "@remix-run/server-runtime";
-import permissions from "prisma/permissions";
 import invariant from "tiny-invariant";
 import type { FullProduct } from "~/models/ecommerce-provider.server";
 import commerce from "~/services/commerce.server";
-import { checkPermissions } from "~/services/permissions.server";
 
 type LoaderData = {
   product: FullProduct;
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
-  const hasPermissions = await checkPermissions(
-    request,
-    permissions.administrator
-  );
-
   let productSlug = params.productSlug;
 
   invariant(productSlug, "Product slug not found");
-
-  if (!hasPermissions) return redirect("/dashboard");
 
   const product = await commerce.getProduct("en", productSlug);
 
@@ -32,7 +22,6 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
 export default function Products() {
   const { product } = useLoaderData() as LoaderData;
-  console.log(product);
 
   return (
     <div>

@@ -1,10 +1,9 @@
 import { Link, useLoaderData } from "@remix-run/react";
 import type { LoaderFunction } from "@remix-run/server-runtime";
-import { redirect } from "@remix-run/server-runtime";
-import permissions from "prisma/permissions";
+import Card from "~/components/Card";
+import Grid from "~/components/Grid";
 import type { Product } from "~/models/ecommerce-provider.server";
 import commerce from "~/services/commerce.server";
-import { checkPermissions } from "~/services/permissions.server";
 
 type LoaderData = {
   hasNextPage: boolean;
@@ -12,13 +11,6 @@ type LoaderData = {
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const hasPermissions = await checkPermissions(
-    request,
-    permissions.administrator
-  );
-
-  if (!hasPermissions) return redirect("/dashboard");
-
   const productsResponse = await commerce.getProducts(
     "en",
     undefined,
@@ -39,17 +31,17 @@ export default function Products() {
 
   return (
     <div>
-      <h1>Products</h1>
-      <ul>
+      <h2>Products</h2>
+      <Grid>
         {products.map((product: Product) => (
-          <li key={product.id}>
+          <Card key={product.id}>
             <Link to={product.slug}>
               <h3>{product.title}</h3>
-              <img src={product.image} alt={product.title} width="320px" />
+              <img src={product.image} alt={product.title} width="100%" />
             </Link>
-          </li>
+          </Card>
         ))}
-      </ul>
+      </Grid>
     </div>
   );
 }
