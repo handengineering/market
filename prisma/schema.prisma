@@ -7,6 +7,13 @@ generator client {
   provider = "prisma-client-js"
 }
 
+enum RaffleEntryStatus {
+  CREATED
+  DRAWN
+  ARCHIVED
+  CANCELED
+}
+
 model User {
   id             String           @id @default(cuid())
   email          String           @unique
@@ -56,8 +63,9 @@ model Raffle {
 }
 
 model RaffleEntry {
-  id       String @id @default(cuid())
-  raffle   Raffle @relation(fields: [raffleId], references: [id], onDelete: Cascade)
+  id       String            @id @default(cuid())
+  status   RaffleEntryStatus @default(CREATED)
+  raffle   Raffle            @relation(fields: [raffleId], references: [id], onDelete: Cascade)
   raffleId String
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
