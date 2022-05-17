@@ -5,7 +5,6 @@ import Button from "~/components/Button";
 import Card from "~/components/Card";
 import ErrorText from "~/components/ErrorText";
 import Input from "~/components/Input";
-import Label from "~/components/Label";
 import Main from "~/components/Main";
 import { authenticator } from "~/services/auth.server";
 import { sessionStorage } from "~/services/session.server";
