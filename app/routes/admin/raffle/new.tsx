@@ -1,7 +1,8 @@
-import { Form, useLoaderData } from "@remix-run/react";
+import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { json } from "@remix-run/server-runtime";
 import Button from "~/components/Button";
 import Input from "~/components/Input";
+import type { Raffle } from "~/models/raffle.server";
 import { createRaffle } from "~/models/raffle.server";
 import type { ActionFunction, LoaderFunction } from "@remix-run/server-runtime";
 import commerce from "~/services/commerce.server";
@@ -11,7 +12,9 @@ import MultiSelect from "~/components/MultiSelect";
 
 export default function Index() {
   const { products } = useLoaderData<LoaderData>();
+  const actionResponse = useActionData<ActionData>();
 
+  console.log(actionResponse);
   return (
     <FormWrapper>
       <Form method="post" action="/admin/raffle/new">
@@ -22,9 +25,15 @@ export default function Index() {
           name="product"
           items={products.map((product) => product.slug)}
         />
-        <Button type="submit" color="primary">
-          Create New Raffle
-        </Button>
+        {actionResponse && actionResponse.raffle ? (
+          <Button type="submit" disabled>
+            Create New Raffle
+          </Button>
+        ) : (
+          <Button type="submit" color="primary">
+            Create New Raffle
+          </Button>
+        )}
       </Form>
     </FormWrapper>
   );
@@ -34,6 +43,7 @@ interface ActionData {
   errors: {
     name?: string;
   };
+  raffle?: Raffle;
 }
 
 export let action: ActionFunction = async ({ request }) => {
@@ -55,10 +65,12 @@ export let action: ActionFunction = async ({ request }) => {
     );
   }
 
-  return await createRaffle(
+  const raffle = await createRaffle(
     name,
     productSlugs.map((productSlug) => productSlug.toString())
   );
+
+  return { raffle };
 };
 
 type LoaderData = {
