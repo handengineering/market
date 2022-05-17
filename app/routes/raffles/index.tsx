@@ -11,16 +11,24 @@ import RaffleItem, {
 import type { FullProduct } from "~/models/ecommerce-provider.server";
 import type { Raffle } from "~/models/raffle.server";
 import { getRaffles } from "~/models/raffle.server";
+import type { RaffleEntry } from "~/models/raffleEntry.server";
+import { getRaffleEntriesByUserId } from "~/models/raffleEntry.server";
+import { authenticator } from "~/services/auth.server";
 import commerce from "~/services/commerce.server";
 
 type RaffleWithMatchingProducts = Raffle & { products: FullProduct[] };
 
 type LoaderData = {
   rafflesWithMatchingProducts?: RaffleWithMatchingProducts[];
+  raffleEntries?: RaffleEntry[];
 };
 
 export let loader: LoaderFunction = async ({ request }) => {
   const raffles: Raffle[] = await getRaffles();
+
+  let user = await authenticator.isAuthenticated(request, {
+    failureRedirect: "/login",
+  });
 
   const rafflesWithMatchingProducts = await Promise.all(
     raffles.map(async (raffle) => {
@@ -38,13 +46,14 @@ export let loader: LoaderFunction = async ({ request }) => {
     })
   );
 
-  return { rafflesWithMatchingProducts };
+  let raffleEntries = await getRaffleEntriesByUserId(user.id);
+
+  return { raffleEntries, rafflesWithMatchingProducts };
 };
 
 export default function Raffles() {
-  const { rafflesWithMatchingProducts } = useLoaderData() as LoaderData;
-
-  console.log(rafflesWithMatchingProducts);
+  const { raffleEntries, rafflesWithMatchingProducts } =
+    useLoaderData() as LoaderData;
 
   return (
     <>
@@ -52,6 +61,9 @@ export default function Raffles() {
       <Grid>
         {rafflesWithMatchingProducts &&
           rafflesWithMatchingProducts.map((raffle) => {
+            const raffleEntryExists = raffleEntries?.some(
+              (raffleEntry) => raffleEntry.raffleId === raffle.id
+            );
             return (
               <RaffleItem key={raffle.id}>
                 <RaffleItemImage
@@ -66,9 +78,12 @@ export default function Raffles() {
                 <p>From {raffle.products[0].formattedPrice}</p>
                 <Link to={raffle.id}>
                   <Button size="large" color="primary">
-                    Continue
+                    View Details
                   </Button>
                 </Link>
+                <RaffleDate>
+                  {raffleEntryExists && `Raffle Entry Submitted`}
+                </RaffleDate>
               </RaffleItem>
             );
           })}

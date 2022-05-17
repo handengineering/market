@@ -18,7 +18,6 @@ import Button from "~/components/Button";
 import Card from "~/components/Card";
 import AppContainer from "~/components/AppContainer";
 import Main from "~/components/Main";
-import Label from "~/components/Label";
 import ErrorText from "~/components/ErrorText";
 import { authenticator } from "~/services/auth.server";
 import { sessionStorage } from "~/services/session.server";
