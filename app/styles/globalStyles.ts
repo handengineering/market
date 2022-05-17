@@ -69,9 +69,10 @@ export const baseTypography = globalCss({
 export const baseLayout = globalCss({
   "body, html": {
     height: "100%",
-  },
-  "*": {
     boxSizing: "border-box",
+  },
+  "*, *:before, *:after": {
+    boxSizing: "inherit",
   },
   form: {
     width: "100%",
