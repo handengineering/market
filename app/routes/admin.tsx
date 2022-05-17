@@ -1,4 +1,4 @@
-import { Link } from "@remix-run/react";
+import { Link, Outlet } from "@remix-run/react";
 import permissions from "prisma/permissions";
 import AppContainer from "~/components/AppContainer";
 import Main from "~/components/Main";
@@ -15,7 +15,12 @@ export default function Index() {
           <li>
             <Link to="/admin/raffle/new">Create New Raffle</Link>
           </li>
+          <li>
+            <Link to="/admin/products">Products</Link>
+          </li>
         </ul>
+        <hr />
+        <Outlet />
       </Main>
     </AppContainer>
   );
@@ -28,4 +33,6 @@ export let loader: LoaderFunction = async ({ request }) => {
   );
 
   if (!hasPermissions) return redirect("/dashboard");
+
+  return {};
 };

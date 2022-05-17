@@ -1,37 +1,41 @@
-import { Form } from "@remix-run/react";
-import { json, redirect } from "@remix-run/server-runtime";
-import permissions from "prisma/permissions";
-import AppContainer from "~/components/AppContainer";
+import { Form, useActionData, useLoaderData } from "@remix-run/react";
+import { json } from "@remix-run/server-runtime";
 import Button from "~/components/Button";
-import Card from "~/components/Card";
 import Input from "~/components/Input";
-import Label from "~/components/Label";
-import Main from "~/components/Main";
+import type { Raffle } from "~/models/raffle.server";
 import { createRaffle } from "~/models/raffle.server";
-import { getRolesByUserId } from "~/models/role.server";
-import { authenticator } from "~/services/auth.server";
 import type { ActionFunction, LoaderFunction } from "@remix-run/server-runtime";
-import type { User } from "~/models/user.server";
+import commerce from "~/services/commerce.server";
+import FormWrapper from "~/components/FormWrapper";
+import type { Product } from "~/models/ecommerce-provider.server";
+import MultiSelect from "~/components/MultiSelect";
 
 export default function Index() {
+  const { products } = useLoaderData<LoaderData>();
+  const actionResponse = useActionData<ActionData>();
+
+  console.log(actionResponse);
   return (
-    <AppContainer>
-      <Main>
-        <h1>New Raffle</h1>
-        <Card position="center">
-          <Form method="post" action="/admin/raffle/new">
-            <h2>Create New Raffle</h2>
-            <div>
-              <Label htmlFor="name">Name</Label>
-              <Input name="name" type="text" />
-            </div>
-            <Button type="submit" color="primary">
-              Create New Raffle
-            </Button>
-          </Form>
-        </Card>
-      </Main>
-    </AppContainer>
+    <FormWrapper>
+      <Form method="post" action="/admin/raffle/new">
+        <h2>Create New Raffle</h2>
+        <Input name="name" placeholder="Name" aria-label="Name" type="text" />
+
+        <MultiSelect
+          name="product"
+          items={products.map((product) => product.slug)}
+        />
+        {actionResponse && actionResponse.raffle ? (
+          <Button type="submit" disabled>
+            Create New Raffle
+          </Button>
+        ) : (
+          <Button type="submit" color="primary">
+            Create New Raffle
+          </Button>
+        )}
+      </Form>
+    </FormWrapper>
   );
 }
 
@@ -39,11 +43,13 @@ interface ActionData {
   errors: {
     name?: string;
   };
+  raffle?: Raffle;
 }
 
 export let action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
   const name = formData.get("name");
+  const productSlugs = formData.getAll("product");
 
   if (typeof name !== "string") {
     return json<ActionData>(
@@ -52,22 +58,38 @@ export let action: ActionFunction = async ({ request }) => {
     );
   }
 
-  return await createRaffle(name);
+  if (productSlugs.length === 0) {
+    return json<ActionData>(
+      { errors: { name: "Product slugs are required" } },
+      { status: 400 }
+    );
+  }
+
+  const raffle = await createRaffle(
+    name,
+    productSlugs.map((productSlug) => productSlug.toString())
+  );
+
+  return { raffle };
+};
+
+type LoaderData = {
+  hasNextPage: boolean;
+  products: Product[];
 };
 
 export let loader: LoaderFunction = async ({ request }) => {
-  let user: User = await authenticator.isAuthenticated(request, {
-    failureRedirect: "/login",
-  });
+  const productsResponse = await commerce.getProducts(
+    "en",
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    100,
+    undefined
+  );
 
-  const roles = await getRolesByUserId(user.id);
+  const { hasNextPage, products } = productsResponse;
 
-  const hasPermissions = roles.some((role) => {
-    return role.permissions & permissions.administrator;
-  });
-
-  if (!hasPermissions) {
-    return redirect("/dashboard");
-  }
-  return user;
+  return { hasNextPage, products };
 };
