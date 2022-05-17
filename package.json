@@ -44,6 +44,7 @@
     "@stitches/react": "^1.2.8",
     "bcryptjs": "^2.4.3",
     "burner-email-providers": "^1.0.67",
+    "downshift": "^6.1.7",
     "form-data": "^4.0.0",
     "mailgun.js": "^6.0.1",
     "react": "^17.0.2",
