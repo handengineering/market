@@ -2,8 +2,9 @@ import { styled } from "~/styles/stitches.config";
 
 const Button = styled("button", {
   backgroundColor: "lightgray",
-  borderRadius: "8px",
+  borderRadius: "$2",
   fontSize: "$2",
+  fontWeight: "$bold",
   padding: "$1 $2",
   border: "none",
   cursor: "pointer",
@@ -19,6 +20,13 @@ const Button = styled("button", {
       },
       danger: {
         backgroundColor: "tomato",
+      },
+    },
+    size: {
+      large: {
+        fontSize: "$3",
+        padding: "$2 $5",
+        borderRadius: "$3",
       },
     },
   },

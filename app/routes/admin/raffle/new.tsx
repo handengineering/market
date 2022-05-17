@@ -14,7 +14,6 @@ export default function Index() {
   const { products } = useLoaderData<LoaderData>();
   const actionResponse = useActionData<ActionData>();
 
-  console.log(actionResponse);
   return (
     <FormWrapper>
       <Form method="post" action="/admin/raffle/new">

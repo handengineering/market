@@ -417,14 +417,8 @@ export function createShopifyProvider({
   };
 }
 
-function formatPrice({
-  amount,
-  currencyCode,
-}: {
-  amount: string;
-  currencyCode: string;
-}) {
-  return `$${amount} ${currencyCode}`;
+function formatPrice({ amount }: { amount: string; currencyCode: string }) {
+  return `$${amount}`;
 }
 
 let createCheckoutUrlMutation = /* GraphQL */ `

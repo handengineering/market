@@ -108,8 +108,6 @@ const MultiSelect = ({ items, name }: MultiSelectProps) => {
     inputValue,
     items: getFilteredItems(items),
     onStateChange: ({ inputValue, type, selectedItem }) => {
-      console.log(isOpen, selectedItems);
-
       switch (type) {
         case useCombobox.stateChangeTypes.InputChange:
           inputValue && setInputValue(inputValue);

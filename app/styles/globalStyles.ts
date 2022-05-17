@@ -49,6 +49,7 @@ export const baseTypography = globalCss({
     color: "#000000",
   },
   p: { fontSize: "$3", marginBottom: "1rem" },
+  b: { fontWeight: "$bold" },
   "h1, h2, h3, h4, h5": {
     marginBottom: "1rem",
     fontFamily: "'Helvetica', 'sans-serif'",

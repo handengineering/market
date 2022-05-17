@@ -40,8 +40,17 @@ export const {
       untitled: "Untitled Sans, apple-system, sans-serif",
       mono: "Söhne Mono, menlo, monospace",
     },
-    fontWeights: {},
-    lineHeights: {},
+    fontWeights: {
+      bold: "700",
+    },
+    lineHeights: {
+      1: "0.5rem",
+      2: "0.75rem",
+      3: "1rem",
+      4: "1.125rem",
+      5: "1.5rem",
+      6: "2.25rem",
+    },
     letterSpacings: {},
     sizes: {
       1: "2rem",
@@ -59,9 +68,25 @@ export const {
     },
     borderWidths: {},
     borderStyles: {},
-    radii: {},
+    radii: {
+      1: "0.25rem",
+      2: "0.375rem",
+      3: "0.5rem",
+      4: "0.5625rem",
+      5: "0.75rem",
+      6: "1.125rem",
+    },
     shadows: {},
-    zIndices: {},
+    zIndices: {
+      lowest: -100,
+      negative: -1,
+      100: 100,
+      200: 200,
+      300: 300,
+      400: 400,
+      500: 500,
+      highest: 9999,
+    },
     transitions: {},
   },
   media: {
@@ -69,5 +94,8 @@ export const {
   },
   utils: {
     marginX: (value: string) => ({ marginLeft: value, marginRight: value }),
+    linearGradient: (value: string) => ({
+      backgroundImage: `linear-gradient(${value})`,
+    }),
   },
 });
