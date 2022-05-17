@@ -7,6 +7,7 @@ import type { ActionFunction, LoaderFunction } from "@remix-run/server-runtime";
 import commerce from "~/services/commerce.server";
 import FormWrapper from "~/components/FormWrapper";
 import type { Product } from "~/models/ecommerce-provider.server";
+import MultiSelect from "~/components/MultiSelect";
 
 export default function Index() {
   const { products } = useLoaderData<LoaderData>();
@@ -16,15 +17,11 @@ export default function Index() {
       <Form method="post" action="/admin/raffle/new">
         <h2>Create New Raffle</h2>
         <Input name="name" placeholder="Name" aria-label="Name" type="text" />
-        <select name="products">
-          {products.map((product) => {
-            return (
-              <option key={product.slug} value={product.slug}>
-                {product.title}
-              </option>
-            );
-          })}
-        </select>
+
+        <MultiSelect
+          name="product"
+          items={products.map((product) => product.slug)}
+        />
         <Button type="submit" color="primary">
           Create New Raffle
         </Button>
@@ -42,6 +39,9 @@ interface ActionData {
 export let action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
   const name = formData.get("name");
+  const products = formData.getAll("product");
+
+  console.log(products);
 
   if (typeof name !== "string") {
     return json<ActionData>(
