@@ -1,4 +1,4 @@
-import { useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData } from "@remix-run/react";
 import type { LoaderFunction } from "@remix-run/server-runtime";
 import { redirect } from "@remix-run/server-runtime";
 import permissions from "prisma/permissions";
@@ -43,8 +43,10 @@ export default function Products() {
       <ul>
         {products.map((product: Product) => (
           <li key={product.id}>
-            <h3>{product.title}</h3>
-            <img src={product.image} alt={product.title} width="320px" />
+            <Link to={product.slug}>
+              <h3>{product.title}</h3>
+              <img src={product.image} alt={product.title} width="320px" />
+            </Link>
           </li>
         ))}
       </ul>
