@@ -22,6 +22,12 @@ export async function getRaffleEntriesByUserId(userId: User["id"]) {
   });
 }
 
+export async function getRaffleEntriesByRaffleId(raffleId: Raffle["id"]) {
+  return prisma.raffleEntry.findMany({
+    where: { raffleId },
+  });
+}
+
 export async function getRaffleEntriesByStatus(status: RaffleEntryStatus) {
   return prisma.raffleEntry.findMany({
     where: { status },
