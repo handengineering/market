@@ -39,9 +39,7 @@ interface ActionData {
 export let action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
   const name = formData.get("name");
-  const products = formData.getAll("product");
-
-  console.log(products);
+  const productSlugs = formData.getAll("product");
 
   if (typeof name !== "string") {
     return json<ActionData>(
@@ -50,7 +48,17 @@ export let action: ActionFunction = async ({ request }) => {
     );
   }
 
-  return await createRaffle(name);
+  if (productSlugs.length === 0) {
+    return json<ActionData>(
+      { errors: { name: "Product slugs are required" } },
+      { status: 400 }
+    );
+  }
+
+  return await createRaffle(
+    name,
+    productSlugs.map((productSlug) => productSlug.toString())
+  );
 };
 
 type LoaderData = {
