@@ -1,20 +1,40 @@
-import { useLoaderData } from "@remix-run/react";
+import { RaffleEntryStatus } from "@prisma/client";
+import { Form, useLoaderData } from "@remix-run/react";
 import type { ActionFunction, LoaderFunction } from "@remix-run/server-runtime";
+import Button from "~/components/Button";
 import Card from "~/components/Card";
 import Grid from "~/components/Grid";
+import Input from "~/components/Input";
+import { prisma } from "~/db.server";
 
 import type { RaffleEntry } from "~/models/raffleEntry.server";
 import { getRaffleEntriesByRaffleId } from "~/models/raffleEntry.server";
-import { createRaffleEntry } from "~/models/raffleEntry.server";
 import type { User } from "~/models/user.server";
 import { getUsers } from "~/models/user.server";
-import { authenticator } from "~/services/auth.server";
 import { styled } from "~/styles/stitches.config";
 
 type LoaderData = {
-  raffleEntries?: RaffleEntry[];
+  createdRaffleEntries?: RaffleEntry[];
+  drawnRaffleEntries?: RaffleEntry[];
   users?: User[];
 };
+
+function shuffleArray<T>(array: T[]) {
+  let currentIndex = array.length,
+    randomIndex;
+
+  while (currentIndex != 0) {
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex],
+      array[currentIndex],
+    ];
+  }
+
+  return array;
+}
 
 export let loader: LoaderFunction = async ({ request, params }) => {
   const raffleId = params.raffleId as string;
@@ -23,17 +43,73 @@ export let loader: LoaderFunction = async ({ request, params }) => {
 
   const users = await getUsers();
 
-  return { raffleEntries, users };
+  const createdRaffleEntries = raffleEntries?.filter(
+    (raffleEntry) => raffleEntry.status === RaffleEntryStatus.CREATED
+  );
+
+  const drawnRaffleEntries = raffleEntries?.filter(
+    (raffleEntry) => raffleEntry.status === RaffleEntryStatus.DRAWN
+  );
+
+  return { createdRaffleEntries, drawnRaffleEntries, users };
 };
 
 export let action: ActionFunction = async ({ request, params }) => {
-  const user = await authenticator.isAuthenticated(request, {
-    failureRedirect: "/login",
-  });
-
   const raffleId = params.raffleId as string;
 
-  return await createRaffleEntry(raffleId, user.id);
+  const raffleEntries = await getRaffleEntriesByRaffleId(raffleId);
+
+  const formData = await request.formData();
+  const drawCount = formData.get("drawCount");
+
+  const createdRaffleEntries = raffleEntries?.filter(
+    (raffleEntry) => raffleEntry.status === RaffleEntryStatus.CREATED
+  );
+
+  const drawnRaffleEntries = raffleEntries?.filter(
+    (raffleEntry) => raffleEntry.status === RaffleEntryStatus.DRAWN
+  );
+
+  const shuffledCreatedRaffleEntries = shuffleArray(createdRaffleEntries);
+
+  if (typeof drawCount !== "string") {
+    throw "drawCount must be a string";
+  }
+
+  const shuffledCreatedRaffleEntriesToBeDrawn =
+    shuffledCreatedRaffleEntries.slice(0, parseInt(drawCount));
+
+  console.log(shuffledCreatedRaffleEntriesToBeDrawn);
+
+  if (formData.get("action") === "draw") {
+    return await prisma.raffleEntry.updateMany({
+      where: {
+        userId: {
+          in: shuffledCreatedRaffleEntriesToBeDrawn.map(
+            (raffleEntry) => raffleEntry.userId
+          ),
+        },
+        raffleId: raffleId,
+      },
+      data: {
+        status: RaffleEntryStatus.DRAWN,
+      },
+    });
+  }
+
+  if (formData.get("action") === "removeAll") {
+    return await prisma.raffleEntry.updateMany({
+      where: {
+        userId: {
+          in: drawnRaffleEntries.map((raffleEntry) => raffleEntry.userId),
+        },
+        raffleId: raffleId,
+      },
+      data: {
+        status: RaffleEntryStatus.CREATED,
+      },
+    });
+  }
 };
 
 const RaffleEntryListItem = styled("li", {
@@ -44,28 +120,56 @@ const RaffleEntryListItem = styled("li", {
 });
 
 export default function RaffleId() {
-  const { raffleEntries, users } = useLoaderData() as LoaderData;
+  const { createdRaffleEntries, drawnRaffleEntries, users } =
+    useLoaderData() as LoaderData;
+
   return (
     <Grid>
-      {raffleEntries && users && (
+      {users && (
         <>
           <Card>
             <ul>
-              {raffleEntries.map((raffleEntry) => {
-                const matchingUser = users.find((user) => {
-                  return user.id === raffleEntry.userId;
-                });
+              {createdRaffleEntries &&
+                createdRaffleEntries.map((raffleEntry) => {
+                  const matchingUser = users.find((user) => {
+                    return user.id === raffleEntry.userId;
+                  });
 
-                return (
-                  <RaffleEntryListItem key={raffleEntry.id}>
-                    {matchingUser?.email}
-                  </RaffleEntryListItem>
-                );
-              })}
+                  return (
+                    <RaffleEntryListItem key={raffleEntry.id}>
+                      {matchingUser?.email}
+                    </RaffleEntryListItem>
+                  );
+                })}
             </ul>
           </Card>
-          <Card></Card>
-          <Card></Card>
+          <Card>
+            <Form method="post">
+              <Input type="number" name="drawCount" />
+              <Button name="action" value="draw" color="primary">
+                Draw Participants
+              </Button>
+              <Button name="action" value="removeAll" color="danger">
+                Remove All Partipants
+              </Button>
+            </Form>
+          </Card>
+          <Card>
+            <ul>
+              {drawnRaffleEntries &&
+                drawnRaffleEntries.map((raffleEntry) => {
+                  const matchingUser = users.find((user) => {
+                    return user.id === raffleEntry.userId;
+                  });
+
+                  return (
+                    <RaffleEntryListItem key={raffleEntry.id}>
+                      {matchingUser?.email}
+                    </RaffleEntryListItem>
+                  );
+                })}
+            </ul>
+          </Card>
         </>
       )}
     </Grid>
