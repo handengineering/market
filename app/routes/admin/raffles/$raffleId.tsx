@@ -152,11 +152,16 @@ export default function RaffleId() {
 
               {canRemoveAll ? (
                 <Button name="action" value="removeAll" color="danger">
-                  Remove All Partipants
+                  Confirm Remove All Partipants
                 </Button>
               ) : (
-                <Button onClick={() => setCanRemoveAll(true)}>
-                  Confirm Remove All Particpants
+                <Button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setCanRemoveAll(true);
+                  }}
+                >
+                  Remove All Particpants
                 </Button>
               )}
             </Form>
