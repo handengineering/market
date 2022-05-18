@@ -2,7 +2,7 @@ import { styled } from "~/styles/stitches.config";
 
 const NavigationWrapper = styled("nav", {
   height: "$5",
-  background: "$reflexBlue",
+  background: "$primary500",
   display: "flex",
   gap: "$3",
   alignItems: "center",
@@ -11,7 +11,7 @@ const NavigationWrapper = styled("nav", {
 });
 
 const NavigationTitle = styled("h1", {
-  color: "white",
+  color: "$neutral100",
   margin: "0",
 });
 const NavigationLinks = styled("div", {
