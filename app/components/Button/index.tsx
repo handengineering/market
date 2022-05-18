@@ -17,9 +17,15 @@ const Button = styled("button", {
       primary: {
         backgroundColor: "$primary500",
         color: "$neutral100",
+        "&:hover": {
+          backgroundColor: "$primary300",
+        },
       },
       danger: {
         backgroundColor: "$red500",
+        "&:hover": {
+          backgroundColor: "$red300",
+        },
       },
     },
     size: {

@@ -1,12 +1,12 @@
 import { RaffleEntryStatus } from "@prisma/client";
 import { Form, useLoaderData } from "@remix-run/react";
 import type { ActionFunction, LoaderFunction } from "@remix-run/server-runtime";
+import { useState } from "react";
 import Button from "~/components/Button";
 import Card from "~/components/Card";
 import Grid from "~/components/Grid";
 import Input from "~/components/Input";
 import { prisma } from "~/db.server";
-
 import type { RaffleEntry } from "~/models/raffleEntry.server";
 import { getRaffleEntriesByRaffleId } from "~/models/raffleEntry.server";
 import type { User } from "~/models/user.server";
@@ -79,8 +79,6 @@ export let action: ActionFunction = async ({ request, params }) => {
   const shuffledCreatedRaffleEntriesToBeDrawn =
     shuffledCreatedRaffleEntries.slice(0, parseInt(drawCount));
 
-  console.log(shuffledCreatedRaffleEntriesToBeDrawn);
-
   if (formData.get("action") === "draw") {
     return await prisma.raffleEntry.updateMany({
       where: {
@@ -122,12 +120,14 @@ const RaffleEntryListItem = styled("li", {
 export default function RaffleId() {
   const { createdRaffleEntries, drawnRaffleEntries, users } =
     useLoaderData() as LoaderData;
+  const [canRemoveAll, setCanRemoveAll] = useState(false);
 
   return (
     <Grid>
       {users && (
         <>
           <Card>
+            <h2>Created Raffle Entries ({createdRaffleEntries?.length})</h2>
             <ul>
               {createdRaffleEntries &&
                 createdRaffleEntries.map((raffleEntry) => {
@@ -149,12 +149,21 @@ export default function RaffleId() {
               <Button name="action" value="draw" color="primary">
                 Draw Participants
               </Button>
-              <Button name="action" value="removeAll" color="danger">
-                Remove All Partipants
-              </Button>
+
+              {canRemoveAll ? (
+                <Button name="action" value="removeAll" color="danger">
+                  Remove All Partipants
+                </Button>
+              ) : (
+                <Button onClick={() => setCanRemoveAll(true)}>
+                  Confirm Remove All Particpants
+                </Button>
+              )}
             </Form>
           </Card>
           <Card>
+            <h2>Drawn Raffle Entries ({drawnRaffleEntries?.length})</h2>
+
             <ul>
               {drawnRaffleEntries &&
                 drawnRaffleEntries.map((raffleEntry) => {
