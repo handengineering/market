@@ -76,7 +76,7 @@ discordAuthenticator.use(
       clientID: process.env.DISCORD_CLIENT_ID,
       clientSecret: process.env.DISCORD_CLIENT_SECRET,
       callbackURL: "/auth/discord/callback",
-      scope: ["identify", "email", "guilds"],
+      scope: ["identify", "email"],
     },
     async ({ accessToken, profile }) => {
       invariant(profile, "profile not found");
