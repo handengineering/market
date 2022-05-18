@@ -13,7 +13,10 @@ export default function Index() {
         <h1>Admin Panel</h1>
         <ul>
           <li>
-            <Link to="/admin/raffle/new">Create New Raffle</Link>
+            <Link to="/admin/raffles">Raffles</Link>
+          </li>
+          <li>
+            <Link to="/admin/raffle/new">New Raffle</Link>
           </li>
           <li>
             <Link to="/admin/products">Products</Link>

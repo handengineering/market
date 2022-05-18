@@ -1,37 +1,71 @@
 import { PrismaClient } from "@prisma/client";
-import bcrypt from "bcryptjs";
 import { seedRoles } from "./seedRoles";
 
 const prisma = new PrismaClient();
 
 async function seed() {
-  const email = "rachel@remix.run";
+  const emails = [
+    "leanne53@gmail.com",
+    "emelie8@yahoo.com",
+    "margarette11@yahoo.com",
+    "tianna_murazik@gmail.com",
+    "demarcus.walker62@yahoo.com",
+    "erick.wunsch@yahoo.com",
+    "teagan_hansen@yahoo.com",
+    "emerson_fisher@yahoo.com",
+    "aylin.powlowski@hotmail.com",
+    "clair_kozey46@gmail.com",
+    "jon.renner90@gmail.com",
+    "adaline.emmerich@yahoo.com",
+    "nina_gottlieb83@yahoo.com",
+    "delfina_leffler@hotmail.com",
+    "presley_miller@gmail.com",
+    "hubert.buckridge89@gmail.com",
+    "keshawn_hegmann35@hotmail.com",
+    "amaya.zemlak90@hotmail.com",
+    "katelin.weimann@hotmail.com",
+    "lexie6@gmail.com",
+  ];
 
-  // cleanup the existing database
-  await prisma.user.delete({ where: { email } }).catch(() => {
-    // no worries if it doesn't exist yet
-  });
-
-  const hashedPassword = await bcrypt.hash("racheliscool", 10);
-
-  await prisma.user.create({
-    data: {
-      email,
-      password: {
-        create: {
-          hash: hashedPassword,
-        },
+  await prisma.user.deleteMany({
+    where: {
+      email: {
+        in: emails,
       },
     },
   });
 
-  seedRoles.map(async (seedRole) => {
-    await prisma.role.create({
-      data: {
+  await prisma.user.createMany({
+    data: emails.map((email) => {
+      return { email: email };
+    }),
+  });
+
+  const users = await prisma.user.findMany();
+
+  const raffle = await prisma.raffle.create({
+    data: {
+      name: "IBM Model M",
+      productSlugs: ["ibm-model-m"],
+    },
+  });
+
+  await prisma.raffleEntry.createMany({
+    data: users.map((user) => {
+      return {
+        userId: user.id,
+        raffleId: raffle.id,
+      };
+    }),
+  });
+
+  await prisma.role.createMany({
+    data: seedRoles.map((seedRole) => {
+      return {
         name: seedRole.name,
         permissions: seedRole.permissions,
-      },
-    });
+      };
+    }),
   });
 
   console.log(`Database has been seeded. 🌱`);

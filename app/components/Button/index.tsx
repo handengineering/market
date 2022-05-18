@@ -1,7 +1,7 @@
 import { styled } from "~/styles/stitches.config";
 
 const Button = styled("button", {
-  backgroundColor: "lightgray",
+  backgroundColor: "$neutral300",
   borderRadius: "$2",
   fontSize: "$2",
   fontWeight: "$bold",
@@ -10,16 +10,22 @@ const Button = styled("button", {
   cursor: "pointer",
   width: "100%",
   "&:hover": {
-    backgroundColor: "darkgray",
+    backgroundColor: "$neutral500",
   },
   variants: {
     color: {
       primary: {
-        backgroundColor: "$reflexBlue",
-        color: "white",
+        backgroundColor: "$primary500",
+        color: "$neutral100",
+        "&:hover": {
+          backgroundColor: "$primary300",
+        },
       },
       danger: {
-        backgroundColor: "tomato",
+        backgroundColor: "$red500",
+        "&:hover": {
+          backgroundColor: "$red300",
+        },
       },
     },
     size: {

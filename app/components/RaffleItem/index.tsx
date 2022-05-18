@@ -10,7 +10,7 @@ const RaffleItem = styled("div", {
   "&:after": {
     content: "",
     borderRadius: "4px",
-    linearGradient: "0deg, hsl(72,20%,100%) 20%, hsl(72,20%,95%) 100%",
+    linearGradient: "0deg, $neutral100 0%, $neutral300 100%",
     zIndex: "$negative",
     top: "calc($sizes$7 / 2)",
     height: "$8",
@@ -29,11 +29,11 @@ export const RaffleItemImage = styled("img", {
 export const RaffleTitle = styled("h2", {
   fontSize: "$6",
   fontWeight: "bold",
-  color: "$reflexBlue",
+  color: "$primary500",
 });
 
 export const RaffleStatus = styled("span", {
-  backgroundColor: "$pmsBrightWhite",
+  backgroundColor: "$neutral100",
   borderRadius: "$1",
   padding: "0 $3",
   fontSize: "$3",

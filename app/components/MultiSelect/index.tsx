@@ -14,7 +14,7 @@ export interface MultiSelectProps {
 const Pill = styled("div", {
   display: "flex",
   alignItems: "center",
-  background: "$pmsBrightWhite",
+  background: "$neutral100",
   borderRadius: "4px",
   padding: "$1",
   height: "$1",
@@ -60,16 +60,16 @@ const InputButton = styled("div", {
   width: "$1",
   height: "$1",
   borderRadius: "50%",
-  background: "$reflexBlue",
-  color: "white",
+  background: "$primary500",
+  color: "$neutral100",
 });
 
 const DropdownList = styled("ul", {
-  background: "$pmsBrightWhite",
+  background: "$neutral100",
   position: "absolute",
   borderWidth: "1px",
   borderStyle: "solid",
-  borderColor: "$reflexBlue",
+  borderColor: "$primary500",
   borderRadius: "4px",
   width: "100%",
 });

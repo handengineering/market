@@ -42,11 +42,11 @@ export const baseTypography = globalCss({
   },
   html: { fontSize: "100%" },
   body: {
-    background: "white",
+    background: "$neutral100",
     fontFamily: "'Helvetica', 'sans-serif'",
     fontWeight: 400,
     lineHeight: 1.5,
-    color: "#000000",
+    color: "$primary900",
   },
   p: { fontSize: "$3", marginBottom: "1rem" },
   b: { fontWeight: "$bold" },
