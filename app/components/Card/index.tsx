@@ -9,7 +9,6 @@ const Card = styled("div", {
   padding: "$3",
   borderRadius: "4px",
   background: "$neutral300",
-  boxShadow: "0 0 24px rgba(0,0,0,.1)",
   variants: {
     position: {
       center: {

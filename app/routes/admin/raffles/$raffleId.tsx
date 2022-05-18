@@ -9,6 +9,7 @@ import { createRaffleEntry } from "~/models/raffleEntry.server";
 import type { User } from "~/models/user.server";
 import { getUsers } from "~/models/user.server";
 import { authenticator } from "~/services/auth.server";
+import { styled } from "~/styles/stitches.config";
 
 type LoaderData = {
   raffleEntries?: RaffleEntry[];
@@ -35,6 +36,13 @@ export let action: ActionFunction = async ({ request, params }) => {
   return await createRaffleEntry(raffleId, user.id);
 };
 
+const RaffleEntryListItem = styled("li", {
+  border: "1px solid $neutral500",
+  background: "$neutral100",
+  borderRadius: "$1",
+  padding: "$1",
+});
+
 export default function RaffleId() {
   const { raffleEntries, users } = useLoaderData() as LoaderData;
   return (
@@ -48,7 +56,11 @@ export default function RaffleId() {
                   return user.id === raffleEntry.userId;
                 });
 
-                return <li key={raffleEntry.id}>{matchingUser?.email}</li>;
+                return (
+                  <RaffleEntryListItem key={raffleEntry.id}>
+                    {matchingUser?.email}
+                  </RaffleEntryListItem>
+                );
               })}
             </ul>
           </Card>
