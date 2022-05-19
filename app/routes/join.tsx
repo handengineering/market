@@ -81,7 +81,6 @@ export default function Join() {
 
   return (
     <>
-      <h1>Hand Engineering Market</h1>
       <h2>Join</h2>
       <FormWrapper>
         <Form method="post">
