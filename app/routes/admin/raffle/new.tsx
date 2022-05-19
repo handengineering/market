@@ -111,8 +111,8 @@ export let action: ActionFunction = async ({ request }) => {
     name,
     description,
     productSlugs.map((productSlug) => productSlug.toString()),
-    new Date(startDateTime).toISOString(),
-    new Date(endDateTime).toISOString()
+    new Date(startDateTime),
+    new Date(endDateTime)
   );
 
   return { raffle };
