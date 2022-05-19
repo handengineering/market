@@ -46,7 +46,10 @@ async function seed() {
   const raffle = await prisma.raffle.create({
     data: {
       name: "IBM Model M",
+      description: "Own your own piece of computing history",
       productSlugs: ["ibm-model-m"],
+      startDateTime: new Date(2023, 1, 1),
+      endDateTime: new Date(2023, 1, 2),
     },
   });
 
