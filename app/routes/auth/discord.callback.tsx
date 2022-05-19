@@ -3,7 +3,7 @@ import type { LoaderFunction } from "@remix-run/node";
 
 export let loader: LoaderFunction = ({ request }) => {
   return discordAuthenticator.authenticate("discord", request, {
-    successRedirect: "/dashboard",
+    successRedirect: "/",
     failureRedirect: "/login",
   });
 };

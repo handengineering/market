@@ -1,5 +1,7 @@
 import { Link, useLoaderData } from "@remix-run/react";
 import type { LoaderFunction } from "@remix-run/server-runtime";
+import { parseISO } from "date-fns";
+import format from "date-fns/format";
 import Button from "~/components/Button";
 import Grid from "~/components/Grid";
 import RaffleItem, {
@@ -61,7 +63,7 @@ export default function Raffles() {
   return (
     <>
       <h2>All Raffles</h2>
-      <Grid>
+      <Grid layout={{ "@initial": "mobile", "@bp2": "desktop" }}>
         {rafflesWithMatchingProducts &&
           rafflesWithMatchingProducts.map((raffle) => {
             const raffleEntryExists = raffleEntries?.some(
@@ -71,6 +73,16 @@ export default function Raffles() {
               raffle.startDateTime,
               raffle.endDateTime,
               currentDateTime
+            );
+
+            const formattedStartDateTime = format(
+              parseISO(raffle.startDateTime),
+              "do MMMM yyyy"
+            );
+
+            const formattedEndDateTime = format(
+              parseISO(raffle.endDateTime),
+              "do MMMM yyyy"
             );
 
             return (
@@ -92,15 +104,15 @@ export default function Raffles() {
                     raffle.startDateTime,
                     raffle.endDateTime,
                     currentDateTime
-                  )}{" "}
+                  )}
                 </RaffleStatus>
-                <RaffleDate>July 31st 2022</RaffleDate>
+                <RaffleDate>
+                  {formattedStartDateTime}–{formattedEndDateTime}
+                </RaffleDate>
                 <br />
                 <p>From {raffle.products[0].formattedPrice}</p>
                 <Link to={raffle.id}>
-                  <Button size="large" color="primary">
-                    View Details
-                  </Button>
+                  <Button color="primary">View Details</Button>
                 </Link>
                 <RaffleDate>
                   {raffleEntryExists && `Raffle Entry Submitted`}

@@ -64,7 +64,7 @@ export default function LoginId() {
     useLoaderData() as LoaderData;
 
   return (
-    <Grid>
+    <Grid layout={{ "@initial": "mobile", "@bp2": "desktop" }}>
       {raffleWithMatchingProducts && (
         <>
           <Card>

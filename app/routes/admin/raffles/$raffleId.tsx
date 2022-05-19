@@ -124,7 +124,7 @@ export default function RaffleId() {
   const [canRemoveAll, setCanRemoveAll] = useState(false);
 
   return (
-    <Grid>
+    <Grid layout={{ "@initial": "mobile", "@bp2": "desktop" }}>
       {users && (
         <>
           <Card>
