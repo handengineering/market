@@ -35,6 +35,8 @@ async function seed() {
     },
   });
 
+  await prisma.raffle.deleteMany();
+
   await prisma.user.createMany({
     data: emails.map((email) => {
       return { email: email };
@@ -43,21 +45,42 @@ async function seed() {
 
   const users = await prisma.user.findMany();
 
-  const raffle = await prisma.raffle.create({
-    data: {
-      name: "IBM Model M",
-      description: "Own your own piece of computing history",
-      productSlugs: ["ibm-model-m"],
-      startDateTime: new Date(2023, 1, 1),
-      endDateTime: new Date(2023, 1, 2),
-    },
+  await prisma.raffle.createMany({
+    data: [
+      {
+        name: "IBM Model M",
+        description: "Own your own piece of computing history",
+        productSlugs: ["ibm-model-m"],
+        startDateTime: new Date(2023, 1, 1),
+        endDateTime: new Date(2023, 1, 2),
+      },
+      {
+        name: "Cherry G80-2000HAD",
+        description: "An iconic piece of industrial design",
+        productSlugs: ["cherry-g80-2000had"],
+        startDateTime: new Date(2019, 1, 1),
+        endDateTime: new Date(2019, 1, 2),
+        status: "PAST",
+      },
+    ],
+  });
+
+  const raffles = await prisma.raffle.findMany();
+
+  await prisma.raffleEntry.createMany({
+    data: users.map((user) => {
+      return {
+        userId: user.id,
+        raffleId: raffles[0].id,
+      };
+    }),
   });
 
   await prisma.raffleEntry.createMany({
     data: users.map((user) => {
       return {
         userId: user.id,
-        raffleId: raffle.id,
+        raffleId: raffles[1].id,
       };
     }),
   });

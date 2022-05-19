@@ -15,8 +15,8 @@ enum RaffleEntryStatus {
 }
 
 enum RaffleStatus {
-  UPCOMING
-  PAST
+  CREATED
+  DRAWN
   ARCHIVED
   CANCELED
 }
@@ -63,7 +63,7 @@ model Raffle {
   id            String        @id @default(cuid())
   name          String
   description   String
-  status        RaffleStatus  @default(UPCOMING)
+  status        RaffleStatus  @default(CREATED)
   startDateTime DateTime
   endDateTime   DateTime
   productSlugs  String[]
