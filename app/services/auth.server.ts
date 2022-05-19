@@ -78,33 +78,26 @@ discordAuthenticator.use(
       callbackURL: "/auth/discord/callback",
       scope: ["identify", "email"],
     },
-    async ({ accessToken, profile }) => {
+    async ({ accessToken, profile, context }) => {
       invariant(profile, "profile not found");
 
       const { emails, displayName, id, __json } = profile;
       const { avatar } = __json;
 
+      const user: User = context.user;
+
       invariant(emails, "emails not found");
       invariant(avatar, "avatar not found");
       invariant(id, "id not found");
+      invariant(user, "user not found");
 
-      const discordUserEmail = emails[0].value;
-      const originalUser: User | null = await getUserByEmail(discordUserEmail);
-
-      invariant(
-        originalUser,
-        `can't get original user by email: ${discordUserEmail}`
-      );
-
-      createDiscordProfile(
+      return await createDiscordProfile(
         id,
-        originalUser.id,
+        user.id,
         displayName,
         avatar,
         accessToken
       );
-
-      return originalUser;
     }
   ),
   "discord"
