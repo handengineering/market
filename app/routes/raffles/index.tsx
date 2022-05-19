@@ -24,7 +24,7 @@ type RaffleWithMatchingProducts = Raffle & { products: FullProduct[] };
 type LoaderData = {
   rafflesWithMatchingProducts?: RaffleWithMatchingProducts[];
   raffleEntries?: RaffleEntry[];
-  currentDateTime: Date;
+  currentDateTime: string;
 };
 
 export let loader: LoaderFunction = async ({ request }) => {
