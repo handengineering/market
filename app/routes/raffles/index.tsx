@@ -69,11 +69,6 @@ export default function Raffles() {
             const raffleEntryExists = raffleEntries?.some(
               (raffleEntry) => raffleEntry.raffleId === raffle.id
             );
-            console.log(
-              raffle.startDateTime,
-              raffle.endDateTime,
-              currentDateTime
-            );
 
             const formattedStartDateTime = format(
               parseISO(raffle.startDateTime),
