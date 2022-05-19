@@ -4,12 +4,18 @@ export type { Raffle } from "@prisma/client";
 
 export async function createRaffle(
   name: Raffle["name"],
-  productSlugs: Raffle["productSlugs"]
+  description: Raffle["description"],
+  productSlugs: Raffle["productSlugs"],
+  startDateTime: Raffle["startDateTime"],
+  endDateTime: Raffle["endDateTime"]
 ) {
   return prisma.raffle.create({
     data: {
       name,
+      description,
       productSlugs,
+      startDateTime,
+      endDateTime,
     },
   });
 }

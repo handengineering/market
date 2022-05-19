@@ -15,12 +15,14 @@ import type { RaffleEntry } from "~/models/raffleEntry.server";
 import { getRaffleEntriesByUserId } from "~/models/raffleEntry.server";
 import { authenticator } from "~/services/auth.server";
 import commerce from "~/services/commerce.server";
+import { getRaffleActivityStatus } from "~/utils/raffle";
 
 type RaffleWithMatchingProducts = Raffle & { products: FullProduct[] };
 
 type LoaderData = {
   rafflesWithMatchingProducts?: RaffleWithMatchingProducts[];
   raffleEntries?: RaffleEntry[];
+  currentDateTime: Date;
 };
 
 export let loader: LoaderFunction = async ({ request }) => {
@@ -48,13 +50,14 @@ export let loader: LoaderFunction = async ({ request }) => {
 
   let raffleEntries = await getRaffleEntriesByUserId(user.id);
 
-  return { raffleEntries, rafflesWithMatchingProducts };
+  let currentDateTime = new Date().toISOString();
+
+  return { raffleEntries, rafflesWithMatchingProducts, currentDateTime };
 };
 
 export default function Raffles() {
-  const { raffleEntries, rafflesWithMatchingProducts } =
+  const { raffleEntries, rafflesWithMatchingProducts, currentDateTime } =
     useLoaderData() as LoaderData;
-
   return (
     <>
       <h2>All Raffles</h2>
@@ -64,6 +67,12 @@ export default function Raffles() {
             const raffleEntryExists = raffleEntries?.some(
               (raffleEntry) => raffleEntry.raffleId === raffle.id
             );
+            console.log(
+              raffle.startDateTime,
+              raffle.endDateTime,
+              currentDateTime
+            );
+
             return (
               <RaffleItem key={raffle.id}>
                 <RaffleItemImage
@@ -72,7 +81,19 @@ export default function Raffles() {
                 />
                 <RaffleTitle>{raffle.name}</RaffleTitle>
 
-                <RaffleStatus>ACTIVE</RaffleStatus>
+                <RaffleStatus
+                  status={getRaffleActivityStatus(
+                    raffle.startDateTime,
+                    raffle.endDateTime,
+                    currentDateTime
+                  )}
+                >
+                  {getRaffleActivityStatus(
+                    raffle.startDateTime,
+                    raffle.endDateTime,
+                    currentDateTime
+                  )}{" "}
+                </RaffleStatus>
                 <RaffleDate>July 31st 2022</RaffleDate>
                 <br />
                 <p>From {raffle.products[0].formattedPrice}</p>

@@ -8,7 +8,7 @@ const Card = styled("div", {
   maxWidth: "640px",
   padding: "$3",
   borderRadius: "4px",
-  background: "$neutral300",
+  backgroundColor: "$neutral300",
   variants: {
     position: {
       center: {

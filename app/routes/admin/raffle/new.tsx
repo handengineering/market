@@ -9,6 +9,8 @@ import commerce from "~/services/commerce.server";
 import FormWrapper from "~/components/FormWrapper";
 import type { Product } from "~/models/ecommerce-provider.server";
 import MultiSelect from "~/components/MultiSelect";
+import Textarea from "~/components/Textarea";
+import Label from "~/components/Label";
 
 export default function Index() {
   const { products } = useLoaderData<LoaderData>();
@@ -18,12 +20,29 @@ export default function Index() {
     <FormWrapper>
       <Form method="post" action="/admin/raffle/new">
         <h2>Create New Raffle</h2>
-        <Input name="name" placeholder="Name" aria-label="Name" type="text" />
-
-        <MultiSelect
-          name="product"
-          items={products.map((product) => product.slug)}
-        />
+        <Label>
+          Name
+          <Input name="name" aria-label="Name" type="text" />
+        </Label>
+        <Label>
+          Description
+          <Textarea name="description" aria-label="Description" />
+        </Label>
+        <Label>
+          Start Date
+          <Input name="startDateTime" aria-label="Start Date" type="date" />
+        </Label>
+        <Label>
+          End Date
+          <Input name="endDateTime" aria-label="End Date" type="date" />
+        </Label>
+        <Label>
+          Product SKUs
+          <MultiSelect
+            name="product"
+            items={products.map((product) => product.slug)}
+          />
+        </Label>
         {actionResponse && actionResponse.raffle ? (
           <Button type="submit" disabled>
             Create New Raffle
@@ -48,11 +67,35 @@ interface ActionData {
 export let action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
   const name = formData.get("name");
+  const description = formData.get("description");
+  const startDateTime = formData.get("startDateTime");
+  const endDateTime = formData.get("endDateTime");
   const productSlugs = formData.getAll("product");
 
   if (typeof name !== "string") {
     return json<ActionData>(
       { errors: { name: "Name is required" } },
+      { status: 400 }
+    );
+  }
+
+  if (typeof description !== "string") {
+    return json<ActionData>(
+      { errors: { name: "Description is required" } },
+      { status: 400 }
+    );
+  }
+
+  if (typeof startDateTime !== "string") {
+    return json<ActionData>(
+      { errors: { name: "StartDateTime is required" } },
+      { status: 400 }
+    );
+  }
+
+  if (typeof endDateTime !== "string") {
+    return json<ActionData>(
+      { errors: { name: "EndDateTime is required" } },
       { status: 400 }
     );
   }
@@ -66,7 +109,10 @@ export let action: ActionFunction = async ({ request }) => {
 
   const raffle = await createRaffle(
     name,
-    productSlugs.map((productSlug) => productSlug.toString())
+    description,
+    productSlugs.map((productSlug) => productSlug.toString()),
+    new Date(startDateTime),
+    new Date(endDateTime)
   );
 
   return { raffle };

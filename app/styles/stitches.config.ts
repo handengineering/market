@@ -77,6 +77,8 @@ export const {
     fonts: {
       untitled: "Untitled Sans, apple-system, sans-serif",
       mono: "Söhne Mono, menlo, monospace",
+      soehne: "soehne, apple-system, sans-serif",
+      soehneBreit: "soehne breit, apple-system, sans-serif",
     },
     fontWeights: {
       bold: "700",

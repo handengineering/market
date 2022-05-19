@@ -38,6 +38,26 @@ export const RaffleStatus = styled("span", {
   padding: "0 $3",
   fontSize: "$3",
   marginBottom: "$1",
+  variants: {
+    status: {
+      UPCOMING: {
+        color: "$yellow100",
+        backgroundColor: "$yellow500",
+      },
+      ACTIVE: {
+        color: "$green100",
+        backgroundColor: "$green500",
+      },
+      PAST: {
+        color: "$red100",
+        backgroundColor: "$red500",
+      },
+      UNKNOWN: {
+        color: "$neutral100",
+        backgroundColor: "$neutral500",
+      },
+    },
+  },
 });
 
 export const RaffleDate = styled("p", {
