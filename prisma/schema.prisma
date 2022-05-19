@@ -14,6 +14,13 @@ enum RaffleEntryStatus {
   CANCELED
 }
 
+enum RaffleStatus {
+  UPCOMING
+  PAST
+  ARCHIVED
+  CANCELED
+}
+
 model User {
   id             String           @id @default(cuid())
   email          String           @unique
@@ -55,6 +62,10 @@ model DiscordProfile {
 model Raffle {
   id            String        @id @default(cuid())
   name          String
+  description   String
+  status        RaffleStatus  @default(UPCOMING)
+  startDateTime DateTime
+  endDateTime   DateTime
   productSlugs  String[]
   raffleEntries RaffleEntry[]
 
