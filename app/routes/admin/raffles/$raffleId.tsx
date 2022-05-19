@@ -6,6 +6,7 @@ import Button from "~/components/Button";
 import Card from "~/components/Card";
 import Grid from "~/components/Grid";
 import Input from "~/components/Input";
+import Label from "~/components/Label";
 import { prisma } from "~/db.server";
 import type { RaffleEntry } from "~/models/raffleEntry.server";
 import { getRaffleEntriesByRaffleId } from "~/models/raffleEntry.server";
@@ -144,8 +145,12 @@ export default function RaffleId() {
             </ul>
           </Card>
           <Card>
+            <h2>Controls</h2>
             <Form method="post">
-              <Input type="number" name="drawCount" />
+              <Label>
+                Draw Count
+                <Input type="number" name="drawCount" />
+              </Label>
               <Button name="action" value="draw" color="primary">
                 Draw Participants
               </Button>
