@@ -42,15 +42,15 @@ export const RaffleStatus = styled("span", {
     status: {
       UPCOMING: {
         color: "$yellow100",
-        background: "$yellow500",
+        backgroundColor: "$yellow500",
       },
       ACTIVE: {
         color: "$green100",
-        background: "$green500",
+        backgroundColor: "$green500",
       },
       PAST: {
         color: "$red100",
-        background: "$red500",
+        backgroundColor: "$red500",
       },
       UNKNOWN: {
         color: "$neutral100",

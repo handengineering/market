@@ -112,7 +112,7 @@ export let action: ActionFunction = async ({ request, params }) => {
 
 const RaffleEntryListItem = styled("li", {
   border: "1px solid $neutral500",
-  background: "$neutral100",
+  backgroundColor: "$neutral100",
   borderRadius: "$1",
   padding: "$1",
 });

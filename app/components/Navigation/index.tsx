@@ -2,7 +2,7 @@ import { styled } from "~/styles/stitches.config";
 
 const NavigationWrapper = styled("nav", {
   height: "$5",
-  background: "$primary500",
+  backgroundColor: "$primary500",
   display: "flex",
   gap: "$3",
   alignItems: "center",

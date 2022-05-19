@@ -14,12 +14,13 @@ export interface MultiSelectProps {
 const Pill = styled("div", {
   display: "flex",
   alignItems: "center",
-  background: "$neutral100",
+  backgroundColor: "$neutral100",
   borderRadius: "4px",
   padding: "$1",
   height: "$1",
   marginRight: "$1",
   marginBottom: "$1",
+  fontSize: "$2",
 });
 
 const CloseIcon = styled("span", {
@@ -29,15 +30,22 @@ const CloseIcon = styled("span", {
   aspectRatio: "1 / 1",
   textAlign: "center",
   cursor: "pointer",
+  "&:hover": {
+    opacity: 0.5,
+  },
 });
 
 const MultiSelectWrapper = styled("div", {
-  position: "relative",
   marginBottom: "$3",
 });
 
 const PillWrapper = styled("div", {
   display: "flex",
+});
+
+const MultiSelectInputWrapper = styled("div", {
+  width: "100%",
+  position: "relative",
 });
 
 const MultiSelectInput = styled(Input, {
@@ -60,23 +68,26 @@ const InputButton = styled("div", {
   width: "$1",
   height: "$1",
   borderRadius: "50%",
-  background: "$primary500",
+  backgroundColor: "$primary500",
   color: "$neutral100",
 });
 
 const DropdownList = styled("ul", {
-  background: "$neutral100",
-  position: "absolute",
-  borderWidth: "1px",
-  borderStyle: "solid",
-  borderColor: "$primary500",
-  borderRadius: "4px",
   width: "100%",
+  backgroundColor: "$neutral300",
+  position: "absolute",
+  borderRadius: "4px",
 });
 
 const DropdownListItem = styled("li", {
-  padding: "$1",
+  padding: "$2",
   cursor: "pointer",
+  borderLeftWidth: "1px",
+  borderRightWidth: "1px",
+  borderBottomWidth: "1px",
+  borderStyle: "solid",
+  borderColor: "$neutral500",
+  fontSize: "$2",
 });
 
 const MultiSelect = ({ items, name }: MultiSelectProps) => {
@@ -105,6 +116,7 @@ const MultiSelect = ({ items, name }: MultiSelectProps) => {
     getItemProps,
     selectItem,
   } = useCombobox({
+    id: "multi-select",
     inputValue,
     items: getFilteredItems(items),
     onStateChange: ({ inputValue, type, selectedItem }) => {
@@ -146,32 +158,34 @@ const MultiSelect = ({ items, name }: MultiSelectProps) => {
           ))}
         </PillWrapper>
         <InputWrapper {...getComboboxProps()}>
-          <MultiSelectInput
-            name={selectItem.name}
-            placeholder="Search"
-            {...getInputProps(getDropdownProps({ preventKeyAction: isOpen }))}
-          />
+          <MultiSelectInputWrapper>
+            <MultiSelectInput
+              name={selectItem.name}
+              placeholder="Search"
+              {...getInputProps(getDropdownProps({ preventKeyAction: isOpen }))}
+            />
+            <DropdownList {...getMenuProps()}>
+              {isOpen &&
+                getFilteredItems(items).map((item, index) => (
+                  <DropdownListItem
+                    style={
+                      highlightedIndex === index
+                        ? { backgroundColor: "#DAD2E2" }
+                        : {}
+                    }
+                    key={`${item}${index}`}
+                    {...getItemProps({ item, index })}
+                  >
+                    {item}
+                  </DropdownListItem>
+                ))}
+            </DropdownList>
+          </MultiSelectInputWrapper>
+
           <InputButton {...getToggleButtonProps()} aria-label={"toggle menu"}>
             &#8595;
           </InputButton>
         </InputWrapper>
-        {isOpen && (
-          <DropdownList {...getMenuProps()}>
-            {getFilteredItems(items).map((item, index) => (
-              <DropdownListItem
-                style={
-                  highlightedIndex === index
-                    ? { backgroundColor: "#bde4ff" }
-                    : {}
-                }
-                key={`${item}${index}`}
-                {...getItemProps({ item, index })}
-              >
-                {item}
-              </DropdownListItem>
-            ))}
-          </DropdownList>
-        )}
       </div>
 
       {selectedItems.map((selectedItem) => {

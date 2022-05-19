@@ -69,7 +69,6 @@ export let action: ActionFunction = async ({ request }) => {
   const description = formData.get("description");
   const startDateTime = formData.get("startDateTime");
   const endDateTime = formData.get("endDateTime");
-
   const productSlugs = formData.getAll("product");
 
   if (typeof name !== "string") {
@@ -86,14 +85,14 @@ export let action: ActionFunction = async ({ request }) => {
     );
   }
 
-  if (!(startDateTime instanceof Date)) {
+  if (typeof startDateTime !== "string") {
     return json<ActionData>(
       { errors: { name: "StartDateTime is required" } },
       { status: 400 }
     );
   }
 
-  if (!(endDateTime instanceof Date)) {
+  if (typeof endDateTime !== "string") {
     return json<ActionData>(
       { errors: { name: "EndDateTime is required" } },
       { status: 400 }
@@ -111,8 +110,8 @@ export let action: ActionFunction = async ({ request }) => {
     name,
     description,
     productSlugs.map((productSlug) => productSlug.toString()),
-    startDateTime,
-    endDateTime
+    new Date(startDateTime),
+    new Date(endDateTime)
   );
 
   return { raffle };

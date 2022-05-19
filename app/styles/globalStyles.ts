@@ -82,7 +82,7 @@ export const baseTypography = globalCss({
   },
   html: { fontSize: "100%" },
   body: {
-    background: "$neutral100",
+    backgroundColor: "$neutral100",
     fontFamily: "'soehne', 'sans-serif'",
     fontWeight: 400,
     lineHeight: 1.5,
