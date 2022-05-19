@@ -22,6 +22,7 @@ import ErrorText from "~/components/ErrorText";
 import { authenticator } from "~/services/auth.server";
 import { sessionStorage } from "~/services/session.server";
 import FormWrapper from "~/components/FormWrapper";
+import Label from "~/components/Label";
 
 type LoaderData = {
   magicLinkSent?: boolean;
@@ -91,11 +92,11 @@ export default function Join() {
         <h2>Join</h2>
         <FormWrapper>
           <Form method="post">
-            <div>
+            <Label>
+              Email
               <Input
                 ref={emailRef}
                 id="email"
-                placeholder="Email"
                 aria-label="email"
                 required
                 autoFocus={true}
@@ -110,7 +111,7 @@ export default function Join() {
                   {actionData.errors.email}
                 </ErrorText>
               )}
-            </div>
+            </Label>
 
             <Input type="hidden" name="redirectTo" value={redirectTo} />
 

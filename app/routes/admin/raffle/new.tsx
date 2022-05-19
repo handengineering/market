@@ -10,6 +10,7 @@ import FormWrapper from "~/components/FormWrapper";
 import type { Product } from "~/models/ecommerce-provider.server";
 import MultiSelect from "~/components/MultiSelect";
 import Textarea from "~/components/Textarea";
+import Label from "~/components/Label";
 
 export default function Index() {
   const { products } = useLoaderData<LoaderData>();
@@ -19,29 +20,29 @@ export default function Index() {
     <FormWrapper>
       <Form method="post" action="/admin/raffle/new">
         <h2>Create New Raffle</h2>
-        <Input name="name" placeholder="Name" aria-label="Name" type="text" />
-        <Textarea
-          name="description"
-          placeholder="Description"
-          aria-label="Description"
-        />
-        <Input
-          name="startDateTime"
-          placeholder="Start Date"
-          aria-label="Start Date"
-          type="date"
-        />
-        <Input
-          name="endDateTime"
-          placeholder="End Date"
-          aria-label="End Date"
-          type="date"
-        />
-
-        <MultiSelect
-          name="product"
-          items={products.map((product) => product.slug)}
-        />
+        <Label>
+          Name
+          <Input name="name" aria-label="Name" type="text" />
+        </Label>
+        <Label>
+          Description
+          <Textarea name="description" aria-label="Description" />
+        </Label>
+        <Label>
+          Start Date
+          <Input name="startDateTime" aria-label="Start Date" type="date" />
+        </Label>
+        <Label>
+          End Date
+          <Input name="endDateTime" aria-label="End Date" type="date" />
+        </Label>
+        <Label>
+          Product SKUs
+          <MultiSelect
+            name="product"
+            items={products.map((product) => product.slug)}
+          />
+        </Label>
         {actionResponse && actionResponse.raffle ? (
           <Button type="submit" disabled>
             Create New Raffle

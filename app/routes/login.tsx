@@ -14,6 +14,7 @@ import type {
   LoaderFunction,
 } from "@remix-run/server-runtime";
 import FormWrapper from "~/components/FormWrapper";
+import Label from "~/components/Label";
 
 type LoaderData = {
   magicLinkSent?: boolean;
@@ -64,16 +65,17 @@ export default function Login() {
 
         <FormWrapper>
           <Form action="/login" method="post">
-            <div>
+            <Label>
+              Email
               <Input
                 id="email"
                 type="email"
                 name="email"
-                placeholder="Email"
                 aria-label="email"
                 required
               />
-            </div>
+            </Label>
+
             {magicLinkSent ? (
               "Magic link has been sent!"
             ) : (

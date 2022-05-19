@@ -86,7 +86,7 @@ export const baseTypography = globalCss({
     fontFamily: "'soehne', 'sans-serif'",
     fontWeight: 400,
     lineHeight: 1.5,
-    color: "$primary900",
+    color: "$primary700",
   },
   p: { fontSize: "$3", marginBottom: "1rem" },
   b: { fontWeight: "$bold" },
@@ -94,7 +94,6 @@ export const baseTypography = globalCss({
     marginBottom: "1rem",
     fontFamily: "'soehne breit', 'sans-serif'",
     textTransform: "uppercase",
-    fontWeight: "$bold",
     lineHeight: 1.5,
   },
   h1: {
