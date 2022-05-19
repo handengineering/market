@@ -36,7 +36,7 @@ type ActionData = {
 
 export let loader: LoaderFunction = async ({ request }) => {
   await authenticator.isAuthenticated(request, {
-    successRedirect: "/dashboard",
+    successRedirect: "/",
   });
   let session = await sessionStorage.getSession(request.headers.get("Cookie"));
   // This session key `auth:magiclink` is the default one used by the EmailLinkStrategy

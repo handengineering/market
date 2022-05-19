@@ -35,7 +35,7 @@ export let loader: LoaderFunction = async ({ request }) => {
     permissions.administrator
   );
 
-  if (!hasPermissions) return redirect("/dashboard");
+  if (!hasPermissions) return redirect("/");
 
   return {};
 };

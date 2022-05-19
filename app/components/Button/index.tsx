@@ -21,8 +21,30 @@ const Button = styled("button", {
           backgroundColor: "$primary300",
         },
       },
+      secondary: {
+        backgroundColor: "$green500",
+        color: "$green100",
+        "&:hover": {
+          backgroundColor: "$green300",
+        },
+      },
+      tertiary: {
+        backgroundColor: "$yellow500",
+        color: "$yellow100",
+        "&:hover": {
+          backgroundColor: "$yellow300",
+        },
+      },
+      inverse: {
+        backgroundColor: "$neutral100",
+        color: "$primary500",
+        "&:hover": {
+          backgroundColor: "$neutral300",
+        },
+      },
       danger: {
         backgroundColor: "$red500",
+        color: "$red100",
         "&:hover": {
           backgroundColor: "$red300",
         },
