@@ -35,7 +35,7 @@ async function seed() {
     },
   });
 
-  await prisma.raffle.deleteMany();
+  await prisma.raffle.deleteMany({});
 
   await prisma.user.createMany({
     data: emails.map((email) => {
@@ -43,7 +43,7 @@ async function seed() {
     }),
   });
 
-  const users = await prisma.user.findMany();
+  const users = await prisma.user.findMany({});
 
   await prisma.raffle.createMany({
     data: [
@@ -60,7 +60,6 @@ async function seed() {
         productSlugs: ["cherry-g80-2000had"],
         startDateTime: new Date(2019, 1, 1),
         endDateTime: new Date(2019, 1, 2),
-        status: "PAST",
       },
     ],
   });

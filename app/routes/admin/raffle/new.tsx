@@ -9,6 +9,7 @@ import commerce from "~/services/commerce.server";
 import FormWrapper from "~/components/FormWrapper";
 import type { Product } from "~/models/ecommerce-provider.server";
 import MultiSelect from "~/components/MultiSelect";
+import Textarea from "~/components/Textarea";
 
 export default function Index() {
   const { products } = useLoaderData<LoaderData>();
@@ -19,6 +20,23 @@ export default function Index() {
       <Form method="post" action="/admin/raffle/new">
         <h2>Create New Raffle</h2>
         <Input name="name" placeholder="Name" aria-label="Name" type="text" />
+        <Textarea
+          name="description"
+          placeholder="Description"
+          aria-label="Description"
+        />
+        <Input
+          name="startDateTime"
+          placeholder="Start Date"
+          aria-label="Start Date"
+          type="date"
+        />
+        <Input
+          name="endDateTime"
+          placeholder="End Date"
+          aria-label="End Date"
+          type="date"
+        />
 
         <MultiSelect
           name="product"
@@ -48,11 +66,36 @@ interface ActionData {
 export let action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
   const name = formData.get("name");
+  const description = formData.get("description");
+  const startDateTime = formData.get("startDateTime");
+  const endDateTime = formData.get("endDateTime");
+
   const productSlugs = formData.getAll("product");
 
   if (typeof name !== "string") {
     return json<ActionData>(
       { errors: { name: "Name is required" } },
+      { status: 400 }
+    );
+  }
+
+  if (typeof description !== "string") {
+    return json<ActionData>(
+      { errors: { name: "Description is required" } },
+      { status: 400 }
+    );
+  }
+
+  if (!(startDateTime instanceof Date)) {
+    return json<ActionData>(
+      { errors: { name: "StartDateTime is required" } },
+      { status: 400 }
+    );
+  }
+
+  if (!(endDateTime instanceof Date)) {
+    return json<ActionData>(
+      { errors: { name: "EndDateTime is required" } },
       { status: 400 }
     );
   }
@@ -66,7 +109,10 @@ export let action: ActionFunction = async ({ request }) => {
 
   const raffle = await createRaffle(
     name,
-    productSlugs.map((productSlug) => productSlug.toString())
+    description,
+    productSlugs.map((productSlug) => productSlug.toString()),
+    startDateTime,
+    endDateTime
   );
 
   return { raffle };
