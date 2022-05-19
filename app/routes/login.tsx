@@ -53,7 +53,6 @@ export default function Login() {
 
   return (
     <>
-      <h1>Hand Engineering Market</h1>
       <h2>Login</h2>
 
       <FormWrapper>
