@@ -27,34 +27,40 @@ export const RaffleItemImage = styled("img", {
 });
 
 export const RaffleTitle = styled("h2", {
-  fontSize: "$6",
-  fontWeight: "bold",
+  fontSize: "$5",
   color: "$primary500",
+  whiteSpace: "nowrap",
 });
 
 export const RaffleStatus = styled("span", {
   backgroundColor: "$neutral100",
   borderRadius: "$1",
-  padding: "0 $3",
-  fontSize: "$3",
+  padding: "0 $5",
+  fontSize: "$2",
   marginBottom: "$1",
+  borderWidth: "1px",
+  borderStyle: "solid",
   variants: {
     status: {
       UPCOMING: {
-        color: "$yellow100",
-        backgroundColor: "$yellow500",
+        color: "$yellow700",
+        backgroundColor: "$yellow300",
+        borderColor: "$yellow500",
       },
       ACTIVE: {
-        color: "$green100",
-        backgroundColor: "$green500",
+        color: "$green700",
+        backgroundColor: "$green300",
+        borderColor: "$green500",
       },
       PAST: {
-        color: "$red100",
-        backgroundColor: "$red500",
+        color: "$red700",
+        backgroundColor: "$red300",
+        borderColor: "$red500",
       },
       UNKNOWN: {
-        color: "$neutral100",
-        backgroundColor: "$neutral500",
+        color: "$neutral700",
+        backgroundColor: "$neutral300",
+        borderColor: "$neutral500",
       },
     },
   },

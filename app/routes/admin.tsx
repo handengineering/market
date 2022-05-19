@@ -1,31 +1,40 @@
 import { Link, Outlet } from "@remix-run/react";
 import permissions from "prisma/permissions";
-import AppContainer from "~/components/AppContainer";
-import Main from "~/components/Main";
 import type { LoaderFunction } from "@remix-run/server-runtime";
 import { redirect } from "@remix-run/server-runtime";
 import { checkPermissions } from "~/services/permissions.server";
+import Sidebar, { SidebarWraper } from "~/components/Sidebar";
+import Button from "~/components/Button";
+import FlexContainer from "~/components/FlexContainer";
 
 export default function Index() {
   return (
-    <AppContainer>
-      <Main>
-        <h1>Admin Panel</h1>
+    <SidebarWraper layout={{ "@initial": "mobile", "@bp2": "desktop" }}>
+      <Sidebar layout={{ "@initial": "mobile", "@bp2": "desktop" }}>
+        <h2>🛠 Admin</h2>
+
         <ul>
           <li>
-            <Link to="/admin/raffles">Raffles</Link>
+            <Link to="/admin/raffles">
+              <Button>Raffles</Button>
+            </Link>
           </li>
           <li>
-            <Link to="/admin/raffle/new">New Raffle</Link>
+            <Link to="/admin/raffle/new">
+              <Button>New Raffle</Button>
+            </Link>
           </li>
           <li>
-            <Link to="/admin/products">Products</Link>
+            <Link to="/admin/products">
+              <Button>Products</Button>
+            </Link>
           </li>
         </ul>
-        <hr />
+      </Sidebar>
+      <FlexContainer layout={{ "@initial": "mobile", "@bp2": "desktop" }}>
         <Outlet />
-      </Main>
-    </AppContainer>
+      </FlexContainer>
+    </SidebarWraper>
   );
 }
 

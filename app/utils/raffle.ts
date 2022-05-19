@@ -6,9 +6,9 @@ export enum RaffleActivityStatus {
 }
 
 export function getRaffleActivityStatus(
-  startDateTime: Date,
-  endDateTime: Date,
-  currentDateTime: Date
+  startDateTime: string,
+  endDateTime: string,
+  currentDateTime: string
 ): RaffleActivityStatus {
   if (currentDateTime < startDateTime) {
     return RaffleActivityStatus.UPCOMING;

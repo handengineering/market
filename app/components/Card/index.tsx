@@ -2,10 +2,9 @@ import { styled } from "~/styles/stitches.config";
 
 const Card = styled("div", {
   display: "flex",
+  flex: "1",
   marginBottom: "$3",
   flexDirection: "column",
-  minWidth: "320px",
-  maxWidth: "640px",
   padding: "$3",
   borderRadius: "4px",
   backgroundColor: "$neutral300",

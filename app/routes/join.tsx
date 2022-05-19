@@ -16,8 +16,6 @@ import * as React from "react";
 import Input from "~/components/Input";
 import Button from "~/components/Button";
 import Card from "~/components/Card";
-import AppContainer from "~/components/AppContainer";
-import Main from "~/components/Main";
 import ErrorText from "~/components/ErrorText";
 import { authenticator } from "~/services/auth.server";
 import { sessionStorage } from "~/services/session.server";
@@ -61,14 +59,10 @@ export const meta: MetaFunction = () => {
 
 export const ErrorBoundary: ErrorBoundaryComponent = ({ error }) => {
   return (
-    <AppContainer>
-      <Main>
-        <Card position="center">
-          <ErrorText>{error.message}</ErrorText>
-          <Link to="/join">Try a different email?</Link>
-        </Card>
-      </Main>
-    </AppContainer>
+    <Card position="center">
+      <ErrorText>{error.message}</ErrorText>
+      <Link to="/join">Try a different email?</Link>
+    </Card>
   );
 };
 
@@ -86,56 +80,52 @@ export default function Join() {
   }, [actionData]);
 
   return (
-    <AppContainer>
-      <Main centerItems>
-        <h1>Hand Engineering Market</h1>
-        <h2>Join</h2>
-        <FormWrapper>
-          <Form method="post">
-            <Label>
-              Email
-              <Input
-                ref={emailRef}
-                id="email"
-                aria-label="email"
-                required
-                autoFocus={true}
-                name="email"
-                type="email"
-                autoComplete="email"
-                aria-invalid={actionData?.errors?.email ? true : undefined}
-                aria-describedby="email-error"
-              />
-              {actionData?.errors?.email && (
-                <ErrorText id="email-error">
-                  {actionData.errors.email}
-                </ErrorText>
-              )}
-            </Label>
-
-            <Input type="hidden" name="redirectTo" value={redirectTo} />
-
-            {magicLinkSent ? (
-              "Magic link has been sent!"
-            ) : (
-              <Button color="primary" type="submit">
-                Create Account
-              </Button>
+    <>
+      <h1>Hand Engineering Market</h1>
+      <h2>Join</h2>
+      <FormWrapper>
+        <Form method="post">
+          <Label>
+            Email
+            <Input
+              ref={emailRef}
+              id="email"
+              aria-label="email"
+              required
+              autoFocus={true}
+              name="email"
+              type="email"
+              autoComplete="email"
+              aria-invalid={actionData?.errors?.email ? true : undefined}
+              aria-describedby="email-error"
+            />
+            {actionData?.errors?.email && (
+              <ErrorText id="email-error">{actionData.errors.email}</ErrorText>
             )}
-          </Form>
-        </FormWrapper>
-        <div>
-          Already have an account?{" "}
-          <Link
-            to={{
-              pathname: "/login",
-              search: searchParams.toString(),
-            }}
-          >
-            Log in
-          </Link>
-        </div>
-      </Main>
-    </AppContainer>
+          </Label>
+
+          <Input type="hidden" name="redirectTo" value={redirectTo} />
+
+          {magicLinkSent ? (
+            "Magic link has been sent!"
+          ) : (
+            <Button color="primary" type="submit">
+              Create Account
+            </Button>
+          )}
+        </Form>
+      </FormWrapper>
+      <div>
+        Already have an account?{" "}
+        <Link
+          to={{
+            pathname: "/login",
+            search: searchParams.toString(),
+          }}
+        >
+          Log in
+        </Link>
+      </div>
+    </>
   );
 }
