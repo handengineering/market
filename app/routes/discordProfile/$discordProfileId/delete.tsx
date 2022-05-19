@@ -24,5 +24,5 @@ export let action: ActionFunction = async ({ request, params }) => {
     }
   }
 
-  return discordAuthenticator.logout(request, { redirectTo: "/dashboard" });
+  return discordAuthenticator.logout(request, { redirectTo: "/" });
 };

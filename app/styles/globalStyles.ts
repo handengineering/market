@@ -1,3 +1,4 @@
+/* eslint-disable no-dupe-keys */
 import { globalCss } from "./stitches.config";
 
 export const cssReset = globalCss({
@@ -37,22 +38,62 @@ export const cssReset = globalCss({
 });
 
 export const baseTypography = globalCss({
+  "@font-face": [
+    {
+      fontFamily: "soehne",
+      src: "url('/fonts/soehne-web-buch.woff2') format('woff2'), url('/fonts/soehne-web-buch.woff') format('woff'), url('/fonts/soehne-web-buch.eot') format('embedded-opentype')",
+      fontWeight: "normal",
+      fontStyle: "normal",
+    },
+    {
+      fontFamily: "soehne",
+      src: "url('/fonts/soehne-web-buch-kursiv.woff2') format('woff2'), url('/fonts/soehne-web-buch-kursiv.woff') format('woff'), url('/fonts/soehne-web-buch-kursiv.eot') format('embedded-opentype')",
+      fontWeight: "normal",
+      fontStyle: "italic",
+    },
+    {
+      fontFamily: "soehne",
+      src: "url('/fonts/soehne-web-halbfett.woff2') format('woff2'), url('/fonts/soehne-web-halbfett.woff') format('woff'), url('/fonts/soehne-web-halbfett.eot') format('embedded-opentype')",
+      fontWeight: "600",
+      fontStyle: "normal",
+    },
+    {
+      fontFamily: "soehne",
+      src: "url('/fonts/soehne-web-fett.woff2') format('woff2'), url('/fonts/soehne-web-fett.woff') format('woff'), url('/fonts/soehne-web-fett.eot') format('embedded-opentype')",
+      fontWeight: "700",
+      fontStyle: "normal",
+    },
+    {
+      fontFamily: "soehne breit",
+      src: "url('/fonts/soehne-breit-web-buch.woff2') format('woff2'), url('/fonts/soehne-breit-web-buch.woff') format('woff'), url('/fonts/soehne-breit-web-buch.eot') format('embedded-opentype')",
+      fontWeight: "normal",
+      fontStyle: "normal",
+    },
+    {
+      fontFamily: "soehne breit",
+      src: "url('/fonts/soehne-breit-web-fett.woff2') format('woff2'), url('/fonts/soehne-breit-web-fett.woff') format('woff'), url('/fonts/soehne-breit-web-fett.eot') format('embedded-opentype')",
+      fontWeight: "700",
+      fontStyle: "normal",
+    },
+  ],
+
   "*": {
     fontFamily: "sans-serif",
   },
   html: { fontSize: "100%" },
   body: {
-    background: "white",
-    fontFamily: "'Helvetica', 'sans-serif'",
+    backgroundColor: "$neutral100",
+    fontFamily: "'soehne', 'sans-serif'",
     fontWeight: 400,
     lineHeight: 1.5,
-    color: "#000000",
+    color: "$primary700",
   },
   p: { fontSize: "$3", marginBottom: "1rem" },
+  b: { fontWeight: "$bold" },
   "h1, h2, h3, h4, h5": {
     marginBottom: "1rem",
-    fontFamily: "'Helvetica', 'sans-serif'",
-    fontWeight: 400,
+    fontFamily: "'soehne breit', 'sans-serif'",
+    textTransform: "uppercase",
     lineHeight: 1.5,
   },
   h1: {
@@ -69,9 +110,13 @@ export const baseTypography = globalCss({
 export const baseLayout = globalCss({
   "body, html": {
     height: "100%",
-  },
-  "*": {
     boxSizing: "border-box",
+  },
+  "*, *:before, *:after": {
+    boxSizing: "inherit",
+  },
+  form: {
+    width: "100%",
   },
 });
 

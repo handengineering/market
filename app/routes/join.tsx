@@ -16,12 +16,11 @@ import * as React from "react";
 import Input from "~/components/Input";
 import Button from "~/components/Button";
 import Card from "~/components/Card";
-import AppContainer from "~/components/AppContainer";
-import Main from "~/components/Main";
-import Label from "~/components/Label";
 import ErrorText from "~/components/ErrorText";
 import { authenticator } from "~/services/auth.server";
 import { sessionStorage } from "~/services/session.server";
+import FormWrapper from "~/components/FormWrapper";
+import Label from "~/components/Label";
 
 type LoaderData = {
   magicLinkSent?: boolean;
@@ -35,7 +34,7 @@ type ActionData = {
 
 export let loader: LoaderFunction = async ({ request }) => {
   await authenticator.isAuthenticated(request, {
-    successRedirect: "/dashboard",
+    successRedirect: "/",
   });
   let session = await sessionStorage.getSession(request.headers.get("Cookie"));
   // This session key `auth:magiclink` is the default one used by the EmailLinkStrategy
@@ -60,14 +59,10 @@ export const meta: MetaFunction = () => {
 
 export const ErrorBoundary: ErrorBoundaryComponent = ({ error }) => {
   return (
-    <AppContainer>
-      <Main>
-        <Card position="center">
-          <ErrorText>{error.message}</ErrorText>
-          <Link to="/join">Try a different email?</Link>
-        </Card>
-      </Main>
-    </AppContainer>
+    <Card position="center">
+      <ErrorText>{error.message}</ErrorText>
+      <Link to="/join">Try a different email?</Link>
+    </Card>
   );
 };
 
@@ -85,66 +80,51 @@ export default function Join() {
   }, [actionData]);
 
   return (
-    <AppContainer>
-      <Main>
-        <Card position="center">
-          <h2>Join Hand Engineering Market</h2>
-
-          <Form method="post">
-            <div>
-              <Label htmlFor="email">Email address</Label>
-              <div>
-                <Input
-                  fullWidth
-                  ref={emailRef}
-                  id="email"
-                  required
-                  autoFocus={true}
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  aria-invalid={actionData?.errors?.email ? true : undefined}
-                  aria-describedby="email-error"
-                />
-                {actionData?.errors?.email && (
-                  <ErrorText id="email-error">
-                    {actionData.errors.email}
-                  </ErrorText>
-                )}
-              </div>
-            </div>
-
+    <>
+      <h2>Join</h2>
+      <FormWrapper>
+        <Form method="post">
+          <Label>
+            Email
             <Input
-              fullWidth
-              type="hidden"
-              name="redirectTo"
-              value={redirectTo}
+              ref={emailRef}
+              id="email"
+              aria-label="email"
+              required
+              autoFocus={true}
+              name="email"
+              type="email"
+              autoComplete="email"
+              aria-invalid={actionData?.errors?.email ? true : undefined}
+              aria-describedby="email-error"
             />
-
-            {magicLinkSent ? (
-              "Magic link has been sent!"
-            ) : (
-              <Button fullWidth color="primary" type="submit">
-                Create Account
-              </Button>
+            {actionData?.errors?.email && (
+              <ErrorText id="email-error">{actionData.errors.email}</ErrorText>
             )}
-            <div>
-              <hr />
-              <div>
-                Already have an account?{" "}
-                <Link
-                  to={{
-                    pathname: "/login",
-                    search: searchParams.toString(),
-                  }}
-                >
-                  Log in
-                </Link>
-              </div>
-            </div>
-          </Form>
-        </Card>
-      </Main>
-    </AppContainer>
+          </Label>
+
+          <Input type="hidden" name="redirectTo" value={redirectTo} />
+
+          {magicLinkSent ? (
+            "Magic link has been sent!"
+          ) : (
+            <Button color="primary" type="submit">
+              Create Account
+            </Button>
+          )}
+        </Form>
+      </FormWrapper>
+      <div>
+        Already have an account?{" "}
+        <Link
+          to={{
+            pathname: "/login",
+            search: searchParams.toString(),
+          }}
+        >
+          Log in
+        </Link>
+      </div>
+    </>
   );
 }

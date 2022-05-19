@@ -1,6 +1,7 @@
 import { prisma } from "~/db.server";
 import type { DiscordProfile } from "@prisma/client";
 import type { User } from "./user.server";
+import invariant from "tiny-invariant";
 export type { DiscordProfile } from "@prisma/client";
 
 export type DiscordGuild = {
@@ -36,7 +37,21 @@ export async function createDiscordProfile(
   displayAvatarUrl: string,
   authToken: string
 ) {
-  return prisma.discordProfile.create({
+  const existingDiscordProfile = await prisma.discordProfile.findUnique({
+    where: {
+      id,
+    },
+  });
+
+  if (existingDiscordProfile) {
+    await prisma.discordProfile.delete({
+      where: {
+        id,
+      },
+    });
+  }
+
+  await prisma.discordProfile.create({
     data: {
       id: id,
       userId: userId,
@@ -45,6 +60,16 @@ export async function createDiscordProfile(
       authToken: authToken,
     },
   });
+
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+  });
+
+  invariant(user, "User not found");
+
+  return user;
 }
 
 export async function getDiscordProfileByUserId(id: User["id"]) {

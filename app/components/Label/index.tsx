@@ -2,7 +2,8 @@ import { styled } from "~/styles/stitches.config";
 
 const Label = styled("label", {
   fontSize: "$2",
-  color: "slategrey",
+  color: "$neutral700",
+  fontFamily: "$soehneBreit",
   textTransform: "uppercase",
 });
 
