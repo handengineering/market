@@ -71,12 +71,12 @@ export default function Raffles() {
             );
 
             const formattedStartDateTime = format(
-              parseISO(raffle.startDateTime),
+              parseISO(raffle.startDateTime.toString()),
               "do MMMM yyyy"
             );
 
             const formattedEndDateTime = format(
-              parseISO(raffle.endDateTime),
+              parseISO(raffle.endDateTime.toString()),
               "do MMMM yyyy"
             );
 
@@ -90,14 +90,14 @@ export default function Raffles() {
 
                 <RaffleStatus
                   status={getRaffleActivityStatus(
-                    raffle.startDateTime,
-                    raffle.endDateTime,
+                    raffle.startDateTime.toString(),
+                    raffle.endDateTime.toString(),
                     currentDateTime
                   )}
                 >
                   {getRaffleActivityStatus(
-                    raffle.startDateTime,
-                    raffle.endDateTime,
+                    raffle.startDateTime.toString(),
+                    raffle.endDateTime.toString(),
                     currentDateTime
                   )}
                 </RaffleStatus>
