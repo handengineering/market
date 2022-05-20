@@ -23,7 +23,7 @@ export function createShopifyProvider({
   shop,
   storefrontAccessToken,
 }: ShopifyProviderOptions): EcommerceProvider {
-  let href = `https://${shop}.myshopify.com/api/2021-10/graphql.json`;
+  let href = `https://${shop}.myshopify.com/api/2022-04/graphql.json`;
   async function query(
     locale: string,
     query: string,
@@ -84,6 +84,7 @@ export function createShopifyProvider({
             image:
               item.image?.originalSrc ||
               item.product.images.edges[0].node.originalSrc,
+            metafields: item.product.metafields,
             title: item.product.title,
             formattedOptions: item.title,
             slug: item.product.handle,
@@ -159,13 +160,14 @@ export function createShopifyProvider({
 
       let products = json.data.products.edges.map(
         ({
-          node: { id, handle, title, images, priceRange, variants },
+          node: { id, handle, title, images, priceRange, variants, metafields },
         }: any): Product => ({
           formattedPrice: formatPrice(priceRange.minVariantPrice),
           id,
           defaultVariantId: variants.edges[0].node.id,
           image: images.edges[0].node.originalSrc,
           slug: handle,
+          metafields,
           title,
         })
       );
@@ -214,6 +216,7 @@ export function createShopifyProvider({
         priceRange,
         options,
         variants,
+        metafields,
       } = json.data.productByHandle;
 
       let optionNames = new Set(options.map((o: any) => o.name));
@@ -256,12 +259,22 @@ export function createShopifyProvider({
         title,
         description,
         descriptionHtml,
+        metafields: metafields.edges.map(
+          ({ node: { id, namespace, key, value, type } }: any) => {
+            return { id, namespace, key, value, type };
+          }
+        ),
         selectedVariantId,
         availableForSale,
         options: options.map((option: any) => ({
           name: option.name,
           values: option.values,
         })),
+        variants: variants.edges.map(
+          ({ node: { id, title, selectedOptions, icon } }: any) => {
+            return { id, title, selectedOptions, icon };
+          }
+        ),
       };
     },
     async getProducts(
@@ -331,7 +344,15 @@ export function createShopifyProvider({
         edges?.map(
           ({
             cursor,
-            node: { id, handle, title, images, priceRange, variants },
+            node: {
+              id,
+              handle,
+              title,
+              images,
+              priceRange,
+              variants,
+              metafields,
+            },
           }: any): Product => {
             nextPageCursor = cursor;
             return {
@@ -341,6 +362,7 @@ export function createShopifyProvider({
               image: images.edges[0].node.originalSrc,
               slug: handle,
               title,
+              metafields,
             };
           }
         ) || [];
@@ -402,6 +424,7 @@ export function createShopifyProvider({
               item.image?.originalSrc ||
               item.product.images.edges[0].node.originalSrc,
             title: item.product.title,
+            metafields: item.product.metafields,
             formattedOptions: item.title,
             slug: item.product.handle,
           },
@@ -611,6 +634,17 @@ let getProductQuery = /* GraphQL */ `
         name
         values
       }
+      metafields(first: 250) {
+        edges {
+          node {
+            id
+            namespace
+            key
+            value
+            type
+          }
+        }
+      }
       priceRange {
         maxVariantPrice {
           amount
@@ -630,6 +664,11 @@ let getProductQuery = /* GraphQL */ `
           node {
             id
             title
+            image {
+              id
+              src
+              altText
+            }
             sku
             availableForSale
             requiresShipping
@@ -644,6 +683,18 @@ let getProductQuery = /* GraphQL */ `
             compareAtPriceV2 {
               amount
               currencyCode
+            }
+            icon: metafield(namespace: "context", key: "icon") {
+              id
+              value
+              type
+              reference {
+                ... on MediaImage {
+                  image {
+                    originalSrc
+                  }
+                }
+              }
             }
           }
         }

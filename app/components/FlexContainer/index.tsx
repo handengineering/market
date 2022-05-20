@@ -1,16 +1,15 @@
 import { styled } from "~/styles/stitches.config";
 
 const FlexContainer = styled("div", {
-  height: "100%",
-  width: "100%",
   display: "flex",
   flexWrap: "wrap",
   flexDirection: "row",
+  gap: "$5",
   variants: {
     layout: {
       desktop: {
         flexDirection: "row",
-        alignItems: "flex-start",
+        alignItems: "initial",
       },
       mobile: {
         flexDirection: "column",

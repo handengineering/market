@@ -91,10 +91,13 @@ export const baseTypography = globalCss({
   p: { fontSize: "$3", marginBottom: "1rem" },
   b: { fontWeight: "$bold" },
   "h1, h2, h3, h4, h5": {
-    marginBottom: "1rem",
+    marginBottom: "$3",
     fontFamily: "'soehne breit', 'sans-serif'",
     textTransform: "uppercase",
     lineHeight: 1.5,
+  },
+  ul: {
+    marginBottom: "$3",
   },
   h1: {
     marginTop: 0,

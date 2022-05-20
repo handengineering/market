@@ -5,7 +5,7 @@ const RaffleItem = styled("div", {
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
-  height: "$8",
+  height: "$9",
   flex: "1",
   "&:after": {
     content: "",

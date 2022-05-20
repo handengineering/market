@@ -32,6 +32,13 @@ export interface Category {
   slug: string;
 }
 
+export interface ProductMetafield {
+  id: string;
+  namespace: string;
+  key: string;
+  value: string;
+  type: string;
+}
 export interface Product {
   id: string;
   title: string;
@@ -40,11 +47,29 @@ export interface Product {
   image: string;
   slug: string;
   defaultVariantId: string;
+  metafields: ProductMetafield[];
 }
 
 export interface ProductOption {
   name: string;
   values: string[];
+}
+
+export interface ProductVariant {
+  id: string;
+  title: string;
+  icon: {
+    id: string;
+    reference: {
+      image: {
+        originalSrc: string;
+      };
+    };
+  };
+  selectedOptions: {
+    name: string;
+    value: string;
+  }[];
 }
 
 export interface FullProduct extends Product {
@@ -54,6 +79,7 @@ export interface FullProduct extends Product {
   availableForSale: boolean;
   selectedVariantId?: string;
   options: ProductOption[];
+  variants: ProductVariant[];
 }
 
 export interface Page {

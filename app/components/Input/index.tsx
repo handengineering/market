@@ -12,6 +12,27 @@ const Input = styled("input", {
   "&:focus": {
     outline: "none",
   },
+  "&[type='radio']": {
+    borderWidth: "$3",
+    borderRadius: "$3",
+    appearance: "none",
+    display: "flex",
+    height: "$1",
+    width: "$1",
+    margin: "$2 0 $3 0",
+    justifyContent: "center",
+    alignItems: "center",
+    "&:checked": {
+      "&:before": {
+        content: "",
+        background: "$primary700",
+        borderRadius: "$1",
+        flex: "1",
+        minWidth: "calc($1/2)",
+        minHeight: "calc($1/2)",
+      },
+    },
+  },
 });
 
 export default Input;
