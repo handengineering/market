@@ -1,5 +1,5 @@
-import { Form, useLoaderData } from "@remix-run/react";
-import type { ActionFunction, LoaderFunction } from "@remix-run/server-runtime";
+import { Link, useLoaderData } from "@remix-run/react";
+import type { LoaderFunction } from "@remix-run/server-runtime";
 import Button from "~/components/Button";
 import Card from "~/components/Card";
 import Grid from "~/components/Grid";
@@ -8,7 +8,6 @@ import type { Raffle } from "~/models/raffle.server";
 import { getRaffleById } from "~/models/raffle.server";
 import type { RaffleEntry } from "~/models/raffleEntry.server";
 import { getRaffleEntriesByUserId } from "~/models/raffleEntry.server";
-import { createRaffleEntry } from "~/models/raffleEntry.server";
 import { authenticator } from "~/services/auth.server";
 import commerce from "~/services/commerce.server";
 
@@ -49,16 +48,6 @@ export let loader: LoaderFunction = async ({ request, params }) => {
   return { raffleWithMatchingProducts, raffleEntry };
 };
 
-export let action: ActionFunction = async ({ request, params }) => {
-  const user = await authenticator.isAuthenticated(request, {
-    failureRedirect: "/login",
-  });
-
-  const raffleId = params.raffleId as string;
-
-  return await createRaffleEntry(raffleId, user.id);
-};
-
 export default function Index() {
   const { raffleWithMatchingProducts, raffleEntry } =
     useLoaderData() as LoaderData;
@@ -96,13 +85,13 @@ export default function Index() {
             })}
           </Card>
           <Card align="center">
-            <Form method="post">
-              {!raffleEntry ? (
-                <Button color="primary">Enter Raffle</Button>
-              ) : (
-                <Button disabled>Raffle Entry Sent</Button>
-              )}
-            </Form>
+            {!raffleEntry ? (
+              <Link to={`/raffles/${raffleWithMatchingProducts.id}/configure`}>
+                <Button color="primary">Configure</Button>
+              </Link>
+            ) : (
+              <Button disabled>Entry Sent</Button>
+            )}
           </Card>
         </>
       )}

@@ -1,69 +1,66 @@
 import { styled } from "~/styles/stitches.config";
 
 const Button = styled("button", {
-  backgroundColor: "$neutral300",
-  borderRadius: "$2",
+  backgroundColor: "$neutral500",
+  borderRadius: "$1",
   fontSize: "$2",
   whiteSpace: "nowrap",
   padding: "$1 $2",
   border: "none",
   cursor: "pointer",
-  width: "100%",
-  borderWidth: "1px",
-  borderStyle: "solid",
-  borderColor: "$neutral700",
   color: "$primary700",
   "&:hover": {
-    backgroundColor: "$neutral500",
+    backgroundColor: "$neutral600",
   },
   variants: {
     color: {
       primary: {
         backgroundColor: "$primary500",
-        borderColor: "$primary700",
         color: "$primary100",
         "&:hover": {
-          backgroundColor: "$primary300",
+          backgroundColor: "$primary600",
         },
       },
       secondary: {
         backgroundColor: "$green500",
-        borderColor: "$green700",
         color: "$green100",
         "&:hover": {
-          backgroundColor: "$green300",
+          backgroundColor: "$green600",
         },
       },
       tertiary: {
         backgroundColor: "$yellow500",
-        borderColor: "$yellow700",
+        borderColor: "$yellow400",
         color: "$yellow900",
         "&:hover": {
-          backgroundColor: "$yellow300",
+          backgroundColor: "$yellow600",
         },
       },
       inverse: {
         backgroundColor: "$neutral100",
-        borderColor: "$neutral700",
         color: "$primary500",
         "&:hover": {
-          backgroundColor: "$neutral300",
+          backgroundColor: "$neutral200",
         },
       },
       danger: {
         backgroundColor: "$red500",
-        borderColor: "$red700",
         color: "$red100",
         "&:hover": {
-          backgroundColor: "$red300",
+          backgroundColor: "$red600",
         },
+      },
+    },
+    fullWidth: {
+      true: {
+        width: "100%",
       },
     },
     size: {
       large: {
         fontSize: "$3",
         padding: "$2 $5",
-        borderRadius: "$3",
+        borderRadius: "$2 ",
       },
     },
   },

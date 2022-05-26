@@ -5,7 +5,7 @@ const Textarea = styled("textarea", {
   height: "$1",
   backgroundColor: "$neutral100",
   border: "1px solid $neutral500",
-  borderRadius: "2px",
+  borderRadius: "$1",
   fontSize: "$2",
   padding: "$1 $2",
   marginBottom: "$3",

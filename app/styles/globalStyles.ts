@@ -115,6 +115,12 @@ export const baseLayout = globalCss({
     height: "100%",
     boxSizing: "border-box",
   },
+  body: {
+    display: "flex",
+    alignItems: "center",
+    flexDirection: "column",
+    backgroundColor: "$neutral200",
+  },
   "*, *:before, *:after": {
     boxSizing: "inherit",
   },

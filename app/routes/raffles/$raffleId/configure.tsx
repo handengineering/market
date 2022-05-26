@@ -73,6 +73,14 @@ export let action: ActionFunction = async ({ request, params }) => {
   return await createRaffleEntry(raffleId, user.id);
 };
 
+const ProductDetailsWrapper = styled("div", {
+  flex: "1",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "space-between",
+  marginBottom: "$5",
+});
+
 const ProductImageWrapper = styled("div", {
   flex: "1",
   display: "flex",
@@ -82,38 +90,40 @@ const ProductImageWrapper = styled("div", {
   marginBottom: "$5",
 });
 
-const ProductOptionsConfirmationWrapper = styled("div", {
-  flex: "1",
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "space-between",
-  marginBottom: "$5",
+const ProductImage = styled(Image, {
+  height: "$9",
+  width: "100%",
 });
 
-const ProductDescription = styled("div", {
+const ProductDescriptionWrapper = styled("div");
+
+const ProductDescriptionHtml = styled("div", {
   flex: "2",
+  maxHeight: "$6",
+  textOverflow: "ellipsis",
+  overflow: "scroll",
   // fontSize: "$2",
   "& p": {
     fontSize: "inherit",
   },
 });
 
-const SelectedVariantList = styled("ul", {
-  margin: "0",
-});
-
 const ProductDetails = styled("div", {
-  flex: "1",
-  fontSize: "$1",
-  display: "grid",
-  gridTemplateColumns: "1fr 1fr 1fr 1fr",
+  width: "100%",
+  display: "flex",
+  justifyContent: "space-between",
+  backgroundColor: "$neutral200",
+  color: "$neutral700",
+  borderRadius: "$3",
+  padding: "$5",
 
   "& p": {
     fontSize: "inherit",
   },
-  "& h3": {
-    fontSize: "$2",
-  },
+});
+
+const ProductOptionInputs = styled("div", {
+  display: "flex",
 });
 
 const ProductOptionInput = styled("div", {
@@ -127,14 +137,26 @@ const ProductOptionImage = styled(Image, {
   flexBasis: "$3",
   minWidth: "0",
   marginRight: "$5",
-  marginBottom: "$5",
   objectFit: "contain",
 });
 
 const SelectedVariant = styled("div", {
-  backgroundColor: "$yellow300",
+  flex: "1",
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  backgroundColor: "$neutral100",
   borderRadius: "$3",
   padding: "$3",
+  marginBottom: "$5",
+});
+
+const SelectedVariantList = styled("ul", {
+  display: "flex",
+  marginBottom: "0",
+  "& li": {
+    marginRight: "$5",
+  },
 });
 
 type Option = {
@@ -164,7 +186,7 @@ const renderDetail = (metafield: ProductMetafield) => {
     case "list.dimension":
       const dimensionsArray = JSON.parse(metafield.value);
       return (
-        <div style={{ order: 2 }}>
+        <div>
           <h3>{metafield.key}</h3>
           <p>
             {dimensionsArray.map(
@@ -180,7 +202,7 @@ const renderDetail = (metafield: ProductMetafield) => {
       const weight = JSON.parse(metafield.value);
 
       return (
-        <div style={{ order: 2 }}>
+        <div>
           <h3>{metafield.key}</h3>
           <p>{`${weight.value} ${getWeightUnitShorthand(weight.unit)}`}</p>
         </div>
@@ -188,7 +210,6 @@ const renderDetail = (metafield: ProductMetafield) => {
     default:
       return (
         <div
-          style={{ order: 1 }}
           dangerouslySetInnerHTML={{
             __html: marked.parse(metafield.value),
           }}
@@ -216,95 +237,101 @@ export default function Configure() {
   );
 
   return (
-    <>
-      <h1>{raffleWithMatchingProducts?.name}</h1>
-
+    <Form method="post">
       <FlexContainer layout={{ "@initial": "mobile", "@bp2": "desktop" }}>
         <ProductImageWrapper>
-          <Image src={product?.image} />
-          <Grid>
-            {product?.images.map((image) => {
-              return <Image key={image} src={image} />;
-            })}
-          </Grid>
+          <ProductImage src={product?.image} />
         </ProductImageWrapper>
+        <ProductDetailsWrapper>
+          <ProductDescriptionWrapper>
+            <h1>{raffleWithMatchingProducts?.name}</h1>
 
-        <ProductOptionsConfirmationWrapper>
-          <Card style={{ flex: "0" }}>
-            <ProductDescription
+            <ProductDescriptionHtml
               dangerouslySetInnerHTML={{
                 __html: product?.descriptionHtml || "",
               }}
             />
-            <SelectedVariant>
-              {Object.keys(selectedOptions).length !== 0 ? (
-                <SelectedVariantList>
-                  {Object.keys(selectedOptions).map((selectedOptionKey) => {
-                    return (
-                      <li key={selectedOptionKey}>
-                        <b>{selectedOptionKey}</b>{" "}
-                        {selectedOptions[selectedOptionKey]}
-                      </li>
-                    );
-                  })}
-                </SelectedVariantList>
-              ) : (
-                "No options specified"
-              )}
-            </SelectedVariant>
-          </Card>
-
-          <Form method="post">
+          </ProductDescriptionWrapper>
+          <div>
+            {" "}
             {product?.options.map((option) => {
               return (
                 <>
                   <h2>{option.name}</h2>
-                  {option.values.map((value) => {
-                    const matchingVariant = product?.variants.find(
-                      (variant) => {
-                        return variant.selectedOptions.find(
-                          (selectedOption) => {
-                            return (
-                              selectedOption.name === option.name &&
-                              selectedOption.value === value
-                            );
-                          }
-                        );
-                      }
-                    );
-
-                    const variantIcon = matchingVariant?.icon;
-                    const variantIconImageSrc =
-                      variantIcon && variantIcon.reference.image.originalSrc;
-
-                    return (
-                      <ProductOptionInput key={value}>
-                        {variantIconImageSrc ? (
-                          <ProductOptionImage src={variantIconImageSrc} />
-                        ) : null}
-                        <Label>
-                          {value}
-                          <Input
-                            type="radio"
-                            name={option.name}
-                            value={value}
-                            onChange={() =>
-                              handleSelectedOptionChange({
-                                name: option.name,
-                                value,
-                              })
+                  <ProductOptionInputs>
+                    {option.values.map((value) => {
+                      const matchingVariant = product?.variants.find(
+                        (variant) => {
+                          return variant.selectedOptions.find(
+                            (selectedOption) => {
+                              return (
+                                selectedOption.name === option.name &&
+                                selectedOption.value === value
+                              );
                             }
-                          />
-                        </Label>
-                      </ProductOptionInput>
-                    );
-                  })}
+                          );
+                        }
+                      );
+
+                      const variantIcon = matchingVariant?.icon;
+                      const variantIconImageSrc =
+                        variantIcon && variantIcon.reference.image.originalSrc;
+
+                      return (
+                        <ProductOptionInput key={value}>
+                          {variantIconImageSrc ? (
+                            <ProductOptionImage src={variantIconImageSrc} />
+                          ) : null}
+                          <Label>
+                            {value}
+                            <Input
+                              type="radio"
+                              name={option.name}
+                              value={value}
+                              onChange={() =>
+                                handleSelectedOptionChange({
+                                  name: option.name,
+                                  value,
+                                })
+                              }
+                              css={{ marginBottom: 0 }}
+                            />
+                          </Label>
+                        </ProductOptionInput>
+                      );
+                    })}
+                  </ProductOptionInputs>
                 </>
               );
             })}
-            <Button color="primary">Submit Options</Button>
-          </Form>
-        </ProductOptionsConfirmationWrapper>
+          </div>
+        </ProductDetailsWrapper>
+      </FlexContainer>
+      <FlexContainer layout={{ "@initial": "mobile", "@bp2": "desktop" }}>
+        <div style={{ flex: 1 }}>
+          <SelectedVariant>
+            {Object.keys(selectedOptions).length !== 0 ? (
+              <SelectedVariantList>
+                {Object.keys(selectedOptions).map((selectedOptionKey) => {
+                  return (
+                    <li key={selectedOptionKey}>
+                      <b>{selectedOptionKey}</b>{" "}
+                      {selectedOptions[selectedOptionKey]}
+                    </li>
+                  );
+                })}
+              </SelectedVariantList>
+            ) : (
+              "No options specified"
+            )}
+          </SelectedVariant>
+        </div>
+
+        <div style={{ flex: 1 }}>
+          <Button color="primary" size="large">
+            Submit Options
+          </Button>
+        </div>
       </FlexContainer>
       <FlexContainer layout={{ "@initial": "mobile", "@bp2": "desktop" }}>
         <ProductDetails>
@@ -314,8 +341,7 @@ export default function Configure() {
               })
             : null}
         </ProductDetails>
-        <div style={{ flex: "1" }} />
       </FlexContainer>
-    </>
+    </Form>
   );
 }
