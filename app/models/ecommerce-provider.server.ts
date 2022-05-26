@@ -66,10 +66,7 @@ export interface ProductVariant {
       };
     };
   };
-  selectedOptions: {
-    name: string;
-    value: string;
-  }[];
+  selectedOptions: SelectedProductOption[];
 }
 
 export interface FullProduct extends Product {

@@ -7,21 +7,20 @@ import type {
 import { marked } from "marked";
 import { useState } from "react";
 import Button from "~/components/Button";
-import Card from "~/components/Card";
 import FlexContainer from "~/components/FlexContainer";
-import Grid from "~/components/Grid";
 import Image from "~/components/Image";
 import Input from "~/components/Input";
 import Label from "~/components/Label";
 import type {
   FullProduct,
   ProductMetafield,
+  ProductVariant,
+  SelectedProductOption,
 } from "~/models/ecommerce-provider.server";
 import type { Raffle } from "~/models/raffle.server";
 import { getRaffleById } from "~/models/raffle.server";
 import type { RaffleEntry } from "~/models/raffleEntry.server";
 import { getRaffleEntriesByUserId } from "~/models/raffleEntry.server";
-import { createRaffleEntry } from "~/models/raffleEntry.server";
 import { authenticator } from "~/services/auth.server";
 import commerce from "~/services/commerce.server";
 import { styled } from "~/styles/stitches.config";
@@ -68,9 +67,14 @@ export let action: ActionFunction = async ({ request, params }) => {
     failureRedirect: "/login",
   });
 
+  const formData = await request.formData();
+  console.log(formData);
+
   const raffleId = params.raffleId as string;
 
-  return await createRaffleEntry(raffleId, user.id);
+  return raffleId;
+
+  // return await createRaffleEntry(raffleId, user.id);
 };
 
 const ProductDetailsWrapper = styled("div", {
@@ -102,7 +106,6 @@ const ProductDescriptionHtml = styled("div", {
   maxHeight: "$6",
   textOverflow: "ellipsis",
   overflow: "scroll",
-  // fontSize: "$2",
   "& p": {
     fontSize: "inherit",
   },
@@ -159,11 +162,6 @@ const SelectedVariantList = styled("ul", {
   },
 });
 
-type Option = {
-  name: string;
-  value: string;
-};
-
 type Options = {
   [name: string]: string;
 };
@@ -218,16 +216,33 @@ const renderDetail = (metafield: ProductMetafield) => {
   }
 };
 
+export const getMatchingVariant = (
+  product: FullProduct,
+  selectedProductOptions: SelectedProductOption[]
+): ProductVariant | undefined =>
+  product?.variants.find((variant) => {
+    return variant.selectedOptions.find((selectedOption) => {
+      return selectedProductOptions.every(
+        (selectedProductOption) =>
+          selectedProductOption.name === selectedOption.name &&
+          selectedProductOption.value === selectedOption.value
+      );
+    });
+  });
+
 export default function Configure() {
   const { raffleWithMatchingProducts } = useLoaderData() as LoaderData;
   const product = raffleWithMatchingProducts?.products[0];
   const [selectedOptions, setSelectedOptions] = useState<Options>({});
 
-  const handleSelectedOptionChange = (option: Option) => {
+  const handleSelectedOptionChange = (option: SelectedProductOption) => {
+    console.log({ option });
     const newSelectedOptions = {
       ...selectedOptions,
       [option.name]: option.value,
     };
+
+    console.log(newSelectedOptions);
 
     setSelectedOptions(newSelectedOptions);
   };
@@ -260,18 +275,9 @@ export default function Configure() {
                   <h2>{option.name}</h2>
                   <ProductOptionInputs>
                     {option.values.map((value) => {
-                      const matchingVariant = product?.variants.find(
-                        (variant) => {
-                          return variant.selectedOptions.find(
-                            (selectedOption) => {
-                              return (
-                                selectedOption.name === option.name &&
-                                selectedOption.value === value
-                              );
-                            }
-                          );
-                        }
-                      );
+                      const matchingVariant = getMatchingVariant(product, [
+                        { name: option.name, value },
+                      ]);
 
                       const variantIcon = matchingVariant?.icon;
                       const variantIconImageSrc =
@@ -291,7 +297,7 @@ export default function Configure() {
                               onChange={() =>
                                 handleSelectedOptionChange({
                                   name: option.name,
-                                  value,
+                                  value: value,
                                 })
                               }
                               css={{ marginBottom: 0 }}
