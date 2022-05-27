@@ -1,35 +1,42 @@
+import type { RaffleEntryProduct } from "@prisma/client";
 import { Form, useLoaderData } from "@remix-run/react";
 import type {
   ActionFunction,
   ErrorBoundaryComponent,
   LoaderFunction,
 } from "@remix-run/server-runtime";
-import { marked } from "marked";
 import { useState } from "react";
 import Button from "~/components/Button";
 import FlexContainer from "~/components/FlexContainer";
 import Image from "~/components/Image";
-import Input from "~/components/Input";
-import Label from "~/components/Label";
+import ProductDetails from "~/components/ProductDetails";
+import ProductOptionInputs from "~/components/ProductOptionInputs";
 import type {
   FullProduct,
-  ProductMetafield,
   ProductVariant,
   SelectedProductOption,
 } from "~/models/ecommerce-provider.server";
 import type { Raffle } from "~/models/raffle.server";
 import { getRaffleById } from "~/models/raffle.server";
 import type { RaffleEntry } from "~/models/raffleEntry.server";
+import { createRaffleEntry } from "~/models/raffleEntry.server";
 import { getRaffleEntriesByUserId } from "~/models/raffleEntry.server";
+import {
+  createRaffleEntryProduct,
+  findRaffleEntryProductsByRaffleEntryId,
+} from "~/models/raffleEntryProduct.server";
 import { authenticator } from "~/services/auth.server";
 import commerce from "~/services/commerce.server";
 import { styled } from "~/styles/stitches.config";
+import { getMatchingVariant } from "~/utils/product";
 
 type RaffleWithMatchingProducts = Raffle & { products: FullProduct[] };
 
 type LoaderData = {
   raffleWithMatchingProducts?: RaffleWithMatchingProducts;
   raffleEntry?: RaffleEntry;
+  raffleEntryProducts?: RaffleEntryProduct[];
+  selectedVariant?: ProductVariant;
 };
 
 export let loader: LoaderFunction = async ({ request, params }) => {
@@ -39,11 +46,51 @@ export let loader: LoaderFunction = async ({ request, params }) => {
   const raffleId = params.raffleId as string;
   const raffle: Raffle | null = await getRaffleById(raffleId);
   const raffleEntries = await getRaffleEntriesByUserId(user.id);
-
-  const raffleEntry = raffleEntries.find(
+  const raffleEntry: RaffleEntry | undefined = raffleEntries.find(
     (raffleEntry) =>
       raffleEntry.userId === user.id && raffleEntry.raffleId === raffleId
   );
+
+  const products =
+    raffle &&
+    (await Promise.all(
+      raffle.productSlugs.map(async (productSlug) => {
+        const product = await commerce.getProduct("en", productSlug);
+        return product;
+      })
+    ));
+
+  const product = products && products[0];
+
+  const raffleEntryProducts =
+    raffleEntry &&
+    (await findRaffleEntryProductsByRaffleEntryId(raffleEntry?.id));
+  const raffleEntryProduct = raffleEntryProducts && raffleEntryProducts[0];
+
+  const selectedVariant = product?.variants.find(
+    (variant) => variant.id === raffleEntryProduct?.productVariantId
+  );
+
+  const raffleWithMatchingProducts = {
+    ...raffle,
+    products: products,
+  };
+
+  return {
+    raffleWithMatchingProducts,
+    raffleEntry,
+    raffleEntryProducts,
+    selectedVariant,
+  };
+};
+
+export let action: ActionFunction = async ({ request, params }) => {
+  const user = await authenticator.isAuthenticated(request, {
+    failureRedirect: "/login",
+  });
+
+  const raffleId = params.raffleId as string;
+  const raffle: Raffle | null = await getRaffleById(raffleId);
 
   const matchingProducts =
     raffle &&
@@ -54,27 +101,27 @@ export let loader: LoaderFunction = async ({ request, params }) => {
       })
     ));
 
-  const raffleWithMatchingProducts = {
-    ...raffle,
-    products: matchingProducts,
-  };
+  let formData = await request.formData();
+  let options = formData.getAll("option");
 
-  return { raffleWithMatchingProducts, raffleEntry };
-};
+  const product = matchingProducts && matchingProducts[0];
 
-export let action: ActionFunction = async ({ request, params }) => {
-  const user = await authenticator.isAuthenticated(request, {
-    failureRedirect: "/login",
+  let parsedOptions = options.map((option) => {
+    if (typeof option !== "string") {
+      return null;
+    }
+    return JSON.parse(option);
   });
 
-  const formData = await request.formData();
-  console.log(formData);
+  let matchingVariant = product && getMatchingVariant(product, parsedOptions);
 
-  const raffleId = params.raffleId as string;
+  let raffleEntry = await createRaffleEntry(raffleId, user.id);
 
-  return raffleId;
-
-  // return await createRaffleEntry(raffleId, user.id);
+  return (
+    product &&
+    matchingVariant &&
+    createRaffleEntryProduct(product.id, matchingVariant.id, raffleEntry.id)
+  );
 };
 
 const ProductDetailsWrapper = styled("div", {
@@ -111,38 +158,6 @@ const ProductDescriptionHtml = styled("div", {
   },
 });
 
-const ProductDetails = styled("div", {
-  width: "100%",
-  display: "flex",
-  justifyContent: "space-between",
-  backgroundColor: "$neutral200",
-  color: "$neutral700",
-  borderRadius: "$3",
-  padding: "$5",
-
-  "& p": {
-    fontSize: "inherit",
-  },
-});
-
-const ProductOptionInputs = styled("div", {
-  display: "flex",
-});
-
-const ProductOptionInput = styled("div", {
-  display: "flex",
-  alignItems: "flex-start",
-});
-
-const ProductOptionImage = styled(Image, {
-  flexGrow: "0",
-  flexShrink: "0",
-  flexBasis: "$3",
-  minWidth: "0",
-  marginRight: "$5",
-  objectFit: "contain",
-});
-
 const SelectedVariant = styled("div", {
   flex: "1",
   display: "flex",
@@ -170,92 +185,29 @@ export let ErrorBoundary: ErrorBoundaryComponent = ({ error }) => (
   <div>{error}</div>
 );
 
-const getWeightUnitShorthand = (weightUnit: string) => {
-  switch (weightUnit) {
-    case "GRAMS":
-      return "g";
-    default:
-      return weightUnit;
-  }
-};
-
-const renderDetail = (metafield: ProductMetafield) => {
-  switch (metafield.type) {
-    case "list.dimension":
-      const dimensionsArray = JSON.parse(metafield.value);
-      return (
-        <div>
-          <h3>{metafield.key}</h3>
-          <p>
-            {dimensionsArray.map(
-              (dimension: { value: string; unit: string }, i: number) =>
-                `${dimension.value} ${dimension.unit}${
-                  i !== dimensionsArray.length - 1 ? " x " : ""
-                }`
-            )}
-          </p>
-        </div>
-      );
-    case "weight":
-      const weight = JSON.parse(metafield.value);
-
-      return (
-        <div>
-          <h3>{metafield.key}</h3>
-          <p>{`${weight.value} ${getWeightUnitShorthand(weight.unit)}`}</p>
-        </div>
-      );
-    default:
-      return (
-        <div
-          dangerouslySetInnerHTML={{
-            __html: marked.parse(metafield.value),
-          }}
-        />
-      );
-  }
-};
-
-export const getMatchingVariant = (
-  product: FullProduct,
-  selectedProductOptions: SelectedProductOption[]
-): ProductVariant | undefined =>
-  product?.variants.find((variant) => {
-    return variant.selectedOptions.find((selectedOption) => {
-      return selectedProductOptions.every(
-        (selectedProductOption) =>
-          selectedProductOption.name === selectedOption.name &&
-          selectedProductOption.value === selectedOption.value
-      );
-    });
-  });
-
 export default function Configure() {
-  const { raffleWithMatchingProducts } = useLoaderData() as LoaderData;
+  const { raffleWithMatchingProducts, raffleEntryProducts, selectedVariant } =
+    useLoaderData() as LoaderData;
   const product = raffleWithMatchingProducts?.products[0];
+
   const [selectedOptions, setSelectedOptions] = useState<Options>({});
 
+  console.log(selectedVariant);
+
   const handleSelectedOptionChange = (option: SelectedProductOption) => {
-    console.log({ option });
     const newSelectedOptions = {
       ...selectedOptions,
       [option.name]: option.value,
     };
 
-    console.log(newSelectedOptions);
-
     setSelectedOptions(newSelectedOptions);
   };
 
-  const detailsMetafields = product?.metafields?.filter(
-    (metafield) => metafield.namespace === "details"
-  );
-
-  return (
+  return product ? (
     <Form method="post">
       <FlexContainer layout={{ "@initial": "mobile", "@bp2": "desktop" }}>
         <ProductImageWrapper>
-          <ProductImage src={product?.image} />
+          <ProductImage src={product.image} />
         </ProductImageWrapper>
         <ProductDetailsWrapper>
           <ProductDescriptionWrapper>
@@ -263,50 +215,20 @@ export default function Configure() {
 
             <ProductDescriptionHtml
               dangerouslySetInnerHTML={{
-                __html: product?.descriptionHtml || "",
+                __html: product.descriptionHtml || "",
               }}
             />
           </ProductDescriptionWrapper>
           <div>
-            {" "}
             {product?.options.map((option) => {
               return (
                 <>
                   <h2>{option.name}</h2>
-                  <ProductOptionInputs>
-                    {option.values.map((value) => {
-                      const matchingVariant = getMatchingVariant(product, [
-                        { name: option.name, value },
-                      ]);
-
-                      const variantIcon = matchingVariant?.icon;
-                      const variantIconImageSrc =
-                        variantIcon && variantIcon.reference.image.originalSrc;
-
-                      return (
-                        <ProductOptionInput key={value}>
-                          {variantIconImageSrc ? (
-                            <ProductOptionImage src={variantIconImageSrc} />
-                          ) : null}
-                          <Label>
-                            {value}
-                            <Input
-                              type="radio"
-                              name={option.name}
-                              value={value}
-                              onChange={() =>
-                                handleSelectedOptionChange({
-                                  name: option.name,
-                                  value: value,
-                                })
-                              }
-                              css={{ marginBottom: 0 }}
-                            />
-                          </Label>
-                        </ProductOptionInput>
-                      );
-                    })}
-                  </ProductOptionInputs>
+                  <ProductOptionInputs
+                    option={option}
+                    product={product}
+                    onChange={handleSelectedOptionChange}
+                  />
                 </>
               );
             })}
@@ -340,14 +262,8 @@ export default function Configure() {
         </div>
       </FlexContainer>
       <FlexContainer layout={{ "@initial": "mobile", "@bp2": "desktop" }}>
-        <ProductDetails>
-          {detailsMetafields
-            ? detailsMetafields.map((detailsMetafield) => {
-                return renderDetail(detailsMetafield);
-              })
-            : null}
-        </ProductDetails>
+        <ProductDetails metafields={product.metafields} />
       </FlexContainer>
     </Form>
-  );
+  ) : null;
 }
