@@ -5,15 +5,19 @@ import type {
 } from "~/models/ecommerce-provider.server";
 
 export const getMatchingVariant = (
-  product: FullProduct,
-  selectedProductOptions: SelectedProductOption[]
-): ProductVariant | undefined =>
-  product.variants.find((variant) => {
-    return variant.selectedOptions.find((selectedOption) => {
-      return selectedProductOptions.every(
-        (selectedProductOption) =>
-          selectedProductOption.name === selectedOption.name &&
-          selectedProductOption.value === selectedOption.value
-      );
-    });
+  selectedProductOptions: SelectedProductOption[],
+  product?: FullProduct
+): ProductVariant | undefined => {
+  return product?.variants.find((variant) => {
+    const variantSelectedOptions = variant.selectedOptions;
+
+    return (
+      selectedProductOptions.length === variantSelectedOptions.length &&
+      selectedProductOptions.every(
+        (selectedProductOption, index) =>
+          selectedProductOption.name === variantSelectedOptions[index].name &&
+          selectedProductOption.value === variantSelectedOptions[index].value
+      )
+    );
   });
+};
