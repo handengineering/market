@@ -3,11 +3,20 @@ import ProductOptionInput from "~/components/ProductOptionInput";
 import type {
   FullProduct,
   ProductOption,
+  SelectedProductOption,
 } from "~/models/ecommerce-provider.server";
-import { getMatchingVariant } from "~/utils/product";
+import { getProductOptionIcon } from "~/utils/product";
 
-const ProductOptionInputsWrapper = styled("div", {
-  display: "flex",
+const ProductOptionInputsInnerWrapper = styled("div", {
+  display: "grid",
+  gridTemplateColumns: "1fr 1fr 1fr 1fr ",
+  gridGap: "$5",
+});
+
+const ProductOptionInputsOuterWrapper = styled("div", {
+  "&:not(:last-child)": {
+    marginBottom: "$5",
+  },
 });
 
 export type SelectedOptions = {
@@ -17,8 +26,9 @@ export type SelectedOptions = {
 export interface ProductOptionInputsProps {
   option: ProductOption;
   product: FullProduct;
-  onChange: (args: any) => void;
+  onChange: (option: SelectedProductOption) => void;
   selectedOptions: SelectedOptions;
+  key: string;
 }
 
 export default function ProductOptionInputs({
@@ -26,25 +36,32 @@ export default function ProductOptionInputs({
   product,
   onChange,
   selectedOptions,
+  key,
 }: ProductOptionInputsProps) {
   return (
-    <ProductOptionInputsWrapper>
-      {option.values.map((value) => {
-        const matchingVariant = getMatchingVariant(product, [
-          { name: option.name, value },
-        ]);
+    <ProductOptionInputsOuterWrapper key={key}>
+      <h2>{option.name}</h2>
+      <ProductOptionInputsInnerWrapper key={key}>
+        {option.values.map((value) => {
+          const selectedOption = selectedOptions[option.name];
 
-        return (
-          <ProductOptionInput
-            key={value}
-            name={option.name}
-            value={value}
-            onChange={onChange}
-            checked={selectedOptions[option.name] === value}
-            iconImageSrc={matchingVariant?.icon.reference.image.originalSrc}
-          />
-        );
-      })}
-    </ProductOptionInputsWrapper>
+          return (
+            <ProductOptionInput
+              key={value}
+              name={option.name}
+              value={value}
+              onChange={() =>
+                onChange({
+                  name: option.name,
+                  value: value,
+                })
+              }
+              checked={selectedOption === value}
+              iconImageSrc={getProductOptionIcon(product, option.name, value)}
+            />
+          );
+        })}
+      </ProductOptionInputsInnerWrapper>
+    </ProductOptionInputsOuterWrapper>
   );
 }

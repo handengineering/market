@@ -7,6 +7,7 @@ import type { SelectedProductOption } from "~/models/ecommerce-provider.server";
 const ProductOptionInputWrapper = styled("div", {
   display: "flex",
   alignItems: "flex-start",
+  flex: "1",
 });
 
 const ProductOptionImage = styled(Image, {
@@ -41,11 +42,11 @@ export default function ProductOptionInput({
         {value}
         <Input
           type="radio"
-          name="option"
-          value={JSON.stringify({
+          name={JSON.stringify({
+            type: "option",
             name: name,
-            value: value,
           })}
+          value={value}
           checked={checked}
           onChange={() =>
             onChange({

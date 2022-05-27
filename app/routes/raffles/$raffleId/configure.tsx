@@ -104,19 +104,23 @@ export let action: ActionFunction = async ({ request, params }) => {
     })
   );
 
+  const product = matchingProducts[0];
+
   let formData = await request.formData();
-  let options = formData.getAll("option");
+  let formDataEntries = [...formData.entries()];
 
-  const product = matchingProducts && matchingProducts[0];
+  let options: SelectedProductOption[] = formDataEntries
+    .filter((formDataEntry) => {
+      return JSON.parse(formDataEntry[0]).type === "option";
+    })
+    .map((formDataEntry) => {
+      return {
+        name: JSON.parse(formDataEntry[0]).name,
+        value: formDataEntry[1].toString(),
+      };
+    });
 
-  let parsedOptions = options.map((option) => {
-    if (typeof option !== "string") {
-      return null;
-    }
-    return JSON.parse(option);
-  });
-
-  let matchingVariant = product && getMatchingVariant(product, parsedOptions);
+  let matchingVariant = getMatchingVariant(options, product);
 
   await deleteRaffleEntriesByRaffleIdAndUserId(raffle.id, user.id);
 
@@ -230,15 +234,13 @@ export default function Configure() {
           <div>
             {product?.options.map((option) => {
               return (
-                <div key={option.name}>
-                  <h2>{option.name}</h2>
-                  <ProductOptionInputs
-                    option={option}
-                    product={product}
-                    onChange={handleSelectedOptionChange}
-                    selectedOptions={selectedOptions}
-                  />
-                </div>
+                <ProductOptionInputs
+                  key={option.name}
+                  option={option}
+                  product={product}
+                  onChange={handleSelectedOptionChange}
+                  selectedOptions={selectedOptions}
+                />
               );
             })}
           </div>

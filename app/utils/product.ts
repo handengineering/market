@@ -4,6 +4,15 @@ import type {
   ProductVariant,
 } from "~/models/ecommerce-provider.server";
 
+export interface OptionsIconsMetafieldValue {
+  name: string;
+  values: {
+    name: string;
+    icon: string;
+  }[];
+}
+export type OptionsIconsMetafieldValues = OptionsIconsMetafieldValue[];
+
 export const getMatchingVariant = (
   selectedProductOptions: SelectedProductOption[],
   product?: FullProduct
@@ -21,3 +30,29 @@ export const getMatchingVariant = (
     );
   });
 };
+
+export function getProductOptionIcon(
+  product: FullProduct,
+  optionName: string,
+  optionValue: string
+): string | undefined {
+  const optionsIconsMetafield = product.metafields.find(
+    (metafield) =>
+      metafield.namespace === "options" && metafield.key === "icons"
+  );
+
+  const parsedOptionsIconsMetafield: OptionsIconsMetafieldValue[] | undefined =
+    optionsIconsMetafield && JSON.parse(optionsIconsMetafield.value);
+
+  const matchingOptionsIconsMetafield =
+    parsedOptionsIconsMetafield &&
+    parsedOptionsIconsMetafield.find((value) => value.name === optionName);
+
+  const matchingOption =
+    matchingOptionsIconsMetafield &&
+    matchingOptionsIconsMetafield.values.find(
+      (value) => value.name === optionValue
+    );
+
+  return matchingOption?.icon;
+}
