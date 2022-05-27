@@ -83,8 +83,6 @@ export let loader: LoaderFunction = async ({ request, params }) => {
 
   return {
     raffleWithMatchingProducts,
-    raffleEntry,
-    raffleEntryProducts,
     selectedVariant,
   };
 };
@@ -189,7 +187,7 @@ export let ErrorBoundary: ErrorBoundaryComponent = ({ error }) => (
 );
 
 export default function Configure() {
-  const { raffleWithMatchingProducts, raffleEntryProducts, selectedVariant } =
+  const { raffleWithMatchingProducts, selectedVariant } =
     useLoaderData() as LoaderData;
   const product = raffleWithMatchingProducts?.products[0];
 
@@ -204,10 +202,8 @@ export default function Configure() {
     setSelectedOptions(newSelectedOptions);
   };
 
-  console.log({ selectedOptions, selectedVariant });
-
   useEffect(() => {
-    const newOptions: Options | undefined =
+    const newOptions: SelectedOptions | undefined =
       selectedVariant?.selectedOptions.reduce((total, selectedOption) => {
         return { [selectedOption.name]: selectedOption.value, ...total };
       }, {});
@@ -234,7 +230,7 @@ export default function Configure() {
           <div>
             {product?.options.map((option) => {
               return (
-                <>
+                <div key={option.name}>
                   <h2>{option.name}</h2>
                   <ProductOptionInputs
                     option={option}
@@ -242,7 +238,7 @@ export default function Configure() {
                     onChange={handleSelectedOptionChange}
                     selectedOptions={selectedOptions}
                   />
-                </>
+                </div>
               );
             })}
           </div>
