@@ -5,11 +5,13 @@ import type {
   ErrorBoundaryComponent,
   LoaderFunction,
 } from "@remix-run/server-runtime";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import invariant from "tiny-invariant";
 import Button from "~/components/Button";
 import FlexContainer from "~/components/FlexContainer";
 import Image from "~/components/Image";
 import ProductDetails from "~/components/ProductDetails";
+import type { SelectedOptions } from "~/components/ProductOptionInputs";
 import ProductOptionInputs from "~/components/ProductOptionInputs";
 import type {
   FullProduct,
@@ -19,6 +21,7 @@ import type {
 import type { Raffle } from "~/models/raffle.server";
 import { getRaffleById } from "~/models/raffle.server";
 import type { RaffleEntry } from "~/models/raffleEntry.server";
+import { deleteRaffleEntriesByRaffleIdAndUserId } from "~/models/raffleEntry.server";
 import { createRaffleEntry } from "~/models/raffleEntry.server";
 import { getRaffleEntriesByUserId } from "~/models/raffleEntry.server";
 import {
@@ -46,6 +49,7 @@ export let loader: LoaderFunction = async ({ request, params }) => {
   const raffleId = params.raffleId as string;
   const raffle: Raffle | null = await getRaffleById(raffleId);
   const raffleEntries = await getRaffleEntriesByUserId(user.id);
+
   const raffleEntry: RaffleEntry | undefined = raffleEntries.find(
     (raffleEntry) =>
       raffleEntry.userId === user.id && raffleEntry.raffleId === raffleId
@@ -65,6 +69,7 @@ export let loader: LoaderFunction = async ({ request, params }) => {
   const raffleEntryProducts =
     raffleEntry &&
     (await findRaffleEntryProductsByRaffleEntryId(raffleEntry?.id));
+
   const raffleEntryProduct = raffleEntryProducts && raffleEntryProducts[0];
 
   const selectedVariant = product?.variants.find(
@@ -92,14 +97,14 @@ export let action: ActionFunction = async ({ request, params }) => {
   const raffleId = params.raffleId as string;
   const raffle: Raffle | null = await getRaffleById(raffleId);
 
-  const matchingProducts =
-    raffle &&
-    (await Promise.all(
-      raffle.productSlugs.map(async (productSlug) => {
-        const product = await commerce.getProduct("en", productSlug);
-        return product;
-      })
-    ));
+  invariant(raffle, "Raffle not found");
+
+  const matchingProducts = await Promise.all(
+    raffle.productSlugs.map(async (productSlug) => {
+      const product = await commerce.getProduct("en", productSlug);
+      return product;
+    })
+  );
 
   let formData = await request.formData();
   let options = formData.getAll("option");
@@ -114,6 +119,8 @@ export let action: ActionFunction = async ({ request, params }) => {
   });
 
   let matchingVariant = product && getMatchingVariant(product, parsedOptions);
+
+  await deleteRaffleEntriesByRaffleIdAndUserId(raffle.id, user.id);
 
   let raffleEntry = await createRaffleEntry(raffleId, user.id);
 
@@ -177,10 +184,6 @@ const SelectedVariantList = styled("ul", {
   },
 });
 
-type Options = {
-  [name: string]: string;
-};
-
 export let ErrorBoundary: ErrorBoundaryComponent = ({ error }) => (
   <div>{error}</div>
 );
@@ -190,9 +193,7 @@ export default function Configure() {
     useLoaderData() as LoaderData;
   const product = raffleWithMatchingProducts?.products[0];
 
-  const [selectedOptions, setSelectedOptions] = useState<Options>({});
-
-  console.log(selectedVariant);
+  const [selectedOptions, setSelectedOptions] = useState<SelectedOptions>({});
 
   const handleSelectedOptionChange = (option: SelectedProductOption) => {
     const newSelectedOptions = {
@@ -202,6 +203,17 @@ export default function Configure() {
 
     setSelectedOptions(newSelectedOptions);
   };
+
+  console.log({ selectedOptions, selectedVariant });
+
+  useEffect(() => {
+    const newOptions: Options | undefined =
+      selectedVariant?.selectedOptions.reduce((total, selectedOption) => {
+        return { [selectedOption.name]: selectedOption.value, ...total };
+      }, {});
+
+    newOptions && setSelectedOptions(newOptions);
+  }, [selectedVariant]);
 
   return product ? (
     <Form method="post">
@@ -228,6 +240,7 @@ export default function Configure() {
                     option={option}
                     product={product}
                     onChange={handleSelectedOptionChange}
+                    selectedOptions={selectedOptions}
                   />
                 </>
               );

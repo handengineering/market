@@ -22,14 +22,16 @@ export interface ProductOptionInputProps {
   name: string;
   value: string;
   onChange: (option: SelectedProductOption) => void;
+  checked: boolean;
   iconImageSrc?: string;
 }
 
 export default function ProductOptionInput({
   name,
   value,
-  iconImageSrc,
   onChange,
+  checked,
+  iconImageSrc,
   ...rest
 }: ProductOptionInputProps) {
   return (
@@ -44,6 +46,7 @@ export default function ProductOptionInput({
             name: name,
             value: value,
           })}
+          checked={checked}
           onChange={() =>
             onChange({
               name: name,
