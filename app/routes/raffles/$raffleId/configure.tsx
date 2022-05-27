@@ -183,7 +183,7 @@ const SelectedVariantList = styled("ul", {
 });
 
 export let ErrorBoundary: ErrorBoundaryComponent = ({ error }) => (
-  <div>{error}</div>
+  <div>{error.message}</div>
 );
 
 export default function Configure() {
