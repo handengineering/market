@@ -81,6 +81,7 @@ export function createShopifyProvider({
             defaultVariantId: item.id,
             id: item.product.id,
             formattedPrice: formatPrice(item.priceV2),
+            tags: item.product.tags,
             image:
               item.image?.originalSrc ||
               item.product.images.edges[0].node.originalSrc,
@@ -160,11 +161,21 @@ export function createShopifyProvider({
 
       let products = json.data.products.edges.map(
         ({
-          node: { id, handle, title, images, priceRange, variants, metafields },
+          node: {
+            id,
+            handle,
+            title,
+            tags,
+            images,
+            priceRange,
+            variants,
+            metafields,
+          },
         }: any): Product => ({
           formattedPrice: formatPrice(priceRange.minVariantPrice),
           id,
           defaultVariantId: variants.edges[0].node.id,
+          tags,
           image: images.edges[0].node.originalSrc,
           slug: handle,
           metafields,
@@ -212,6 +223,7 @@ export function createShopifyProvider({
         title,
         description,
         descriptionHtml,
+        tags,
         images,
         priceRange,
         options,
@@ -259,6 +271,7 @@ export function createShopifyProvider({
         title,
         description,
         descriptionHtml,
+        tags,
         metafields: metafields.edges.map(
           ({ node: { id, namespace, key, value, type } }: any) => {
             return { id, namespace, key, value, type };
@@ -348,6 +361,7 @@ export function createShopifyProvider({
               id,
               handle,
               title,
+              tags,
               images,
               priceRange,
               variants,
@@ -359,6 +373,7 @@ export function createShopifyProvider({
               formattedPrice: formatPrice(priceRange.minVariantPrice),
               id,
               defaultVariantId: variants.edges[0].node.id,
+              tags,
               image: images.edges[0].node.originalSrc,
               slug: handle,
               title,
@@ -420,6 +435,7 @@ export function createShopifyProvider({
             defaultVariantId: item.id,
             id: item.product.id,
             formattedPrice: formatPrice(item.priceV2),
+            tags: item.product.tags,
             image:
               item.image?.originalSrc ||
               item.product.images.edges[0].node.originalSrc,
@@ -546,6 +562,7 @@ let productConnectionFragment = /* GraphQL */ `
             currencyCode
           }
         }
+        tags
         images(first: 1) {
           pageInfo {
             hasNextPage
@@ -629,6 +646,7 @@ let getProductQuery = /* GraphQL */ `
       title
       description
       descriptionHtml
+      tags
       options {
         id
         name

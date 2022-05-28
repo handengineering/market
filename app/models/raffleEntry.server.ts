@@ -28,6 +28,15 @@ export async function getRaffleEntriesByRaffleId(raffleId: Raffle["id"]) {
   });
 }
 
+export async function getRaffleEntriesByRaffleIdAndUserId(
+  raffleId: Raffle["id"],
+  userId: User["id"]
+) {
+  return prisma.raffleEntry.findMany({
+    where: { raffleId, userId },
+  });
+}
+
 export async function deleteRaffleEntriesByRaffleIdAndUserId(
   raffleId: Raffle["id"],
   userId: User["id"]

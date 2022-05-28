@@ -16,7 +16,7 @@ export async function createRaffleEntryProduct(
   });
 }
 
-export async function findRaffleEntryProductsByRaffleEntryId(
+export async function getRaffleEntryProductsByRaffleEntryId(
   raffleEntryId: RaffleEntry["id"]
 ) {
   return prisma.raffleEntryProduct.findMany({

@@ -26,7 +26,7 @@ import { createRaffleEntry } from "~/models/raffleEntry.server";
 import { getRaffleEntriesByUserId } from "~/models/raffleEntry.server";
 import {
   createRaffleEntryProduct,
-  findRaffleEntryProductsByRaffleEntryId,
+  getRaffleEntryProductsByRaffleEntryId,
 } from "~/models/raffleEntryProduct.server";
 import { authenticator } from "~/services/auth.server";
 import commerce from "~/services/commerce.server";
@@ -68,7 +68,7 @@ export let loader: LoaderFunction = async ({ request, params }) => {
 
   const raffleEntryProducts =
     raffleEntry &&
-    (await findRaffleEntryProductsByRaffleEntryId(raffleEntry?.id));
+    (await getRaffleEntryProductsByRaffleEntryId(raffleEntry?.id));
 
   const raffleEntryProduct = raffleEntryProducts && raffleEntryProducts[0];
 

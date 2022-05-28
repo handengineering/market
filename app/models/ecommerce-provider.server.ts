@@ -44,6 +44,7 @@ export interface Product {
   title: string;
   formattedPrice: string;
   formattedOptions?: string;
+  tags: string[];
   image: string;
   slug: string;
   defaultVariantId: string;
@@ -72,6 +73,7 @@ export interface ProductVariant {
 export interface FullProduct extends Product {
   description?: string;
   descriptionHtml?: string;
+  tags: string[];
   images: string[];
   availableForSale: boolean;
   selectedVariantId?: string;

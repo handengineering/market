@@ -24,11 +24,11 @@ export type SelectedOptions = {
 };
 
 export interface ProductOptionInputsProps {
+  key: string;
   option: ProductOption;
   product: FullProduct;
-  onChange: (option: SelectedProductOption) => void;
-  selectedOptions: SelectedOptions;
-  key: string;
+  onChange?: (option: SelectedProductOption) => void;
+  selectedOptions?: SelectedOptions;
 }
 
 export default function ProductOptionInputs({
@@ -40,10 +40,11 @@ export default function ProductOptionInputs({
 }: ProductOptionInputsProps) {
   return (
     <ProductOptionInputsOuterWrapper key={key}>
-      <h2>{option.name}</h2>
+      <h4>{option.name}</h4>
       <ProductOptionInputsInnerWrapper key={key}>
         {option.values.map((value) => {
-          const selectedOption = selectedOptions[option.name];
+          const selectedOption =
+            selectedOptions && selectedOptions[option.name];
 
           return (
             <ProductOptionInput
@@ -51,6 +52,7 @@ export default function ProductOptionInputs({
               name={option.name}
               value={value}
               onChange={() =>
+                onChange &&
                 onChange({
                   name: option.name,
                   value: value,
