@@ -7,17 +7,22 @@ import FlexContainer from "~/components/FlexContainer";
 import Image from "~/components/Image";
 import Label from "~/components/Label";
 import Select from "~/components/Select";
-import type {
-  FullProduct,
-  SelectedProductOption,
-} from "~/models/ecommerce-provider.server";
+import type { FullProduct } from "~/models/ecommerce-provider.server";
 import { getRaffleById } from "~/models/raffle.server";
 import { getRaffleEntriesByRaffleIdAndUserId } from "~/models/raffleEntry.server";
 import { getRaffleEntryProductsByRaffleEntryId } from "~/models/raffleEntryProduct.server";
 import { authenticator } from "~/services/auth.server";
 import commerce from "~/services/commerce.server";
 import { styled } from "~/styles/stitches.config";
-import { getMatchingVariant } from "~/utils/product";
+import {
+  getMatchingVariant,
+  getSelectedAccessories,
+  getSelectedAccessoriesWithOptions,
+} from "~/utils/product";
+import {
+  serializeFormDataOptionQuantities,
+  serializeFormDataQuantities,
+} from "~/utils/raffleEntryProduct";
 
 const accessoryCount = 5;
 
@@ -143,84 +148,26 @@ export let action: ActionFunction = async ({ request, params }) => {
   );
 
   const formData = await request.formData();
-  let formDataEntries = [...formData.entries()];
-  let serializedFormDataQuantities = formDataEntries
-    .filter((formDataEntry) => {
-      return JSON.parse(formDataEntry[0]).type === "quantity";
-    })
-    .map((formDataEntry) => {
-      return {
-        name: JSON.parse(formDataEntry[0]).name,
-        value: formDataEntry[1],
-      };
-    });
 
-  let serializedFormDataOptionQuantities: {
-    name: string;
-    value: string;
-    quantity: number;
-    accessoryId: string;
-  }[] = formDataEntries
-    .filter((formDataEntry) => {
-      return JSON.parse(formDataEntry[0]).type === "optionQuantity";
-    })
-    .map((formDataEntry) => {
-      return {
-        name: JSON.parse(formDataEntry[0]).name,
-        value: JSON.parse(formDataEntry[0]).value,
-        quantity: parseInt(formDataEntry[1].toString()),
-        accessoryId: JSON.parse(formDataEntry[0]).accessoryId,
-      };
-    });
+  let serializedFormDataQuantities = serializeFormDataQuantities(formData);
+
+  let serializedFormDataOptionQuantities =
+    serializeFormDataOptionQuantities(formData);
 
   invariant(
     serializedFormDataQuantities,
     "serializedFormDataQuantities not found"
   );
 
-  let selectedAccessories: { variantId: string; quantity: number }[] =
-    fullMatchingAccessories.map((matchingAccessory) => {
-      invariant(matchingAccessory, "matchingAccessory not found");
-      const matchingQuantity = serializedFormDataQuantities.find(
-        (quantity) => quantity.name === matchingAccessory.id
-      );
+  let selectedAccessories = getSelectedAccessories(
+    fullMatchingAccessories,
+    serializedFormDataQuantities
+  );
 
-      return {
-        variantId: matchingAccessory.defaultVariantId,
-        quantity: matchingQuantity
-          ? parseInt(matchingQuantity.value.toString())
-          : 0,
-      };
-    });
-
-  let selectedAccessoriesWithOptions: {
-    variantId: string;
-    quantity: number;
-  }[] = fullMatchingAccessories.flatMap((matchingAccessory) => {
-    invariant(matchingAccessory, "matchingAccessory not found");
-
-    const matchingOptions = serializedFormDataOptionQuantities.filter(
-      (optionQuantity) => optionQuantity.accessoryId === matchingAccessory.id
-    );
-
-    return matchingOptions.map((option) => {
-      const matchingQuantity = serializedFormDataOptionQuantities.find(
-        (quantity) => quantity.value === option.value
-      );
-
-      let matchingVariant = getMatchingVariant(
-        [{ name: option.name, value: option.value }],
-        matchingAccessory
-      );
-
-      return {
-        quantity: matchingQuantity ? matchingQuantity.quantity : 0,
-        variantId: matchingVariant
-          ? matchingVariant.id
-          : matchingAccessory.defaultVariantId,
-      };
-    });
-  });
+  let selectedAccessoriesWithOptions = getSelectedAccessoriesWithOptions(
+    fullMatchingAccessories,
+    serializedFormDataOptionQuantities
+  );
 
   const checkoutUrl = await commerce.getCheckoutUrl("en", [
     { variantId: matchingVariant.id, quantity: 1 },
