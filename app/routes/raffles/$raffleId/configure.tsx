@@ -129,6 +129,7 @@ export let action: ActionFunction = async ({ request, params }) => {
   return (
     product &&
     matchingVariant &&
+    raffleEntry &&
     createRaffleEntryProduct(product.id, matchingVariant.id, raffleEntry.id)
   );
 };
