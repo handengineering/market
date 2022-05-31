@@ -3,7 +3,7 @@ import { styled } from "~/styles/stitches.config";
 
 const HeaderWrapper = styled("header", {
   width: "100%",
-  backgroundColor: "$primary500",
+  backgroundColor: "$neutral300",
   display: "flex",
   gap: "$3",
   alignItems: "center",
@@ -22,7 +22,7 @@ const HeaderWrapper = styled("header", {
 });
 
 const HeaderTitle = styled("h1", {
-  color: "$neutral100",
+  color: "$primary500",
   fontSize: "$5",
   margin: "0",
   textAlign: "center",

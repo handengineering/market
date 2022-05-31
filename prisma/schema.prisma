@@ -27,7 +27,7 @@ model User {
   password       Password?
   userRoles      UserRole[]
   raffleEntries  RaffleEntry[]
-  DiscordProfile DiscordProfile[]
+  discordProfile DiscordProfile[]
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
 }
@@ -38,6 +38,9 @@ model UserRole {
   userId String
   role   Role   @relation(fields: [roleId], references: [id])
   roleId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Role {
@@ -45,6 +48,9 @@ model Role {
   name        String
   permissions Int
   UserRoles   UserRole[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model DiscordProfile {
@@ -74,13 +80,30 @@ model Raffle {
 }
 
 model RaffleEntry {
-  id       String            @id @default(cuid())
-  status   RaffleEntryStatus @default(CREATED)
-  raffle   Raffle            @relation(fields: [raffleId], references: [id], onDelete: Cascade)
+  id       String               @id @default(cuid())
+  status   RaffleEntryStatus    @default(CREATED)
+  products RaffleEntryProduct[]
+
+  raffle   Raffle @relation(fields: [raffleId], references: [id], onDelete: Cascade)
   raffleId String
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model RaffleEntryProduct {
+  id               String @id @default(cuid())
+  productId        String
+  productVariantId String
+
+  raffleEntry   RaffleEntry? @relation(fields: [raffleEntryId], references: [id])
+  raffleEntryId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Password {

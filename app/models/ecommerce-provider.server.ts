@@ -32,14 +32,23 @@ export interface Category {
   slug: string;
 }
 
+export interface ProductMetafield {
+  id: string;
+  namespace: string;
+  key: string;
+  value: string;
+  type: string;
+}
 export interface Product {
   id: string;
   title: string;
   formattedPrice: string;
   formattedOptions?: string;
+  tags: string[];
   image: string;
   slug: string;
   defaultVariantId: string;
+  metafields: ProductMetafield[];
 }
 
 export interface ProductOption {
@@ -47,13 +56,29 @@ export interface ProductOption {
   values: string[];
 }
 
+export interface ProductVariant {
+  id: string;
+  title: string;
+  icon: {
+    id: string;
+    reference: {
+      image: {
+        originalSrc: string;
+      };
+    };
+  };
+  selectedOptions: SelectedProductOption[];
+}
+
 export interface FullProduct extends Product {
   description?: string;
   descriptionHtml?: string;
+  tags: string[];
   images: string[];
   availableForSale: boolean;
   selectedVariantId?: string;
   options: ProductOption[];
+  variants: ProductVariant[];
 }
 
 export interface Page {

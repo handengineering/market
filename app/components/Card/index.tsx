@@ -3,7 +3,6 @@ import { styled } from "~/styles/stitches.config";
 const Card = styled("div", {
   display: "flex",
   flex: "1",
-  marginBottom: "$3",
   flexDirection: "column",
   padding: "$3",
   borderRadius: "4px",
@@ -19,6 +18,16 @@ const Card = styled("div", {
       center: {
         alignItems: "center",
         justifyContent: "center",
+      },
+    },
+    color: {
+      yellow: {
+        backgroundColor: "$yellow300",
+        color: "$yellow700",
+      },
+      primary: {
+        backgroundColor: "$primary500",
+        color: "$primary100",
       },
     },
   },
