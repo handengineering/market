@@ -15,7 +15,6 @@ import { authenticator } from "~/services/auth.server";
 import commerce from "~/services/commerce.server";
 import { styled } from "~/styles/stitches.config";
 import {
-  getMatchingVariant,
   getSelectedAccessories,
   getSelectedAccessoriesWithOptions,
 } from "~/utils/product";
