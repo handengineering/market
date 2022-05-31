@@ -41,6 +41,7 @@ const product: FullProduct = {
   image: "image-src",
   title: "Test Product",
   images: [],
+  tags: [],
   availableForSale: true,
   options: [
     { name: "Color", values: ["New Formula Red", "Silverstone Metallic"] },
