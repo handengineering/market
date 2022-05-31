@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS "RaffleEntryProduct" (
   CONSTRAINT "RaffleEntryProduct_pkey" PRIMARY KEY ("id")
 );
 -- AddForeignKey
+ALTER TABLE "RaffleEntryProduct" DROP CONSTRAINT IF EXISTS "RaffleEntryProduct_raffleEntryId_fkey";
 ALTER TABLE "RaffleEntryProduct"
 ADD CONSTRAINT "RaffleEntryProduct_raffleEntryId_fkey" FOREIGN KEY ("raffleEntryId") REFERENCES "RaffleEntry"("id") ON DELETE
 SET NULL ON UPDATE CASCADE;
