@@ -83,6 +83,7 @@ export let loader: LoaderFunction = async ({ request, params }) => {
 
   return {
     raffleWithMatchingProducts,
+    raffleEntry,
     selectedVariant,
   };
 };
@@ -129,45 +130,39 @@ export let action: ActionFunction = async ({ request, params }) => {
   return (
     product &&
     matchingVariant &&
-    raffleEntry &&
     createRaffleEntryProduct(product.id, matchingVariant.id, raffleEntry.id)
   );
 };
 
 const ProductDetailsWrapper = styled("div", {
   flex: "1",
+  marginBottom: "$5",
   display: "flex",
   flexDirection: "column",
   justifyContent: "space-between",
-  marginBottom: "$5",
 });
 
 const ProductImageWrapper = styled("div", {
-  flex: "1",
+  flex: "2",
   display: "flex",
   alignItems: "flex-start",
   flexDirection: "column",
   gap: "$5",
-  marginBottom: "$5",
 });
 
 const ProductImage = styled(Image, {
   height: "$9",
   width: "100%",
+  flex: "1",
 });
 
-const ProductDescriptionWrapper = styled("div");
-
-const ProductDescriptionHtml = styled("div", {
-  flex: "2",
-  maxHeight: "$6",
-  textOverflow: "ellipsis",
-  overflow: "scroll",
-  "& p": {
-    fontSize: "inherit",
-  },
+const ProductDescription = styled("p", {
+  fontSize: "$5",
+  marginBottom: "$5",
+  padding: "$5",
+  background: "$neutral400",
+  borderRadius: "$3",
 });
-
 const SelectedVariant = styled("div", {
   flex: "1",
   display: "flex",
@@ -192,11 +187,23 @@ export let ErrorBoundary: ErrorBoundaryComponent = ({ error }) => (
 );
 
 export default function Configure() {
-  const { raffleWithMatchingProducts, selectedVariant } =
+  const { raffleWithMatchingProducts, raffleEntry, selectedVariant } =
     useLoaderData() as LoaderData;
+
   const product = raffleWithMatchingProducts?.products[0];
 
-  const [selectedOptions, setSelectedOptions] = useState<SelectedOptions>({});
+  const initialVariant = product?.variants.find(
+    (productVariant) => productVariant.id === product.defaultVariantId
+  );
+
+  const initialOptions: SelectedOptions | undefined =
+    initialVariant?.selectedOptions.reduce((total, selectedOption) => {
+      return { [selectedOption.name]: selectedOption.value, ...total };
+    }, {});
+
+  const [selectedOptions, setSelectedOptions] = useState<SelectedOptions>(
+    initialOptions || {}
+  );
 
   const handleSelectedOptionChange = (option: SelectedProductOption) => {
     const newSelectedOptions = {
@@ -221,30 +228,33 @@ export default function Configure() {
       <FlexContainer layout={{ "@initial": "mobile", "@bp2": "desktop" }}>
         <ProductImageWrapper>
           <ProductImage src={product.image} />
+          <div style={{ flex: 1 }} />
         </ProductImageWrapper>
         <ProductDetailsWrapper>
-          <ProductDescriptionWrapper>
-            <h1>{raffleWithMatchingProducts?.name}</h1>
-
-            <ProductDescriptionHtml
-              dangerouslySetInnerHTML={{
-                __html: product.descriptionHtml || "",
-              }}
-            />
-          </ProductDescriptionWrapper>
           <div>
-            {product?.options.map((option) => {
-              return (
-                <ProductOptionInputs
-                  key={option.name}
-                  option={option}
-                  product={product}
-                  onChange={handleSelectedOptionChange}
-                  selectedOptions={selectedOptions}
-                />
-              );
-            })}
+            <h1>{raffleWithMatchingProducts?.name}</h1>
+            <h2>{raffleWithMatchingProducts.products[0].formattedPrice}</h2>
+            <div>
+              {product?.options.map((option) => {
+                return (
+                  <ProductOptionInputs
+                    key={option.name}
+                    option={option}
+                    product={product}
+                    onChange={handleSelectedOptionChange}
+                    selectedOptions={selectedOptions}
+                  />
+                );
+              })}
+            </div>
           </div>
+          <Button
+            color={raffleEntry ? undefined : "primary"}
+            size="large"
+            disabled={!!raffleEntry}
+          >
+            {raffleEntry ? "Raffle Entry Submitted" : "Submit Options"}
+          </Button>
         </ProductDetailsWrapper>
       </FlexContainer>
       <FlexContainer layout={{ "@initial": "mobile", "@bp2": "desktop" }}>
@@ -266,15 +276,14 @@ export default function Configure() {
             )}
           </SelectedVariant>
         </div>
-
-        <div style={{ flex: 1 }}>
-          <Button color="primary" size="large">
-            Submit Options
-          </Button>
-        </div>
       </FlexContainer>
       <FlexContainer layout={{ "@initial": "mobile", "@bp2": "desktop" }}>
-        <ProductDetails metafields={product.metafields} />
+        <div>
+          <ProductDescription>
+            {raffleWithMatchingProducts.products[0].description}
+          </ProductDescription>
+          <ProductDetails metafields={product.metafields} />
+        </div>
       </FlexContainer>
     </Form>
   ) : null;

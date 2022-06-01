@@ -14,6 +14,15 @@ const getWeightUnitShorthand = (weightUnit: string) => {
   }
 };
 
+const getDimensionUnitShorthand = (dimensionUnit: string) => {
+  switch (dimensionUnit) {
+    case "MILLIMETERS":
+      return "mm";
+    default:
+      return dimensionUnit;
+  }
+};
+
 export default function ProductDetail({ metafield }: ProductDetailProps) {
   switch (metafield.type) {
     case "list.dimension":
@@ -24,9 +33,9 @@ export default function ProductDetail({ metafield }: ProductDetailProps) {
           <p>
             {dimensionsArray.map(
               (dimension: { value: string; unit: string }, i: number) =>
-                `${dimension.value} ${dimension.unit}${
-                  i !== dimensionsArray.length - 1 ? " x " : ""
-                }`
+                `${dimension.value} ${getDimensionUnitShorthand(
+                  dimension.unit
+                )}${i !== dimensionsArray.length - 1 ? " x " : ""}`
             )}
           </p>
         </div>

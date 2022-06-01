@@ -4,7 +4,7 @@ const Main = styled("main", {
   padding: "$5",
   flex: 1,
   width: "100%",
-  backgroundColor: "$neutral100",
+  maxWidth: "$12",
   variants: {
     centerItems: {
       true: {
