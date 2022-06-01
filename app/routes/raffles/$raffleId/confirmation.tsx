@@ -251,17 +251,18 @@ export default function Confirmation() {
                     <h4>Quantity</h4>
 
                     {!hasOptions && (
-                      <Select
-                        name={JSON.stringify({
-                          type: "quantity",
-                          name: matchingAccessory.id,
-                        })}
-                      >
+                      <Select name="quantity">
                         {[...Array(accessoryCount)].map((_, i) => {
-                          const value = i;
+                          const quantityCount = i;
                           return (
-                            <option value={value} key={value}>
-                              {value}
+                            <option
+                              value={JSON.stringify({
+                                name: matchingAccessory.id,
+                                value: quantityCount.toString(),
+                              })}
+                              key={quantityCount}
+                            >
+                              {quantityCount}
                             </option>
                           );
                         })}
@@ -276,19 +277,17 @@ export default function Confirmation() {
                             return (
                               <Label key={optionValue}>
                                 {optionValue}
-                                <Select
-                                  name={JSON.stringify({
-                                    type: "optionQuantity",
-                                    name: option.name,
-                                    option: optionValue,
-                                    accessoryId: matchingAccessory.id,
-                                  })}
-                                >
+                                <Select name="optionQuantity">
                                   {[...Array(accessoryCount)].map((_, i) => {
                                     const quantityCount = i;
                                     return (
                                       <option
-                                        value={quantityCount}
+                                        value={JSON.stringify({
+                                          name: option.name,
+                                          value: quantityCount.toString(),
+                                          option: optionValue,
+                                          accessoryId: matchingAccessory.id,
+                                        })}
                                         key={quantityCount}
                                       >
                                         {quantityCount}
