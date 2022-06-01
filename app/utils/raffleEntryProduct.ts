@@ -1,7 +1,7 @@
 import invariant from "tiny-invariant";
-export interface ParsedFormDataEntryName {
-  type: string;
+export interface ParsedFormDataEntryValue {
   name: string;
+  value: string;
   option?: string;
   accessoryId?: string;
 }
@@ -14,7 +14,7 @@ export interface SerializedFormDataQuantity {
 export interface SerializedFormDataOptionQuantity {
   name: string;
   accessoryId: string;
-  value: FormDataEntryValue;
+  value: string;
   option: string;
 }
 
@@ -24,21 +24,17 @@ export function serializeFormDataQuantities(
   let formDataEntries = [...formData.entries()];
   return formDataEntries
     .filter((formDataEntry) => {
-      let formDataEntryParsedName: ParsedFormDataEntryName | undefined =
-        !!formDataEntry[0] && JSON.parse(formDataEntry[0]);
-      let type: string | undefined =
-        formDataEntryParsedName && formDataEntryParsedName.type;
-
-      return type === "quantity";
+      return formDataEntry && formDataEntry[0] === "quantity";
     })
     .map((formDataEntry) => {
-      let formDataEntryParsedName: ParsedFormDataEntryName | undefined =
-        !!formDataEntry[0] && JSON.parse(formDataEntry[0]);
+      let formDataEntryParsedValue: ParsedFormDataEntryValue | undefined =
+        !!formDataEntry[1] && JSON.parse(formDataEntry[1].toString());
 
-      let name = formDataEntryParsedName && formDataEntryParsedName.name;
-      let value: FormDataEntryValue = formDataEntry[1];
+      let name = formDataEntryParsedValue?.name;
+      let value = formDataEntryParsedValue?.value;
 
       invariant(name, "name is required");
+      invariant(value, "value is required");
 
       return (
         formDataEntry && {
@@ -56,26 +52,19 @@ export function serializeFormDataOptionQuantities(
 
   return formDataEntries
     .filter((formDataEntry) => {
-      let formDataEntryParsedName: ParsedFormDataEntryName | undefined =
-        !!formDataEntry[0] && JSON.parse(formDataEntry[0]);
-      let type = formDataEntryParsedName && formDataEntryParsedName.type;
-
-      return formDataEntry && type === "optionQuantity";
+      return formDataEntry && formDataEntry[0] === "optionQuantity";
     })
     .map((formDataEntry) => {
-      let formDataEntryParsedName: ParsedFormDataEntryName | undefined =
-        !!formDataEntry[0] && JSON.parse(formDataEntry[0]);
+      let formDataEntryParsedValue: ParsedFormDataEntryValue | undefined =
+        !!formDataEntry[1] && JSON.parse(formDataEntry[1].toString());
 
-      console.log({ formDataEntryParsedName });
-
-      let name = formDataEntryParsedName && formDataEntryParsedName.name;
-      let value: FormDataEntryValue = formDataEntry[1];
-      let accessoryId =
-        formDataEntryParsedName && formDataEntryParsedName.accessoryId;
-      let option = formDataEntryParsedName && formDataEntryParsedName.option;
+      let name = formDataEntryParsedValue?.name;
+      let value = formDataEntryParsedValue?.value || "0";
+      let accessoryId = formDataEntryParsedValue?.accessoryId;
+      let option = formDataEntryParsedValue?.option;
 
       invariant(name, "name is required");
-      invariant(value, "quantity is required");
+      invariant(value, "value is required");
       invariant(accessoryId, "accessoryId is required");
       invariant(option, "option is required");
 
