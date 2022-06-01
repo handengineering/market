@@ -4,13 +4,18 @@ export function serializeFormDataQuantities(
   let formDataEntries = [...formData.entries()];
   return formDataEntries
     .filter((formDataEntry) => {
-      return formDataEntry && JSON.parse(formDataEntry[0]).type === "quantity";
+      let type = JSON.parse(formDataEntry[0]).type;
+
+      return formDataEntry && type === "quantity";
     })
     .map((formDataEntry) => {
+      let name: string = JSON.parse(formDataEntry[0]).name;
+      let value: FormDataEntryValue = formDataEntry[1];
+
       return (
         formDataEntry && {
-          name: JSON.parse(formDataEntry[0]).name,
-          value: formDataEntry[1],
+          name: name,
+          value: value,
         }
       );
     });
@@ -26,17 +31,21 @@ export function serializeFormDataOptionQuantities(formData: FormData): {
 
   return formDataEntries
     .filter((formDataEntry) => {
-      return (
-        formDataEntry && JSON.parse(formDataEntry[0]).type === "optionQuantity"
-      );
+      let type = JSON.parse(formDataEntry[0]).type;
+
+      return formDataEntry && type === "optionQuantity";
     })
     .map((formDataEntry) => {
+      let name: string = JSON.parse(formDataEntry[0]).name;
+      let value: string = JSON.parse(formDataEntry[0]).value;
+      let quantity: number = parseInt(formDataEntry[1].toString());
+      let accessoryId: string = JSON.parse(formDataEntry[0]).accessoryId;
       return (
         formDataEntry && {
-          name: JSON.parse(formDataEntry[0]).name,
-          value: JSON.parse(formDataEntry[0]).value,
-          quantity: parseInt(formDataEntry[1].toString()),
-          accessoryId: JSON.parse(formDataEntry[0]).accessoryId,
+          name: name,
+          value: value,
+          quantity: quantity,
+          accessoryId: accessoryId,
         }
       );
     });
