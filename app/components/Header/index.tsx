@@ -3,12 +3,12 @@ import { styled } from "~/styles/stitches.config";
 
 const HeaderWrapper = styled("header", {
   width: "100%",
-  backgroundColor: "$neutral300",
+  maxWidth: "$12",
   display: "flex",
   gap: "$3",
   alignItems: "center",
   justifyContent: "space-between",
-  padding: "$3",
+  padding: "$5",
   variants: {
     layout: {
       desktop: {

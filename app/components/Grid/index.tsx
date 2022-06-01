@@ -2,7 +2,8 @@ import { styled } from "~/styles/stitches.config";
 
 const Grid = styled("div", {
   display: "grid",
-  gridTemplateColumns: "1fr 1fr 1fr",
+  gridTemplateRows: "1fr",
+  gridTemplateColumns: "auto",
   gridGap: "$5",
   variants: {
     layout: {

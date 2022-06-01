@@ -178,7 +178,7 @@ export let action: ActionFunction = async ({ request, params }) => {
 };
 
 const ProductImageWrapper = styled("div", {
-  flex: "1",
+  flex: "2",
   display: "flex",
   alignItems: "flex-start",
   flexDirection: "column",
@@ -193,6 +193,7 @@ const ProductImage = styled(Image, {
 
 const ProductConfirmationWrapper = styled("div", {
   flex: "1",
+  overflow: "hidden",
   display: "flex",
   flexDirection: "column",
   justifyContent: "space-between",
@@ -225,7 +226,7 @@ export default function Confirmation() {
           <ProductImage src={product.image} />
         </ProductImageWrapper>
         <ProductConfirmationWrapper>
-          <h2>Congratulations</h2>
+          <h1>{product.title}</h1>
           <p>
             You have been selected to recieve a spot in the {product.title}{" "}
             group buy. Before you checkout, you may want to include some extra
@@ -241,7 +242,7 @@ export default function Confirmation() {
                 key={matchingAccessory.id}
                 css={{ flexDirection: "column" }}
               >
-                <h3>{matchingAccessory.title}</h3>
+                <h3 style={{ marginBottom: 0 }}>{matchingAccessory.title}</h3>
 
                 <MatchingAccessoryWrapper key={matchingAccessory.id}>
                   <MatchingAccessoryImageWrapper>
@@ -305,7 +306,9 @@ export default function Confirmation() {
               </FlexContainer>
             );
           })}
-          <Button color="primary">Confirm Entry</Button>
+          <Button color="primary" size="large">
+            Confirm Entry
+          </Button>
         </ProductConfirmationWrapper>
       </FlexContainer>
     </Form>
