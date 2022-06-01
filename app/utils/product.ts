@@ -4,6 +4,7 @@ import type {
   SelectedProductOption,
   ProductVariant,
 } from "~/models/ecommerce-provider.server";
+import type { SerializedFormDataOptionQuantity } from "./raffleEntryProduct";
 
 export interface OptionsIconsMetafieldValue {
   name: string;
@@ -85,12 +86,7 @@ export function getSelectedAccessories(
 
 export function getSelectedAccessoriesWithOptions(
   fullMatchingAccessories: (FullProduct | undefined)[],
-  serializedFormDataOptionQuantities: {
-    name: string;
-    value: string;
-    quantity: number;
-    accessoryId: string;
-  }[]
+  serializedFormDataOptionQuantities: SerializedFormDataOptionQuantity[]
 ): {
   variantId: string;
   quantity: number;
@@ -102,18 +98,20 @@ export function getSelectedAccessoriesWithOptions(
       (optionQuantity) => optionQuantity.accessoryId === matchingAccessory.id
     );
 
-    return matchingOptions.map((option) => {
+    return matchingOptions.map((matchingOption) => {
       const matchingQuantity = serializedFormDataOptionQuantities.find(
-        (quantity) => quantity.value === option.value
+        (quantityOption) => quantityOption.option === matchingOption.option
       );
 
       let matchingVariant = getMatchingVariant(
-        [{ name: option.name, value: option.value }],
+        [{ name: matchingOption.name, value: matchingOption.option }],
         matchingAccessory
       );
 
       return {
-        quantity: matchingQuantity ? matchingQuantity.quantity : 0,
+        quantity: matchingQuantity
+          ? parseInt(matchingQuantity.value.toString())
+          : 0,
         variantId: matchingVariant
           ? matchingVariant.id
           : matchingAccessory.defaultVariantId,

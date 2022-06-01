@@ -272,23 +272,26 @@ export default function Confirmation() {
 
                     {matchingAccessory.options.map((option) => {
                       return hasOptions
-                        ? option.values.map((value) => {
+                        ? option.values.map((optionValue) => {
                             return (
-                              <Label key={value}>
-                                {value}
+                              <Label key={optionValue}>
+                                {optionValue}
                                 <Select
                                   name={JSON.stringify({
                                     type: "optionQuantity",
                                     name: option.name,
-                                    value: value,
+                                    option: optionValue,
                                     accessoryId: matchingAccessory.id,
                                   })}
                                 >
                                   {[...Array(accessoryCount)].map((_, i) => {
-                                    const value = i;
+                                    const quantityCount = i;
                                     return (
-                                      <option value={value} key={value}>
-                                        {value}
+                                      <option
+                                        value={quantityCount}
+                                        key={quantityCount}
+                                      >
+                                        {quantityCount}
                                       </option>
                                     );
                                   })}

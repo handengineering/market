@@ -1,42 +1,90 @@
+import invariant from "tiny-invariant";
+export interface ParsedFormDataEntryName {
+  type: string;
+  name: string;
+  option?: string;
+  accessoryId?: string;
+}
+
+export interface SerializedFormDataQuantity {
+  name: string;
+  value: FormDataEntryValue;
+}
+
+export interface SerializedFormDataOptionQuantity {
+  name: string;
+  accessoryId: string;
+  value: FormDataEntryValue;
+  option: string;
+}
+
 export function serializeFormDataQuantities(
   formData: FormData
-): { name: string; value: FormDataEntryValue }[] {
+): SerializedFormDataQuantity[] {
   let formDataEntries = [...formData.entries()];
   return formDataEntries
     .filter((formDataEntry) => {
-      return formDataEntry && JSON.parse(formDataEntry[0]).type === "quantity";
+      let formDataEntryParsedName: ParsedFormDataEntryName | undefined =
+        !!formDataEntry[0] && JSON.parse(formDataEntry[0]);
+      let type: string | undefined =
+        formDataEntryParsedName && formDataEntryParsedName.type;
+
+      return type === "quantity";
     })
     .map((formDataEntry) => {
+      let formDataEntryParsedName: ParsedFormDataEntryName | undefined =
+        !!formDataEntry[0] && JSON.parse(formDataEntry[0]);
+
+      let name = formDataEntryParsedName && formDataEntryParsedName.name;
+      let value: FormDataEntryValue = formDataEntry[1];
+
+      invariant(name, "name is required");
+
       return (
         formDataEntry && {
-          name: JSON.parse(formDataEntry[0]).name,
-          value: formDataEntry[1],
+          name: name,
+          value: value,
         }
       );
     });
 }
 
-export function serializeFormDataOptionQuantities(formData: FormData): {
-  name: string;
-  value: string;
-  quantity: number;
-  accessoryId: string;
-}[] {
+export function serializeFormDataOptionQuantities(
+  formData: FormData
+): SerializedFormDataOptionQuantity[] {
   let formDataEntries = [...formData.entries()];
 
   return formDataEntries
     .filter((formDataEntry) => {
-      return (
-        formDataEntry && JSON.parse(formDataEntry[0]).type === "optionQuantity"
-      );
+      let formDataEntryParsedName: ParsedFormDataEntryName | undefined =
+        !!formDataEntry[0] && JSON.parse(formDataEntry[0]);
+      let type = formDataEntryParsedName && formDataEntryParsedName.type;
+
+      return formDataEntry && type === "optionQuantity";
     })
     .map((formDataEntry) => {
+      let formDataEntryParsedName: ParsedFormDataEntryName | undefined =
+        !!formDataEntry[0] && JSON.parse(formDataEntry[0]);
+
+      console.log({ formDataEntryParsedName });
+
+      let name = formDataEntryParsedName && formDataEntryParsedName.name;
+      let value: FormDataEntryValue = formDataEntry[1];
+      let accessoryId =
+        formDataEntryParsedName && formDataEntryParsedName.accessoryId;
+      let option = formDataEntryParsedName && formDataEntryParsedName.option;
+
+      invariant(name, "name is required");
+      invariant(value, "quantity is required");
+      invariant(accessoryId, "accessoryId is required");
+      invariant(option, "option is required");
+
       return (
         formDataEntry && {
-          name: JSON.parse(formDataEntry[0]).name,
-          value: JSON.parse(formDataEntry[0]).value,
-          quantity: parseInt(formDataEntry[1].toString()),
-          accessoryId: JSON.parse(formDataEntry[0]).accessoryId,
+          name: name,
+          accessoryId: accessoryId,
+          value: value,
+          option: option,
         }
       );
     });
