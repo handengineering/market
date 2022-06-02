@@ -1,6 +1,7 @@
 import clsx from "clsx";
 
-export interface ButtonProps {
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
   color?: "primary" | "secondary" | "tertiary" | "inverse" | "danger";
   size?: "large";
