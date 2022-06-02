@@ -11,7 +11,7 @@ export default function Grid({ children, columns }: GridProps) {
           ? `repeat(${columns}, minmax(0, 1fr))`
           : "auto",
       }}
-      className="grid grid-cols-3 gap-6"
+      className="relative columns-sm gap-6"
     >
       {children}
     </div>

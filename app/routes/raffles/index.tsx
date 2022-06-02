@@ -54,7 +54,7 @@ export default function Raffles() {
   return (
     <>
       <h1 className="mb-6 font-soehneBreit text-xl uppercase">All Raffles</h1>
-      <Grid columns={2}>
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {rafflesWithMatchingProducts &&
           rafflesWithMatchingProducts.map((raffle) => {
             const raffleEntryExists = !!raffleEntries?.some(
@@ -70,7 +70,7 @@ export default function Raffles() {
               />
             );
           })}
-      </Grid>
+      </div>
     </>
   );
 }
