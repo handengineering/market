@@ -174,6 +174,8 @@ export default function Configure() {
     newOptions && setSelectedOptions(newOptions);
   }, [selectedVariant]);
 
+  const secondaryImages = product?.images.slice(1);
+
   return product ? (
     <Form method="post">
       <FlexContainer className="mb-6">
@@ -181,7 +183,7 @@ export default function Configure() {
           <Image src={product.image} />
         </div>
         <div className="flex w-96 flex-initial flex-col justify-between">
-          <div>
+          <div className="mb-6">
             <h1 className="mb-2 font-soehneBreit text-xl font-bold uppercase">
               {raffleWithMatchingProducts?.name}
             </h1>
@@ -213,7 +215,7 @@ export default function Configure() {
       </FlexContainer>
       <FlexContainer>
         <div style={{ flex: 1 }}>
-          <div className="mb-6 flex flex-1 items-center justify-between rounded bg-neutral200 p-4">
+          <div className="mb-12 flex flex-1 items-center justify-between">
             {Object.keys(selectedOptions).length !== 0 ? (
               <ul className="mb-0 flex">
                 {Object.keys(selectedOptions).map((selectedOptionKey) => {
@@ -233,9 +235,17 @@ export default function Configure() {
       </FlexContainer>
       <FlexContainer>
         <div>
-          <p className="mb-6 rounded bg-neutral200 p-6 text-lg">
+          <h2 className="mb-6 font-soehneBreit text-lg ">Description</h2>
+          <p className="mb-12 font-soehneBreit md:text-xl">
             {raffleWithMatchingProducts.products[0].description}
           </p>
+
+          {secondaryImages
+            ? secondaryImages.map((image, index) => {
+                return <Image key={index} src={image} className="mb-6" />;
+              })
+            : null}
+
           <ProductDetails metafields={product.metafields} />
         </div>
       </FlexContainer>
