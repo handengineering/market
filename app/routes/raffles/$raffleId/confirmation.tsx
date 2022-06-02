@@ -6,7 +6,7 @@ import Button from "~/components/Button";
 import FlexContainer from "~/components/FlexContainer";
 import Image from "~/components/Image";
 import Label from "~/components/Label";
-import Select from "~/components/Select";
+import Select, { Option } from "~/components/Select";
 import type { FullProduct } from "~/models/ecommerce-provider.server";
 import { getRaffleById } from "~/models/raffle.server";
 import { getRaffleEntriesByRaffleIdAndUserId } from "~/models/raffleEntry.server";
@@ -273,13 +273,16 @@ export default function Confirmation() {
                       return hasOptions
                         ? option.values.map((optionValue) => {
                             return (
-                              <Label key={optionValue}>
-                                {optionValue}
+                              <>
+                                <Label key={optionValue} htmlFor={option.name}>
+                                  {optionValue}
+                                </Label>
+
                                 <Select name="optionQuantity">
                                   {[...Array(accessoryCount)].map((_, i) => {
                                     const quantityCount = i;
                                     return (
-                                      <option
+                                      <Option
                                         value={JSON.stringify({
                                           name: option.name,
                                           value: quantityCount.toString(),
@@ -289,11 +292,11 @@ export default function Confirmation() {
                                         key={quantityCount}
                                       >
                                         {quantityCount}
-                                      </option>
+                                      </Option>
                                     );
                                   })}
                                 </Select>
-                              </Label>
+                              </>
                             );
                           })
                         : null;
