@@ -1,42 +1,21 @@
-import { styled } from "~/styles/stitches.config";
+import clsx from "clsx";
 
-const Input = styled("input", {
-  width: "100%",
-  height: "$1",
-  backgroundColor: "$neutral100",
-  borderWidth: "1px",
-  borderStyle: "solid",
-  borderColor: "$neutral500",
-  borderRadius: "$1",
-  fontSize: "$2",
-  padding: "$1 $2",
-  marginBottom: "$3",
-  marginLeft: "0",
-  marginRight: "0",
-  "&:focus": {
-    outline: "none",
-  },
-  "&[type='radio']": {
-    appearance: "none",
-    cursor: "pointer",
-    display: "flex",
-    height: "$1",
-    width: "$1",
-    marginTop: "$2",
-    justifyContent: "center",
-    alignItems: "center",
+export interface InputProps
+  extends React.InputHTMLAttributes<HTMLInputElement> {}
 
-    "&:checked": {
-      "&:before": {
-        content: "",
-        background: "$primary700",
-        borderRadius: "$1",
-        flex: "1",
-        minWidth: "calc($1/2)",
-        minHeight: "calc($1/2)",
-      },
-    },
-  },
-});
+export default function Input(props: InputProps) {
+  const buttonClasses = clsx(
+    props.className,
+    "mb-4 h-8 w-full rounded border-2 border-solid border-neutral500 bg-neutral100 py-2 px-4 focus:border-primary300 focus:outline-none"
+  );
+  return <input className={buttonClasses} {...props} />;
+}
 
-export default Input;
+export function InputCheckbox(props: InputProps) {
+  return (
+    <Input
+      className="mt-2 flex h-4 w-4 cursor-pointer appearance-none items-center justify-center checked:before:min-h-full checked:before:min-w-full checked:before:flex-1 checked:before:cursor-pointer checked:before:rounded checked:before:bg-primary700 checked:before:content-[''] "
+      {...props}
+    />
+  );
+}
