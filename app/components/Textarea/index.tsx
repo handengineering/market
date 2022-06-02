@@ -1,17 +1,10 @@
-import { styled } from "~/styles/stitches.config";
-
-const Textarea = styled("textarea", {
-  width: "100%",
-  height: "$1",
-  backgroundColor: "$neutral100",
-  border: "1px solid $neutral500",
-  borderRadius: "$1",
-  fontSize: "$2",
-  padding: "$1 $2",
-  marginBottom: "$3",
-  "&:focus": {
-    outline: "none",
-  },
-});
-
-export default Textarea;
+export interface TextareaProps
+  extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {}
+export default function Textarea(props: TextareaProps) {
+  return (
+    <textarea
+      {...props}
+      className="mb-4 w-full rounded border-2 border-solid border-neutral500 bg-neutral100 py-2 px-4 focus:border-primary300 focus:outline-none"
+    />
+  );
+}

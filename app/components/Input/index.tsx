@@ -6,11 +6,11 @@ export interface InputProps
 }
 
 export default function Input(props: InputProps) {
-  const buttonClasses = clsx(
+  const inputClasses = clsx(
     "mb-4 w-full rounded border-2 border-solid border-neutral500 bg-neutral100 py-2 px-4 focus:border-primary300 focus:outline-none",
     props.className
   );
-  return <input {...props} className={buttonClasses} />;
+  return <input {...props} className={inputClasses} />;
 }
 
 export function InputCheckbox(props: InputProps) {
