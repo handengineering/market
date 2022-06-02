@@ -2,7 +2,6 @@ import { Link, useLoaderData } from "@remix-run/react";
 import type { LoaderFunction } from "@remix-run/server-runtime";
 import Button from "~/components/Button";
 import Card from "~/components/Card";
-import Grid from "~/components/Grid";
 import type { FullProduct } from "~/models/ecommerce-provider.server";
 import type { Raffle } from "~/models/raffle.server";
 import { getRaffles } from "~/models/raffle.server";

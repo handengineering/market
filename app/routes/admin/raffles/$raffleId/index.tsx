@@ -3,8 +3,6 @@ import { Form, useLoaderData } from "@remix-run/react";
 import type { ActionFunction, LoaderFunction } from "@remix-run/server-runtime";
 import { useState } from "react";
 import Button from "~/components/Button";
-import Card from "~/components/Card";
-import Grid from "~/components/Grid";
 import Input from "~/components/Input";
 import Label from "~/components/Label";
 import { prisma } from "~/db.server";

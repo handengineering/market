@@ -3,8 +3,6 @@ import permissions from "prisma/permissions";
 import type { LoaderFunction } from "@remix-run/server-runtime";
 import { redirect } from "@remix-run/server-runtime";
 import { checkPermissions } from "~/services/permissions.server";
-import Button from "~/components/Button";
-import FlexContainer from "~/components/FlexContainer";
 
 export default function Index() {
   return (
