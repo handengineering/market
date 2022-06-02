@@ -226,8 +226,10 @@ export default function Confirmation() {
           <ProductImage src={product.image} />
         </ProductImageWrapper>
         <ProductConfirmationWrapper>
-          <h1>{product.title}</h1>
-          <p>
+          <h1 className="mb-6 font-soehneBreit text-xl font-bold">
+            {product.title}
+          </h1>
+          <p className="mb-6">
             You have been selected to recieve a spot in the {product.title}{" "}
             group buy. Before you checkout, you may want to include some extra
             parts.
@@ -246,28 +248,27 @@ export default function Confirmation() {
                     <MatchingAccessoryImage src={matchingAccessory.image} />
                   </MatchingAccessoryImageWrapper>
                   <MatchingAccessoryOptionsWrapper>
-                    <h4>Quantity</h4>
-
                     {!hasOptions && (
-                      <Select name="quantity">
-                        {[...Array(accessoryCount)].map((_, i) => {
-                          const quantityCount = i;
-                          return (
-                            <option
-                              value={JSON.stringify({
-                                name: matchingAccessory.id,
-                                value: quantityCount.toString(),
-                              })}
-                              key={quantityCount}
-                            >
-                              {quantityCount}
-                            </option>
-                          );
-                        })}
-                      </Select>
+                      <>
+                        <Label htmlFor="quantity">Standard</Label>
+                        <Select name="quantity">
+                          {[...Array(accessoryCount)].map((_, i) => {
+                            const quantityCount = i;
+                            return (
+                              <option
+                                value={JSON.stringify({
+                                  name: matchingAccessory.id,
+                                  value: quantityCount.toString(),
+                                })}
+                                key={quantityCount}
+                              >
+                                {quantityCount}
+                              </option>
+                            );
+                          })}
+                        </Select>
+                      </>
                     )}
-
-                    {hasOptions ? <h4>Options</h4> : null}
 
                     {matchingAccessory.options.map((option) => {
                       return hasOptions

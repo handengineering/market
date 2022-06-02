@@ -8,7 +8,7 @@ export default function Grid({ children, columns }: GridProps) {
     <div
       style={{
         gridTemplateColumns: columns
-          ? `repeat(2, minmax(0, ${columns}fr))`
+          ? `repeat(${columns}, minmax(0, 1fr))`
           : "auto",
       }}
       className="grid grid-cols-3 gap-6"

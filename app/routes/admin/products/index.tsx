@@ -32,11 +32,11 @@ export default function Products() {
   return (
     <div>
       <h2>Products</h2>
-      <Grid>
+      <Grid columns={4}>
         {products.map((product: Product) => (
           <Card key={product.id}>
             <Link to={product.slug}>
-              <h3>{product.title}</h3>
+              <h3 className="mb-6">{product.title}</h3>
               <img src={product.image} alt={product.title} width="100%" />
             </Link>
           </Card>

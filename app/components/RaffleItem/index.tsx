@@ -1,17 +1,10 @@
 import { Link } from "@remix-run/react";
 import { format, parseISO } from "date-fns";
 import type { RaffleWithMatchingProducts } from "~/models/raffle.server";
-import { styled } from "~/styles/stitches.config";
 import { getRaffleActivityStatus } from "~/utils/raffle";
 import Button from "~/components/Button";
 import Image from "~/components/Image";
 import clsx from "clsx";
-
-export const RaffleDate = styled("p", {
-  fontSize: "$2",
-  marginBottom: "$3",
-  opacity: ".5",
-});
 
 export interface RaffleItemProps {
   raffle: RaffleWithMatchingProducts;
@@ -20,12 +13,12 @@ export interface RaffleItemProps {
 }
 
 const raffleStatusClasses = {
-  base: "bg-neutral100 rounded py-1 px-2 mb-4 border-2 border-solid text-sm",
+  base: "bg-neutral100 rounded py-1 px-2 mb-4 border-2 border-solid text-xs",
   status: {
-    UPCOMING: "text-yellow-700 bg-yellow300 border-yellow500",
-    ACTIVE: "text-green-700 bg-green300 border-green500",
-    PAST: "text-red-700 bg-red300 border-red500",
-    UNKNOWN: "text-neutral-700 bg-neutral300 border-neutral500",
+    UPCOMING: "text-yellow700 bg-yellow300 border-yellow500",
+    ACTIVE: "text-green700 bg-green300 border-green500",
+    PAST: "text-red700 bg-red300 border-red500",
+    UNKNOWN: "text-neutral700 bg-neutral300 border-neutral500",
   },
 };
 
@@ -76,9 +69,9 @@ export default function RaffleItem({
           currentDateTime
         )}
       </span>
-      <RaffleDate>
+      <p className="mb-4 text-sm opacity-50">
         {formattedStartDateTime}–{formattedEndDateTime}
-      </RaffleDate>
+      </p>
       <br />
       <p className="mb-2">From {raffle.products[0].formattedPrice}</p>
       <Link to={raffle.id}>
@@ -86,7 +79,7 @@ export default function RaffleItem({
           View Details
         </Button>
       </Link>
-      <RaffleDate>{raffleEntryExists && `Raffle Entry Submitted`}</RaffleDate>
+      <p>{raffleEntryExists && `Raffle Entry Submitted`}</p>
     </div>
   );
 }
