@@ -11,6 +11,7 @@ import {
 import { globalStyles } from "./styles/globalStyles";
 import type {
   ErrorBoundaryComponent,
+  LinksFunction,
   LoaderFunction,
   MetaFunction,
 } from "@remix-run/node";
@@ -21,6 +22,12 @@ import type { User } from "@prisma/client";
 import { authenticator } from "./services/auth.server";
 import { checkPermissions } from "./services/permissions.server";
 import permissions from "prisma/permissions";
+
+import tailwindStylesheetUrl from "./styles/tailwind.css";
+
+export const links: LinksFunction = () => {
+  return [{ rel: "stylesheet", href: tailwindStylesheetUrl }];
+};
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
