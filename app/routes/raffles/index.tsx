@@ -1,6 +1,5 @@
 import { useLoaderData } from "@remix-run/react";
 import type { LoaderFunction } from "@remix-run/server-runtime";
-import Grid from "~/components/Grid";
 import RaffleItem from "~/components/RaffleItem";
 import type {
   Raffle,
