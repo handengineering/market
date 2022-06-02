@@ -1,7 +1,9 @@
 import clsx from "clsx";
 
 export interface InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {}
+  extends React.InputHTMLAttributes<HTMLInputElement> {
+  ref?: React.Ref<HTMLInputElement>;
+}
 
 export default function Input(props: InputProps) {
   const buttonClasses = clsx(

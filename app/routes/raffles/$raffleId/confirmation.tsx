@@ -238,10 +238,7 @@ export default function Confirmation() {
             );
 
             return (
-              <FlexContainer
-                key={matchingAccessory.id}
-                css={{ flexDirection: "column" }}
-              >
+              <FlexContainer key={matchingAccessory.id}>
                 <h3 style={{ marginBottom: 0 }}>{matchingAccessory.title}</h3>
 
                 <MatchingAccessoryWrapper key={matchingAccessory.id}>
