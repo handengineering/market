@@ -235,7 +235,7 @@ export default function Configure() {
       </FlexContainer>
       <FlexContainer>
         <div>
-          <h2 className="mb-6 font-soehneBreit text-lg ">Description</h2>
+          <h2 className="mb-6 font-soehneBreit text-lg">Description</h2>
           <p className="mb-12 font-soehneBreit md:text-xl">
             {raffleWithMatchingProducts.products[0].description}
           </p>

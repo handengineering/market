@@ -8,8 +8,8 @@ import FlexContainer from "~/components/FlexContainer";
 
 export default function Index() {
   return (
-    <div className="flex h-full flex-row items-start gap-6">
-      <div className="h-full flex-shrink-0 flex-grow-0 basis-64  rounded  bg-neutral200 p-6">
+    <div className="flex h-full flex-col items-start gap-6 md:flex-row">
+      <div className="w-full rounded bg-neutral200 p-6 md:h-full  md:flex-shrink-0  md:flex-grow-0 md:basis-64">
         <h2 className="mb-6 text-lg">🛠 Admin</h2>
 
         <ul>
@@ -30,9 +30,7 @@ export default function Index() {
           </li>
         </ul>
       </div>
-      <FlexContainer>
-        <Outlet />
-      </FlexContainer>
+      <Outlet />
     </div>
   );
 }
