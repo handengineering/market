@@ -5,5 +5,5 @@ export interface DiscordStatusWrapperProps {
 export default function DiscordStatusWrapper({
   children,
 }: DiscordStatusWrapperProps) {
-  <div className="mb-4 flex flex-row">{children}</div>;
+  return <div className="mb-4 flex flex-row">{children}</div>;
 }

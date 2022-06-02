@@ -5,5 +5,5 @@ export interface DiscordStatusTextFieldsProps {
 export default function DiscordStatusTextFields({
   children,
 }: DiscordStatusTextFieldsProps) {
-  <div className="flex flex-col justify-center">{children}</div>;
+  return <div className="flex flex-col justify-center">{children}</div>;
 }
