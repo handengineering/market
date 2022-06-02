@@ -69,7 +69,10 @@ export default function Login() {
           />
 
           {magicLinkSent ? (
-            "Magic link has been sent!"
+            <p className="rounded bg-yellow200 px-2 py-4 text-center text-sm">
+              Magic link has been sent!
+              <br /> Please check your email and click the link to login.
+            </p>
           ) : (
             <Button color="primary" className="text-l w-full">
               Email a login link

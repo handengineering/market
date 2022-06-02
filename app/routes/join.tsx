@@ -106,7 +106,10 @@ export default function Join() {
           <Input type="hidden" name="redirectTo" value={redirectTo} />
 
           {magicLinkSent ? (
-            "Magic link has been sent!"
+            <p className="rounded bg-yellow200 px-2 py-4 text-center text-sm">
+              Magic link has been sent!
+              <br /> Please check your email and click the link to login.
+            </p>
           ) : (
             <Button color="primary" type="submit" className="text-l w-full">
               Create Account
