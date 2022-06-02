@@ -1,16 +1,19 @@
-import { styled } from "~/styles/stitches.config";
+export interface GridProps {
+  children: React.ReactNode;
+  columns?: number;
+}
 
-const Grid = styled("div", {
-  display: "grid",
-  gridTemplateRows: "1fr",
-  gridTemplateColumns: "auto",
-  gridGap: "$5",
-  variants: {
-    layout: {
-      mobile: { gridTemplateColumns: "1fr" },
-      desktop: { gridTemplateColumns: "1fr 1fr 1fr" },
-    },
-  },
-});
-
-export default Grid;
+export default function Grid({ children, columns }: GridProps) {
+  return (
+    <div
+      style={{
+        gridTemplateColumns: columns
+          ? `repeat(2, minmax(0, ${columns}fr))`
+          : "auto",
+      }}
+      className="grid grid-cols-3 gap-6"
+    >
+      {children}
+    </div>
+  );
+}
