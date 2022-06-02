@@ -1,7 +1,12 @@
-export interface ErrorTextProps {
+export interface ErrorTextProps
+  extends React.HTMLAttributes<HTMLParagraphElement> {
   children: React.ReactNode;
 }
 
-export default function ErrorText({ children }: ErrorTextProps) {
-  return <p className="mb-0 text-base text-red500">{children}</p>;
+export default function ErrorText({ children, ...rest }: ErrorTextProps) {
+  return (
+    <p className="mb-0 text-base text-red500" {...rest}>
+      {children}
+    </p>
+  );
 }
