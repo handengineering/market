@@ -39,7 +39,7 @@ export let action: ActionFunction = async ({ request }) => {
 
 export const ErrorBoundary: ErrorBoundaryComponent = ({ error }) => {
   return (
-    <Card position="center">
+    <Card>
       <ErrorText>{error.message}</ErrorText>
       <Link to="/login">Try a different email?</Link>
     </Card>

@@ -84,7 +84,7 @@ export default function Index() {
               );
             })}
           </Card>
-          <Card align="center">
+          <Card>
             {!raffleEntry ? (
               <Link to={`/raffles/${raffleWithMatchingProducts.id}/configure`}>
                 <Button color="primary">Configure</Button>
