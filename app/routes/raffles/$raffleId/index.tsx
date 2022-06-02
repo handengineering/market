@@ -53,12 +53,15 @@ export default function Index() {
     useLoaderData() as LoaderData;
 
   return (
-    <Grid>
+    <>
       {raffleWithMatchingProducts && (
-        <>
+        <Grid columns={2}>
           <Card>
             <>
-              <h2>{raffleWithMatchingProducts.name}</h2>
+              <h1 className="mb-4 font-soehneBreit text-xl font-bold uppercase text-primary500">
+                {raffleWithMatchingProducts.name}
+              </h1>
+
               <img
                 src={raffleWithMatchingProducts.products[0].image}
                 alt={raffleWithMatchingProducts?.name}
@@ -67,22 +70,8 @@ export default function Index() {
             </>
           </Card>
           <Card>
-            <h2>Description</h2>
+            <h2 className="mb-4 text-lg">Description</h2>
             <p>{raffleWithMatchingProducts.products[0].description}</p>
-            <hr />
-            <h3>Options</h3>
-            {raffleWithMatchingProducts.products[0].options.map((option) => {
-              return (
-                <>
-                  <h4>{option.name}</h4>
-                  <ul>
-                    {option.values.map((value) => (
-                      <li key={value}>{value}</li>
-                    ))}
-                  </ul>
-                </>
-              );
-            })}
           </Card>
           <Card>
             {!raffleEntry ? (
@@ -93,8 +82,8 @@ export default function Index() {
               <Button disabled>Entry Sent</Button>
             )}
           </Card>
-        </>
+        </Grid>
       )}
-    </Grid>
+    </>
   );
 }

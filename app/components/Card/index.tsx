@@ -1,7 +1,7 @@
 import clsx from "clsx";
 
 const classes = {
-  base: "flex flex-col p-4 rounded-sm bg-neutral300",
+  base: "flex flex-col p-6 rounded-md bg-neutral300",
 };
 
 export interface CardProps {
