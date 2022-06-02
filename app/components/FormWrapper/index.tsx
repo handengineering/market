@@ -1,12 +1,11 @@
-import { styled } from "~/styles/stitches.config";
+export interface FormWrapperProps {
+  children: React.ReactNode;
+}
 
-const FormWrapper = styled("div", {
-  display: "flex",
-  width: "$8",
-  marginBottom: "$3",
-  flexDirection: "column",
-  alignItems: "center",
-  justifyContent: "center",
-});
-
-export default FormWrapper;
+export default function FormWrapper({ children }: FormWrapperProps) {
+  return (
+    <div className="align-center mb-4 flex w-96 flex-col justify-center">
+      {children}
+    </div>
+  );
+}

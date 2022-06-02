@@ -3,7 +3,6 @@ import type { LoaderFunction } from "@remix-run/server-runtime";
 import Button from "~/components/Button";
 import Card from "~/components/Card";
 import Grid from "~/components/Grid";
-import { RaffleTitle } from "~/components/RaffleItem";
 import type { FullProduct } from "~/models/ecommerce-provider.server";
 import type { Raffle } from "~/models/raffle.server";
 import { getRaffles } from "~/models/raffle.server";
@@ -45,13 +44,14 @@ export default function Raffles() {
   return (
     <>
       <h2>All Raffles</h2>
-      <Grid layout={{ "@initial": "mobile", "@bp2": "desktop" }}>
+      <Grid>
         {rafflesWithMatchingProducts &&
           rafflesWithMatchingProducts.map((raffle) => {
             return (
               <Card key={raffle.id}>
-                <RaffleTitle>{raffle.name}</RaffleTitle>
-
+                <h2 className="whitespace-nowrap text-lg text-primary500">
+                  {raffle.name}
+                </h2>
                 <p>From {raffle.products[0].formattedPrice}</p>
                 <Link to={raffle.id}>
                   <Button size="large" color="primary">

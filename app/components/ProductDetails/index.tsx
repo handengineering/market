@@ -1,31 +1,5 @@
-import { styled } from "~/styles/stitches.config";
 import ProductDetail from "~/components/ProductDetail";
 import type { ProductMetafield } from "~/models/ecommerce-provider.server";
-
-const ProductDetailsWrapper = styled("div", {
-  width: "100%",
-  display: "grid",
-  gridAutoColumns: "auto",
-  gridTemplateColumns: "1fr 1fr 1fr 1fr",
-  gridTemplateRows: "1fr",
-
-  backgroundColor: "$neutral200",
-  borderRadius: "$3",
-  borderWidth: "$1",
-  borderStyle: "solid",
-  borderColor: "$neutral500",
-
-  "& p": {
-    fontSize: "inherit",
-  },
-});
-
-const ProductDetailWrapper = styled("div", {
-  padding: "$5",
-  "& ul": {
-    margin: "0",
-  },
-});
 
 export interface ProductDetailsProps {
   metafields: ProductMetafield[];
@@ -50,39 +24,39 @@ export default function ProductDetails({ metafields }: ProductDetailsProps) {
   );
 
   return (
-    <ProductDetailsWrapper>
+    <div className="grid w-full auto-cols-auto grid-cols-4 grid-rows-1 rounded border-2 border-solid border-neutral500 bg-neutral200 ">
       {componentsMetafield ? (
-        <ProductDetailWrapper>
+        <div className="p-6">
           <ProductDetail
             key={componentsMetafield.key}
             metafield={componentsMetafield}
           />
-        </ProductDetailWrapper>
+        </div>
       ) : null}
       {accessoriesMetafield ? (
-        <ProductDetailWrapper>
+        <div className="p-6">
           <ProductDetail
             key={accessoriesMetafield.key}
             metafield={accessoriesMetafield}
           />
-        </ProductDetailWrapper>
+        </div>
       ) : null}
       {dimensionsMetafield ? (
-        <ProductDetailWrapper>
+        <div className="p-6">
           <ProductDetail
             key={dimensionsMetafield.key}
             metafield={dimensionsMetafield}
           />
-        </ProductDetailWrapper>
+        </div>
       ) : null}
       {weightMetafield ? (
-        <ProductDetailWrapper>
+        <div className="p-6">
           <ProductDetail
             key={weightMetafield.key}
             metafield={weightMetafield}
           />
-        </ProductDetailWrapper>
+        </div>
       ) : null}
-    </ProductDetailsWrapper>
+    </div>
   );
 }

@@ -3,38 +3,37 @@ import permissions from "prisma/permissions";
 import type { LoaderFunction } from "@remix-run/server-runtime";
 import { redirect } from "@remix-run/server-runtime";
 import { checkPermissions } from "~/services/permissions.server";
-import Sidebar, { SidebarWraper } from "~/components/Sidebar";
 import Button from "~/components/Button";
 import FlexContainer from "~/components/FlexContainer";
 
 export default function Index() {
   return (
-    <SidebarWraper layout={{ "@initial": "mobile", "@bp2": "desktop" }}>
-      <Sidebar layout={{ "@initial": "mobile", "@bp2": "desktop" }}>
-        <h2>🛠 Admin</h2>
+    <div className="flex h-full flex-row items-start gap-6">
+      <div className="h-full flex-shrink-0 flex-grow-0 basis-64  rounded  bg-neutral200 p-6">
+        <h2 className="mb-6 text-lg">🛠 Admin</h2>
 
         <ul>
-          <li>
+          <li className="mb-2">
             <Link to="/admin/raffles">
-              <Button>Raffles</Button>
+              <Button className="w-full">Raffles</Button>
             </Link>
           </li>
-          <li>
+          <li className="mb-2">
             <Link to="/admin/raffle/new">
-              <Button>New Raffle</Button>
+              <Button className="w-full">New Raffle</Button>
             </Link>
           </li>
-          <li>
+          <li className="mb-2">
             <Link to="/admin/products">
-              <Button>Products</Button>
+              <Button className="w-full">Products</Button>
             </Link>
           </li>
         </ul>
-      </Sidebar>
-      <FlexContainer layout={{ "@initial": "mobile", "@bp2": "desktop" }}>
+      </div>
+      <FlexContainer>
         <Outlet />
       </FlexContainer>
-    </SidebarWraper>
+    </div>
   );
 }
 

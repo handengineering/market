@@ -1,9 +1,11 @@
-import { styled } from "~/styles/stitches.config";
+import clsx from "clsx";
 
-const Image = styled("img", {
-  borderRadius: "$3",
-  maxWidth: "100%",
-  objectFit: "contain",
-});
+export interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {}
 
-export default Image;
+export default function Image(props: ImageProps) {
+  const imageClasses = clsx(
+    "max-w-full rounded-lg object-contain",
+    props.className
+  );
+  return <img {...props} alt={props.alt} className={imageClasses} />;
+}

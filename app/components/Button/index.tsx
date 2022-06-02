@@ -1,69 +1,38 @@
-import { styled } from "~/styles/stitches.config";
+import clsx from "clsx";
 
-const Button = styled("button", {
-  backgroundColor: "$neutral500",
-  borderRadius: "$1",
-  fontSize: "$2",
-  whiteSpace: "nowrap",
-  padding: "$1 $2",
-  border: "none",
-  cursor: "pointer",
-  color: "$primary700",
-  "&:hover": {
-    backgroundColor: "$neutral600",
-  },
-  variants: {
-    color: {
-      primary: {
-        backgroundColor: "$primary500",
-        color: "$primary100",
-        "&:hover": {
-          backgroundColor: "$primary600",
-        },
-      },
-      secondary: {
-        backgroundColor: "$green500",
-        color: "$green100",
-        "&:hover": {
-          backgroundColor: "$green600",
-        },
-      },
-      tertiary: {
-        backgroundColor: "$yellow500",
-        borderColor: "$yellow400",
-        color: "$yellow900",
-        "&:hover": {
-          backgroundColor: "$yellow600",
-        },
-      },
-      inverse: {
-        backgroundColor: "$neutral100",
-        color: "$primary500",
-        "&:hover": {
-          backgroundColor: "$neutral200",
-        },
-      },
-      danger: {
-        backgroundColor: "$red500",
-        color: "$red100",
-        "&:hover": {
-          backgroundColor: "$red600",
-        },
-      },
-    },
-    fullWidth: {
-      true: {
-        width: "100%",
-      },
-    },
-    size: {
-      large: {
-        fontSize: "$3",
-        padding: "$2 $5",
-        borderRadius: "$2 ",
-      },
-    },
-  },
-});
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  children: React.ReactNode;
+  color?: "primary" | "secondary" | "tertiary" | "inverse" | "danger";
+  size?: "large";
+}
 
-export default Button;
+const classes = {
+  base: "cursor-pointer whitespace-nowrap rounded-sm bg-neutral500 py-2 px-4 text-xs text-primary500",
+  color: {
+    primary: "bg-primary500 text-primary100 hover:bg-primary600",
+    secondary: "bg-green500 text-green100 hover:bg-green600",
+    tertiary: "bg-yellow500 text-yellow900 hover:bg-yellow600",
+    inverse: "bg-neutral100 text-primary500 hover:bg-neutral200",
+    danger: "bg-red500 text-red100 hover:bg-red600",
+  },
+  size: {
+    large: "text-lg py-2 px-4 rounded-md",
+  },
+};
+
+export default function Button({
+  children,
+  color,
+  size,
+  className,
+}: ButtonProps) {
+  const buttonClasses = clsx(
+    classes.base,
+    color && classes.color[color],
+    size && classes.size[size],
+    className
+  );
+
+  return <button className={buttonClasses}>{children}</button>;
+}

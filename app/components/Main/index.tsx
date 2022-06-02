@@ -1,17 +1,6 @@
-import { styled } from "~/styles/stitches.config";
-
-const Main = styled("main", {
-  padding: "$5",
-  flex: 1,
-  width: "100%",
-  maxWidth: "$12",
-  variants: {
-    centerItems: {
-      true: {
-        alignItems: "center",
-      },
-    },
-  },
-});
-
-export default Main;
+export interface MainProps {
+  children: React.ReactNode;
+}
+export default function Main({ children }: MainProps) {
+  return <main className="w-full max-w-7xl flex-1 p-6">{children}</main>;
+}

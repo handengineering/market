@@ -53,12 +53,15 @@ export default function Index() {
     useLoaderData() as LoaderData;
 
   return (
-    <Grid layout={{ "@initial": "mobile", "@bp2": "desktop" }}>
+    <>
       {raffleWithMatchingProducts && (
-        <>
+        <Grid columns={2}>
           <Card>
             <>
-              <h2>{raffleWithMatchingProducts.name}</h2>
+              <h1 className="mb-4 font-soehneBreit text-xl font-bold uppercase text-primary500">
+                {raffleWithMatchingProducts.name}
+              </h1>
+
               <img
                 src={raffleWithMatchingProducts.products[0].image}
                 alt={raffleWithMatchingProducts?.name}
@@ -67,34 +70,27 @@ export default function Index() {
             </>
           </Card>
           <Card>
-            <h2>Description</h2>
+            <h2 className="mb-4 text-lg">Description</h2>
             <p>{raffleWithMatchingProducts.products[0].description}</p>
-            <hr />
-            <h3>Options</h3>
-            {raffleWithMatchingProducts.products[0].options.map((option) => {
-              return (
-                <>
-                  <h4>{option.name}</h4>
-                  <ul>
-                    {option.values.map((value) => (
-                      <li key={value}>{value}</li>
-                    ))}
-                  </ul>
-                </>
-              );
-            })}
           </Card>
-          <Card align="center">
+          <Card>
             {!raffleEntry ? (
               <Link to={`/raffles/${raffleWithMatchingProducts.id}/configure`}>
-                <Button color="primary">Configure</Button>
+                <Button
+                  color="primary"
+                  className="w-full rounded-lg py-6 text-xl"
+                >
+                  Configure
+                </Button>
               </Link>
             ) : (
-              <Button disabled>Entry Sent</Button>
+              <Button disabled className="w-full rounded-lg py-6 text-xl">
+                Entry Sent
+              </Button>
             )}
           </Card>
-        </>
+        </Grid>
       )}
-    </Grid>
+    </>
   );
 }

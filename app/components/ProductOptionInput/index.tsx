@@ -1,42 +1,4 @@
-import { styled } from "~/styles/stitches.config";
-import Label from "~/components/Label";
 import type { SelectedProductOption } from "~/models/ecommerce-provider.server";
-
-const ProductOptionInputWrapper = styled("div", {
-  display: "flex",
-  alignItems: "flex-start",
-});
-
-const ProductOptionInputComponent = styled("input", {
-  appearance: "none",
-  cursor: "pointer",
-  display: "flex",
-  height: "$2",
-  width: "$2",
-  marginTop: "$2",
-  justifyContent: "center",
-  alignItems: "center",
-  backgroundSize: "cover",
-  borderRadius: "$1",
-  borderWidth: "2px",
-  borderStyle: "solid",
-  borderColor: "$neutral500",
-  "&:before": {
-    borderWidth: "2px",
-    borderRadius: "2px",
-    borderStyle: "solid",
-    borderColor: "$neutral100",
-  },
-  "&:checked": {
-    borderColor: "$neutral900",
-    "&:before": {
-      content: "",
-      flex: "1",
-      width: "100%",
-      height: "100%",
-    },
-  },
-});
 
 export interface ProductOptionInputProps {
   name: string;
@@ -55,26 +17,25 @@ export default function ProductOptionInput({
   ...rest
 }: ProductOptionInputProps) {
   return (
-    <ProductOptionInputWrapper key={value}>
-      <Label>
-        <ProductOptionInputComponent
-          type="radio"
-          name={JSON.stringify({
-            type: "option",
+    <div key={value} className="flex items-start">
+      <input
+        type="radio"
+        name={JSON.stringify({
+          type: "option",
+          name: name,
+        })}
+        style={{ backgroundImage: `url(${iconImageSrc})` }}
+        className="before: before:border-neutral-100 flex h-12 w-12 appearance-none items-center justify-center rounded border-2 border-solid border-neutral500 bg-cover before:border-2 before:border-neutral100  before:content-none checked:border-neutral900 checked:before:h-full checked:before:w-full checked:before:flex-1 before:checked:border-solid checked:before:content-[''] hover:cursor-pointer"
+        value={value}
+        alt={value}
+        checked={checked}
+        onChange={() =>
+          onChange({
             name: name,
-          })}
-          css={{ backgroundImage: `url(${iconImageSrc})` }}
-          value={value}
-          alt={value}
-          checked={checked}
-          onChange={() =>
-            onChange({
-              name: name,
-              value: value,
-            })
-          }
-        />
-      </Label>
-    </ProductOptionInputWrapper>
+            value: value,
+          })
+        }
+      />
+    </div>
   );
 }

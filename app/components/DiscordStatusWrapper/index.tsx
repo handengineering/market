@@ -1,9 +1,9 @@
-import { styled } from "~/styles/stitches.config";
+export interface DiscordStatusWrapperProps {
+  children: React.ReactNode;
+}
 
-const DiscordStatusWrapper = styled('div', {
-    display: "flex",
-    flexDirection: "row",
-    marginBottom: "$3",
-  });
-
-export default DiscordStatusWrapper;
+export default function DiscordStatusWrapper({
+  children,
+}: DiscordStatusWrapperProps) {
+  return <div className="mb-4 flex flex-row">{children}</div>;
+}

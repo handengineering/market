@@ -12,7 +12,6 @@ import type { RaffleEntry } from "~/models/raffleEntry.server";
 import { getRaffleEntriesByRaffleId } from "~/models/raffleEntry.server";
 import type { User } from "~/models/user.server";
 import { getUsers } from "~/models/user.server";
-import { styled } from "~/styles/stitches.config";
 
 type LoaderData = {
   createdRaffleEntries?: RaffleEntry[];
@@ -111,20 +110,13 @@ export let action: ActionFunction = async ({ request, params }) => {
   }
 };
 
-const RaffleEntryListItem = styled("li", {
-  border: "1px solid $neutral500",
-  backgroundColor: "$neutral100",
-  borderRadius: "$1",
-  padding: "$1",
-});
-
 export default function Index() {
   const { createdRaffleEntries, drawnRaffleEntries, users } =
     useLoaderData() as LoaderData;
   const [canRemoveAll, setCanRemoveAll] = useState(false);
 
   return (
-    <Grid layout={{ "@initial": "mobile", "@bp2": "desktop" }}>
+    <Grid columns={3}>
       {users && (
         <>
           <Card>
@@ -137,9 +129,12 @@ export default function Index() {
                   });
 
                   return (
-                    <RaffleEntryListItem key={raffleEntry.id}>
+                    <li
+                      key={raffleEntry.id}
+                      className="rounded border-2 border-solid border-neutral500 p-2"
+                    >
                       {matchingUser?.email}
-                    </RaffleEntryListItem>
+                    </li>
                   );
                 })}
             </ul>
@@ -182,9 +177,12 @@ export default function Index() {
                   });
 
                   return (
-                    <RaffleEntryListItem key={raffleEntry.id}>
+                    <li
+                      key={raffleEntry.id}
+                      className="rounded border-2 border-solid border-neutral500 p-2"
+                    >
                       {matchingUser?.email}
-                    </RaffleEntryListItem>
+                    </li>
                   );
                 })}
             </ul>

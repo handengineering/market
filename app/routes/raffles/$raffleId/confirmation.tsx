@@ -6,14 +6,13 @@ import Button from "~/components/Button";
 import FlexContainer from "~/components/FlexContainer";
 import Image from "~/components/Image";
 import Label from "~/components/Label";
-import Select from "~/components/Select";
+import Select, { Option } from "~/components/Select";
 import type { FullProduct } from "~/models/ecommerce-provider.server";
 import { getRaffleById } from "~/models/raffle.server";
 import { getRaffleEntriesByRaffleIdAndUserId } from "~/models/raffleEntry.server";
 import { getRaffleEntryProductsByRaffleEntryId } from "~/models/raffleEntryProduct.server";
 import { authenticator } from "~/services/auth.server";
 import commerce from "~/services/commerce.server";
-import { styled } from "~/styles/stitches.config";
 import {
   getSelectedAccessories,
   getSelectedAccessoriesWithOptions,
@@ -177,57 +176,20 @@ export let action: ActionFunction = async ({ request, params }) => {
   return redirect(checkoutUrl);
 };
 
-const ProductImageWrapper = styled("div", {
-  flex: "2",
-  display: "flex",
-  alignItems: "flex-start",
-  flexDirection: "column",
-  gap: "$5",
-  marginBottom: "$5",
-});
-
-const ProductImage = styled(Image, {
-  height: "$9",
-  width: "100%",
-});
-
-const ProductConfirmationWrapper = styled("div", {
-  flex: "1",
-  overflow: "hidden",
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "space-between",
-  marginBottom: "$5",
-});
-
-const MatchingAccessoryWrapper = styled("div", {
-  display: "flex",
-  gap: "$5",
-  marginBottom: "$5",
-});
-
-const MatchingAccessoryImage = styled(Image, {});
-
-const MatchingAccessoryImageWrapper = styled("div", {
-  flexGrow: "0",
-  flexShrink: "0",
-  flexBasis: "$5",
-});
-
-const MatchingAccessoryOptionsWrapper = styled("div", { flex: "1" });
-
 export default function Confirmation() {
   const { product, matchingAccessories } = useLoaderData() as LoaderData;
 
   return (
     <Form method="post">
-      <FlexContainer layout={{ "@initial": "mobile", "@bp2": "desktop" }}>
-        <ProductImageWrapper>
-          <ProductImage src={product.image} />
-        </ProductImageWrapper>
-        <ProductConfirmationWrapper>
-          <h1>{product.title}</h1>
-          <p>
+      <FlexContainer>
+        <div className="flex flex-1 flex-col items-start gap-6">
+          <Image src={product.image} />
+        </div>
+        <div className="mb-6 flex flex-1 flex-col justify-between overflow-hidden">
+          <h1 className="mb-6 font-soehneBreit text-xl font-bold">
+            {product.title}
+          </h1>
+          <p className="mb-6">
             You have been selected to recieve a spot in the {product.title}{" "}
             group buy. Before you checkout, you may want to include some extra
             parts.
@@ -238,51 +200,53 @@ export default function Confirmation() {
             );
 
             return (
-              <FlexContainer
-                key={matchingAccessory.id}
-                css={{ flexDirection: "column" }}
-              >
+              <FlexContainer key={matchingAccessory.id}>
                 <h3 style={{ marginBottom: 0 }}>{matchingAccessory.title}</h3>
 
-                <MatchingAccessoryWrapper key={matchingAccessory.id}>
-                  <MatchingAccessoryImageWrapper>
-                    <MatchingAccessoryImage src={matchingAccessory.image} />
-                  </MatchingAccessoryImageWrapper>
-                  <MatchingAccessoryOptionsWrapper>
-                    <h4>Quantity</h4>
-
+                <div
+                  key={matchingAccessory.id}
+                  className="mb-6 flex w-full gap-6"
+                >
+                  <div className="flex-shrink-0 flex-grow-0 basis-24">
+                    <Image src={matchingAccessory.image} className="w-24" />
+                  </div>
+                  <div className="flex-1">
                     {!hasOptions && (
-                      <Select name="quantity">
-                        {[...Array(accessoryCount)].map((_, i) => {
-                          const quantityCount = i;
-                          return (
-                            <option
-                              value={JSON.stringify({
-                                name: matchingAccessory.id,
-                                value: quantityCount.toString(),
-                              })}
-                              key={quantityCount}
-                            >
-                              {quantityCount}
-                            </option>
-                          );
-                        })}
-                      </Select>
+                      <>
+                        <Label htmlFor="quantity">Standard</Label>
+                        <Select name="quantity">
+                          {[...Array(accessoryCount)].map((_, i) => {
+                            const quantityCount = i;
+                            return (
+                              <option
+                                value={JSON.stringify({
+                                  name: matchingAccessory.id,
+                                  value: quantityCount.toString(),
+                                })}
+                                key={quantityCount}
+                              >
+                                {quantityCount}
+                              </option>
+                            );
+                          })}
+                        </Select>
+                      </>
                     )}
-
-                    {hasOptions ? <h4>Options</h4> : null}
 
                     {matchingAccessory.options.map((option) => {
                       return hasOptions
                         ? option.values.map((optionValue) => {
                             return (
-                              <Label key={optionValue}>
-                                {optionValue}
+                              <>
+                                <Label key={optionValue} htmlFor={option.name}>
+                                  {optionValue}
+                                </Label>
+
                                 <Select name="optionQuantity">
                                   {[...Array(accessoryCount)].map((_, i) => {
                                     const quantityCount = i;
                                     return (
-                                      <option
+                                      <Option
                                         value={JSON.stringify({
                                           name: option.name,
                                           value: quantityCount.toString(),
@@ -292,24 +256,24 @@ export default function Confirmation() {
                                         key={quantityCount}
                                       >
                                         {quantityCount}
-                                      </option>
+                                      </Option>
                                     );
                                   })}
                                 </Select>
-                              </Label>
+                              </>
                             );
                           })
                         : null;
                     })}
-                  </MatchingAccessoryOptionsWrapper>
-                </MatchingAccessoryWrapper>
+                  </div>
+                </div>
               </FlexContainer>
             );
           })}
           <Button color="primary" size="large">
             Confirm Entry
           </Button>
-        </ProductConfirmationWrapper>
+        </div>
       </FlexContainer>
     </Form>
   );

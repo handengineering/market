@@ -1,60 +1,4 @@
 import { Link } from "@remix-run/react";
-import { styled } from "~/styles/stitches.config";
-
-const HeaderWrapper = styled("header", {
-  width: "100%",
-  maxWidth: "$12",
-  display: "flex",
-  gap: "$3",
-  alignItems: "center",
-  justifyContent: "space-between",
-  padding: "$5",
-  variants: {
-    layout: {
-      desktop: {
-        flexDirection: "row",
-      },
-      mobile: {
-        flexDirection: "column",
-      },
-    },
-  },
-});
-
-const HeaderTitle = styled("h1", {
-  color: "$primary500",
-  fontSize: "$5",
-  margin: "0",
-  textAlign: "center",
-  whiteSpace: "nowrap",
-  variants: {
-    layout: {
-      desktop: {
-        whiteSpace: "nowrap",
-      },
-      mobile: {
-        whiteSpace: "normal",
-      },
-    },
-  },
-});
-
-const HeaderLinks = styled("div", {
-  display: "flex",
-  gap: "$3",
-  variants: {
-    layout: {
-      desktop: {
-        flexDirection: "row",
-        marginBottom: "0",
-      },
-      mobile: {
-        flexDirection: "column",
-        marginBottom: "$1",
-      },
-    },
-  },
-});
 
 export interface HeaderWrapperProps {
   children: React.ReactNode;
@@ -64,15 +8,13 @@ export default function Header({
   children,
 }: HeaderWrapperProps): React.ReactElement {
   return (
-    <HeaderWrapper layout={{ "@initial": "mobile", "@bp2": "desktop" }}>
+    <header className="flex w-full max-w-7xl items-center justify-between gap-4 p-6">
       <Link to="/" style={{ textDecoration: "none" }}>
-        <HeaderTitle layout={{ "@initial": "mobile", "@bp2": "desktop" }}>
-          <b>Hand Engineering</b> Market
-        </HeaderTitle>
+        <h1 className="m-0 whitespace-nowrap text-center text-2xl text-primary500">
+          <b className="font-soehneBreit uppercase">Hand Engineering</b> Market
+        </h1>
       </Link>
-      <HeaderLinks layout={{ "@initial": "mobile", "@bp2": "desktop" }}>
-        {children}
-      </HeaderLinks>
-    </HeaderWrapper>
+      <div className="flex gap-4">{children}</div>
+    </header>
   );
 }

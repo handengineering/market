@@ -1,12 +1,12 @@
-import { styled } from "~/styles/stitches.config";
+export interface DiscordAvatarProps
+  extends React.ImgHTMLAttributes<HTMLImageElement> {}
 
-const DiscordAvatar = styled("img", {
-  width: "$3",
-  height: "$3",
-  borderRadius: "50%",
-  border: "2px solid $neutral500",
-  margin: "$3 $3 $3 0",
-  alignSelf: "center",
-});
-
-export default DiscordAvatar;
+export default function DiscordAvatar(props: DiscordAvatarProps) {
+  return (
+    <img
+      className="my-4 mr-4 h-4 w-4 self-center rounded-full border-2 border-solid border-neutral500"
+      alt={props.alt}
+      {...props}
+    />
+  );
+}

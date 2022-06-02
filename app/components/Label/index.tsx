@@ -1,11 +1,11 @@
-import { styled } from "~/styles/stitches.config";
-
-const Label = styled("label", {
-  flex: "1",
-  fontSize: "$2",
-  color: "$neutral700",
-  fontFamily: "$soehneBreit",
-  textTransform: "uppercase",
-});
-
-export default Label;
+export interface LabelProps
+  extends React.LabelHTMLAttributes<HTMLLabelElement> {
+  children: React.ReactNode;
+}
+export default function Label({ children }: LabelProps) {
+  return (
+    <label className="mb-2 inline-block flex-1 text-sm text-neutral700">
+      {children}
+    </label>
+  );
+}
