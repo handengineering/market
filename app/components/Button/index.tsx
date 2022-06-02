@@ -28,10 +28,10 @@ export default function Button({
   className,
 }: ButtonProps) {
   const buttonClasses = clsx(
-    className,
     classes.base,
     color && classes.color[color],
-    size && classes.size[size]
+    size && classes.size[size],
+    className
   );
 
   return <button className={buttonClasses}>{children}</button>;

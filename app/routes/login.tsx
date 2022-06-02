@@ -52,26 +52,28 @@ export default function Login() {
   let { magicLinkSent } = useLoaderData<LoaderData>();
 
   return (
-    <>
-      <h2>Login</h2>
-
+    <div className="flex h-full flex-col items-center py-24">
+      <h2 className="mb-4 font-soehneBreit text-lg uppercase text-primary500">
+        Login
+      </h2>
       <FormWrapper>
         <Form action="/login" method="post">
-          <Label>
-            Email
-            <Input
-              id="email"
-              type="email"
-              name="email"
-              aria-label="email"
-              required
-            />
-          </Label>
+          <Label htmlFor="email">Email</Label>
+
+          <Input
+            id="email"
+            type="email"
+            name="email"
+            aria-label="email"
+            required
+          />
 
           {magicLinkSent ? (
             "Magic link has been sent!"
           ) : (
-            <Button color="primary">Email a login link</Button>
+            <Button color="primary" className="text-l w-full">
+              Email a login link
+            </Button>
           )}
         </Form>
       </FormWrapper>
@@ -87,6 +89,6 @@ export default function Login() {
           Join
         </Link>
       </div>
-    </>
+    </div>
   );
 }

@@ -80,35 +80,35 @@ export default function Join() {
   }, [actionData]);
 
   return (
-    <>
-      <h2>Join</h2>
+    <div className="flex h-full flex-col items-center py-24">
+      <h2 className="mb-4 font-soehneBreit text-lg uppercase text-primary500">
+        Join
+      </h2>
       <FormWrapper>
         <Form method="post">
-          <Label>
-            Email
-            <Input
-              ref={emailRef}
-              id="email"
-              aria-label="email"
-              required
-              autoFocus={true}
-              name="email"
-              type="email"
-              autoComplete="email"
-              aria-invalid={actionData?.errors?.email ? true : undefined}
-              aria-describedby="email-error"
-            />
-            {actionData?.errors?.email && (
-              <ErrorText id="email-error">{actionData.errors.email}</ErrorText>
-            )}
-          </Label>
+          <Label htmlFor="email">Email</Label>
+          <Input
+            ref={emailRef}
+            id="email"
+            aria-label="email"
+            required
+            autoFocus={true}
+            name="email"
+            type="email"
+            autoComplete="email"
+            aria-invalid={actionData?.errors?.email ? true : undefined}
+            aria-describedby="email-error"
+          />
+          {actionData?.errors?.email && (
+            <ErrorText id="email-error">{actionData.errors.email}</ErrorText>
+          )}
 
           <Input type="hidden" name="redirectTo" value={redirectTo} />
 
           {magicLinkSent ? (
             "Magic link has been sent!"
           ) : (
-            <Button color="primary" type="submit">
+            <Button color="primary" type="submit" className="text-l w-full">
               Create Account
             </Button>
           )}
@@ -125,6 +125,6 @@ export default function Join() {
           Log in
         </Link>
       </div>
-    </>
+    </div>
   );
 }

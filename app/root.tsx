@@ -58,12 +58,12 @@ export default function App() {
   const { user, isAdmin } = useLoaderData() as LoaderData;
 
   return (
-    <html lang="en">
+    <html lang="en" className="h-full">
       <head>
         <Meta />
         <Links />
       </head>
-      <body className="flex flex-col items-center bg-neutral100 font-soehne text-primary700">
+      <body className="flex h-full flex-col items-center bg-neutral100 font-soehne text-primary700">
         <Header>
           <Link to="/">
             <Button color="inverse">Dashboard</Button>

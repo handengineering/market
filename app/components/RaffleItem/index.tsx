@@ -53,7 +53,7 @@ export default function RaffleItem({
   return (
     <div
       {...rest}
-      className="relative flex flex-1 flex-col items-center after:absolute after:bottom-0 after:left-0 after:-z-10 after:h-3/4 after:w-full after:rounded after:bg-gradient-to-b after:from-neutral300 after:to-neutral100 after:content-['']"
+      className="relative mb-6 flex flex-1 flex-col items-center after:absolute after:bottom-0 after:left-0 after:-z-10 after:h-3/4 after:w-full after:rounded after:bg-gradient-to-b after:from-neutral300 after:to-neutral100 after:content-['']"
     >
       <Image
         src={raffle.products[0].image}
