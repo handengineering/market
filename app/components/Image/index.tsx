@@ -1,9 +1,11 @@
-import { styled } from "~/styles/stitches.config";
+export interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {}
 
-const Image = styled("img", {
-  borderRadius: "$3",
-  maxWidth: "100%",
-  objectFit: "contain",
-});
-
-export default Image;
+export default function Image(props: ImageProps) {
+  return (
+    <img
+      className="max-w-full rounded-lg object-contain"
+      alt={props.alt}
+      {...props}
+    />
+  );
+}
