@@ -4,7 +4,7 @@ export interface DiscordAvatarProps
 export default function DiscordAvatar(props: DiscordAvatarProps) {
   return (
     <img
-      className="my-4 mr-4 h-4 w-4 self-center rounded-full border-2 border-solid border-neutral500"
+      className="my-4 mr-4 h-12 w-12 self-center rounded-full border-2 border-solid border-neutral500"
       alt={props.alt}
       {...props}
     />
