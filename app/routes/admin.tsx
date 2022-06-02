@@ -3,14 +3,13 @@ import permissions from "prisma/permissions";
 import type { LoaderFunction } from "@remix-run/server-runtime";
 import { redirect } from "@remix-run/server-runtime";
 import { checkPermissions } from "~/services/permissions.server";
-import Sidebar, { SidebarWraper } from "~/components/Sidebar";
 import Button from "~/components/Button";
 import FlexContainer from "~/components/FlexContainer";
 
 export default function Index() {
   return (
-    <SidebarWraper>
-      <Sidebar>
+    <div className="flex h-full flex-row items-start gap-6">
+      <div className="h-full flex-shrink-0 flex-grow-0 basis-64  rounded  bg-neutral200 p-6">
         <h2>🛠 Admin</h2>
 
         <ul>
@@ -30,11 +29,11 @@ export default function Index() {
             </Link>
           </li>
         </ul>
-      </Sidebar>
+      </div>
       <FlexContainer>
         <Outlet />
       </FlexContainer>
-    </SidebarWraper>
+    </div>
   );
 }
 
