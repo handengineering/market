@@ -30,7 +30,6 @@ import {
 } from "~/models/raffleEntryProduct.server";
 import { authenticator } from "~/services/auth.server";
 import commerce from "~/services/commerce.server";
-import { styled } from "~/styles/stitches.config";
 import { getMatchingVariant } from "~/utils/product";
 
 type RaffleWithMatchingProducts = Raffle & { products: FullProduct[] };
@@ -134,54 +133,6 @@ export let action: ActionFunction = async ({ request, params }) => {
   );
 };
 
-const ProductDetailsWrapper = styled("div", {
-  flex: "1",
-  marginBottom: "$5",
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "space-between",
-});
-
-const ProductImageWrapper = styled("div", {
-  flex: "2",
-  display: "flex",
-  alignItems: "flex-start",
-  flexDirection: "column",
-  gap: "$5",
-});
-
-const ProductImage = styled(Image, {
-  height: "$9",
-  width: "100%",
-  flex: "1",
-});
-
-const ProductDescription = styled("p", {
-  fontSize: "$5",
-  marginBottom: "$5",
-  padding: "$5",
-  background: "$neutral400",
-  borderRadius: "$3",
-});
-const SelectedVariant = styled("div", {
-  flex: "1",
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-  backgroundColor: "$neutral100",
-  borderRadius: "$3",
-  padding: "$3",
-  marginBottom: "$5",
-});
-
-const SelectedVariantList = styled("ul", {
-  display: "flex",
-  marginBottom: "0",
-  "& li": {
-    marginRight: "$5",
-  },
-});
-
 export let ErrorBoundary: ErrorBoundaryComponent = ({ error }) => (
   <div>{error.message}</div>
 );
@@ -225,15 +176,18 @@ export default function Configure() {
 
   return product ? (
     <Form method="post">
-      <FlexContainer>
-        <ProductImageWrapper>
-          <ProductImage src={product.image} />
-          <div style={{ flex: 1 }} />
-        </ProductImageWrapper>
-        <ProductDetailsWrapper>
+      <FlexContainer className="mb-6">
+        <div className="flex flex-1 flex-col items-start gap-6">
+          <Image src={product.image} />
+        </div>
+        <div className="flex w-96 flex-initial flex-col justify-between">
           <div>
-            <h1>{raffleWithMatchingProducts?.name}</h1>
-            <h2>{raffleWithMatchingProducts.products[0].formattedPrice}</h2>
+            <h1 className="mb-2 font-soehneBreit text-xl font-bold uppercase">
+              {raffleWithMatchingProducts?.name}
+            </h1>
+            <h2 className="mb-6 font-soehneBreit text-lg ">
+              {raffleWithMatchingProducts.products[0].formattedPrice}
+            </h2>
             <div>
               {product?.options.map((option) => {
                 return (
@@ -255,33 +209,33 @@ export default function Configure() {
           >
             {raffleEntry ? "Raffle Entry Submitted" : "Submit Options"}
           </Button>
-        </ProductDetailsWrapper>
+        </div>
       </FlexContainer>
       <FlexContainer>
         <div style={{ flex: 1 }}>
-          <SelectedVariant>
+          <div className="mb-6 flex flex-1 items-center justify-between rounded bg-neutral200 p-4">
             {Object.keys(selectedOptions).length !== 0 ? (
-              <SelectedVariantList>
+              <ul className="mb-0 flex">
                 {Object.keys(selectedOptions).map((selectedOptionKey) => {
                   return (
-                    <li key={selectedOptionKey}>
+                    <li key={selectedOptionKey} className="mr-6">
                       <b>{selectedOptionKey}</b>{" "}
                       {selectedOptions[selectedOptionKey]}
                     </li>
                   );
                 })}
-              </SelectedVariantList>
+              </ul>
             ) : (
               "No options specified"
             )}
-          </SelectedVariant>
+          </div>
         </div>
       </FlexContainer>
       <FlexContainer>
         <div>
-          <ProductDescription>
+          <p className="mb-6 rounded bg-neutral200 p-6 text-lg">
             {raffleWithMatchingProducts.products[0].description}
-          </ProductDescription>
+          </p>
           <ProductDetails metafields={product.metafields} />
         </div>
       </FlexContainer>

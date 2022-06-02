@@ -76,10 +76,17 @@ export default function Index() {
           <Card>
             {!raffleEntry ? (
               <Link to={`/raffles/${raffleWithMatchingProducts.id}/configure`}>
-                <Button color="primary">Configure</Button>
+                <Button
+                  color="primary"
+                  className="w-full rounded-lg py-6 text-xl"
+                >
+                  Configure
+                </Button>
               </Link>
             ) : (
-              <Button disabled>Entry Sent</Button>
+              <Button disabled className="w-full rounded-lg py-6 text-xl">
+                Entry Sent
+              </Button>
             )}
           </Card>
         </Grid>
