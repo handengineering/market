@@ -24,7 +24,7 @@ export default function ProductDetails({ metafields }: ProductDetailsProps) {
   );
 
   return (
-    <div className="grid w-full auto-cols-auto grid-cols-4 grid-rows-1 rounded border-2 border-solid border-neutral500 bg-neutral200 ">
+    <div className="grid w-full auto-cols-auto grid-rows-1 rounded border-2 border-solid border-neutral500 bg-neutral200 font-soehneBreit uppercase md:grid-cols-4 ">
       {componentsMetafield ? (
         <div className="p-6">
           <ProductDetail

@@ -66,29 +66,41 @@ export default function App() {
       <body className="flex h-full flex-col items-center bg-neutral100 font-soehne text-primary700">
         <Header>
           <Link to="/">
-            <Button color="inverse">Dashboard</Button>
+            <Button color="inverse" className="w-full md:w-auto">
+              Dashboard
+            </Button>
           </Link>
           <Link to="/raffles">
-            <Button color="inverse">All Raffles</Button>
+            <Button color="inverse" className="w-full md:w-auto">
+              All Raffles
+            </Button>
           </Link>
 
           {isAdmin && (
             <Link to="/admin">
-              <Button color="tertiary">Admin</Button>
+              <Button color="tertiary" className="w-full md:w-auto">
+                Admin
+              </Button>
             </Link>
           )}
 
           {user ? (
             <Link to="/logout">
-              <Button color="danger">Log Out ({user.email})</Button>
+              <Button color="danger" className="w-full md:w-auto">
+                Log Out ({user.email})
+              </Button>
             </Link>
           ) : (
             <>
               <Link to="/join">
-                <Button color="secondary">Sign up</Button>
+                <Button color="secondary" className="w-full md:w-auto">
+                  Sign up
+                </Button>
               </Link>
               <Link to="/login">
-                <Button color="inverse">Log In</Button>
+                <Button color="inverse" className="w-full md:w-auto">
+                  Log In
+                </Button>
               </Link>
             </>
           )}

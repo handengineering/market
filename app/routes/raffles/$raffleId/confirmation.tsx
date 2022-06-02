@@ -181,7 +181,7 @@ export default function Confirmation() {
 
   return (
     <Form method="post">
-      <FlexContainer>
+      <div className="grid gap-6 md:grid-cols-2">
         <div className="flex flex-1 flex-col items-start gap-6">
           <Image src={product.image} />
         </div>
@@ -274,7 +274,7 @@ export default function Confirmation() {
             Confirm Entry
           </Button>
         </div>
-      </FlexContainer>
+      </div>
     </Form>
   );
 }

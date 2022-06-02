@@ -1,8 +1,6 @@
 import { Link, useLoaderData } from "@remix-run/react";
 import type { LoaderFunction } from "@remix-run/server-runtime";
 import Button from "~/components/Button";
-import Card from "~/components/Card";
-import Grid from "~/components/Grid";
 import type { FullProduct } from "~/models/ecommerce-provider.server";
 import type { Raffle } from "~/models/raffle.server";
 import { getRaffleById } from "~/models/raffle.server";
@@ -54,43 +52,46 @@ export default function Index() {
 
   return (
     <>
-      {raffleWithMatchingProducts && (
-        <Grid columns={2}>
-          <Card>
-            <>
-              <h1 className="mb-4 font-soehneBreit text-xl font-bold uppercase text-primary500">
-                {raffleWithMatchingProducts.name}
-              </h1>
-
+      {raffleWithMatchingProducts ? (
+        <>
+          <h1 className="mb-4 font-soehneBreit text-xl font-bold uppercase text-primary500">
+            {raffleWithMatchingProducts.name}
+          </h1>
+          <div className="grid gap-6 md:grid-cols-2">
+            <div>
               <img
                 src={raffleWithMatchingProducts.products[0].image}
                 alt={raffleWithMatchingProducts?.name}
                 width="100%"
               />
-            </>
-          </Card>
-          <Card>
-            <h2 className="mb-4 text-lg">Description</h2>
-            <p>{raffleWithMatchingProducts.products[0].description}</p>
-          </Card>
-          <Card>
-            {!raffleEntry ? (
-              <Link to={`/raffles/${raffleWithMatchingProducts.id}/configure`}>
-                <Button
-                  color="primary"
-                  className="w-full rounded-lg py-6 text-xl"
+            </div>
+            <div className="flex flex-col justify-between">
+              <div>
+                <h2 className="mb-4 text-lg">Description</h2>
+                <p className="mb-6">
+                  {raffleWithMatchingProducts.products[0].description}
+                </p>
+              </div>
+              {!raffleEntry ? (
+                <Link
+                  to={`/raffles/${raffleWithMatchingProducts.id}/configure`}
                 >
-                  Configure
+                  <Button
+                    color="primary"
+                    className="w-full rounded-lg py-6 text-xl"
+                  >
+                    Configure
+                  </Button>
+                </Link>
+              ) : (
+                <Button disabled className="w-full rounded-lg py-6 text-xl">
+                  Entry Sent
                 </Button>
-              </Link>
-            ) : (
-              <Button disabled className="w-full rounded-lg py-6 text-xl">
-                Entry Sent
-              </Button>
-            )}
-          </Card>
-        </Grid>
-      )}
+              )}
+            </div>
+          </div>
+        </>
+      ) : null}
     </>
   );
 }

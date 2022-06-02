@@ -46,14 +46,14 @@ export default function RaffleItem({
   return (
     <div
       {...rest}
-      className="relative mb-6 flex flex-1 flex-col items-center after:absolute after:bottom-0 after:left-0 after:-z-10 after:h-3/4 after:w-full after:rounded after:bg-gradient-to-b after:from-neutral300 after:to-neutral100 after:content-['']"
+      className="relative mb-12 flex flex-col items-center space-y-6 after:absolute after:bottom-0 after:left-0 after:top-24 after:-z-10  after:w-full after:rounded after:bg-gradient-to-b after:from-neutral300 after:to-neutral100 after:content-['']"
     >
       <Image
         src={raffle.products[0].image}
         alt={raffle.name}
-        className="mb-6 w-3/4"
+        className="h-full max-h-48"
       />
-      <h2 className="mb-4 whitespace-nowrap text-lg text-primary500">
+      <h2 className="whitespace-nowrap font-soehneBreit text-lg uppercase text-primary500">
         {raffle.name}
       </h2>
 
@@ -69,17 +69,15 @@ export default function RaffleItem({
           currentDateTime
         )}
       </span>
-      <p className="mb-4 text-sm opacity-50">
+      <p className="text-sm">
         {formattedStartDateTime}–{formattedEndDateTime}
       </p>
-      <br />
-      <p className="mb-2">From {raffle.products[0].formattedPrice}</p>
+      <p>From {raffle.products[0].formattedPrice}</p>
       <Link to={raffle.id}>
         <Button color="primary" className="mb-2">
           View Details
         </Button>
       </Link>
-      <p>{raffleEntryExists && `Raffle Entry Submitted`}</p>
     </div>
   );
 }
