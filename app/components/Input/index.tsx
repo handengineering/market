@@ -6,7 +6,7 @@ export interface InputProps
 export default function Input(props: InputProps) {
   const buttonClasses = clsx(
     props.className,
-    "mb-4 h-8 w-full rounded border-2 border-solid border-neutral500 bg-neutral100 py-2 px-4 focus:border-primary300 focus:outline-none"
+    "mb-4 w-full rounded border-2 border-solid border-neutral500 bg-neutral100 py-2 px-4 focus:border-primary300 focus:outline-none"
   );
   return <input className={buttonClasses} {...props} />;
 }
