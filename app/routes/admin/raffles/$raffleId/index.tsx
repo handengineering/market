@@ -116,11 +116,13 @@ export default function Index() {
   const [canRemoveAll, setCanRemoveAll] = useState(false);
 
   return (
-    <Grid columns={3}>
+    <div className="grid gap-6 md:grid-cols-3">
       {users && (
         <>
-          <Card>
-            <h2>Created Raffle Entries ({createdRaffleEntries?.length})</h2>
+          <div className="mb-6">
+            <h2 className="mb-6 font-soehneBreit text-lg">
+              Created Raffle Entries ({createdRaffleEntries?.length})
+            </h2>
             <ul>
               {createdRaffleEntries &&
                 createdRaffleEntries.map((raffleEntry) => {
@@ -138,20 +140,30 @@ export default function Index() {
                   );
                 })}
             </ul>
-          </Card>
-          <Card>
-            <h2>Controls</h2>
+          </div>
+          <div className="mb-6">
+            <h2 className="mb-6 font-soehneBreit text-lg">Controls</h2>
             <Form method="post">
               <Label>
                 Draw Count
                 <Input type="number" name="drawCount" />
               </Label>
-              <Button name="action" value="draw" color="primary">
+              <Button
+                name="action"
+                value="draw"
+                color="primary"
+                className="mb-2 w-full last:mb-0"
+              >
                 Draw Participants
               </Button>
 
               {canRemoveAll ? (
-                <Button name="action" value="removeAll" color="danger">
+                <Button
+                  name="action"
+                  value="removeAll"
+                  color="danger"
+                  className="mb-2 w-full last:mb-0"
+                >
                   Confirm Remove All Partipants
                 </Button>
               ) : (
@@ -160,14 +172,17 @@ export default function Index() {
                     e.preventDefault();
                     setCanRemoveAll(true);
                   }}
+                  className="mb-2 w-full last:mb-0"
                 >
                   Remove All Particpants
                 </Button>
               )}
             </Form>
-          </Card>
-          <Card>
-            <h2>Drawn Raffle Entries ({drawnRaffleEntries?.length})</h2>
+          </div>
+          <div className="mb-6">
+            <h2 className="mb-6 font-soehneBreit text-lg">
+              Drawn Raffle Entries ({drawnRaffleEntries?.length})
+            </h2>
 
             <ul>
               {drawnRaffleEntries &&
@@ -179,16 +194,16 @@ export default function Index() {
                   return (
                     <li
                       key={raffleEntry.id}
-                      className="rounded border-2 border-solid border-neutral500 p-2"
+                      className="mb-2 rounded bg-green200 p-2"
                     >
                       {matchingUser?.email}
                     </li>
                   );
                 })}
             </ul>
-          </Card>
+          </div>
         </>
       )}
-    </Grid>
+    </div>
   );
 }
