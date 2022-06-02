@@ -44,7 +44,6 @@
     "@remix-run/react": "^1.4.3",
     "@remix-run/serve": "^1.4.3",
     "@remix-run/server-runtime": "^1.4.3",
-    "@stitches/react": "^1.2.8",
     "bcryptjs": "^2.4.3",
     "burner-email-providers": "^1.0.67",
     "clsx": "^1.1.1",
