@@ -178,11 +178,11 @@ export default function Configure() {
 
   return product ? (
     <Form method="post">
-      <FlexContainer className="mb-6">
+      <div className="mb-6 flex flex-col gap-6 md:flex-row">
         <div className="flex flex-1 flex-col items-start gap-6">
           <Image src={product.image} />
         </div>
-        <div className="flex w-96 flex-initial flex-col justify-between">
+        <div className="flex w-full max-w-xs flex-initial flex-col justify-between">
           <div className="mb-6">
             <h1 className="mb-2 font-soehneBreit text-xl font-bold uppercase">
               {raffleWithMatchingProducts?.name}
@@ -212,43 +212,37 @@ export default function Configure() {
             {raffleEntry ? "Raffle Entry Submitted" : "Submit Options"}
           </Button>
         </div>
-      </FlexContainer>
-      <FlexContainer>
-        <div style={{ flex: 1 }}>
-          <div className="mb-12 flex flex-1 items-center justify-between">
-            {Object.keys(selectedOptions).length !== 0 ? (
-              <ul className="mb-0 flex">
-                {Object.keys(selectedOptions).map((selectedOptionKey) => {
-                  return (
-                    <li key={selectedOptionKey} className="mr-6">
-                      <b>{selectedOptionKey}</b>{" "}
-                      {selectedOptions[selectedOptionKey]}
-                    </li>
-                  );
-                })}
-              </ul>
-            ) : (
-              "No options specified"
-            )}
-          </div>
-        </div>
-      </FlexContainer>
-      <FlexContainer>
-        <div>
-          <h2 className="mb-6 font-soehneBreit text-lg">Description</h2>
-          <p className="mb-12 font-soehneBreit md:text-xl">
-            {raffleWithMatchingProducts.products[0].description}
-          </p>
+      </div>
+      <div className="mb-12 flex flex-1 items-center justify-between">
+        {Object.keys(selectedOptions).length !== 0 ? (
+          <ul className="mb-0 flex">
+            {Object.keys(selectedOptions).map((selectedOptionKey) => {
+              return (
+                <li key={selectedOptionKey} className="mr-6">
+                  <b>{selectedOptionKey}</b>{" "}
+                  {selectedOptions[selectedOptionKey]}
+                </li>
+              );
+            })}
+          </ul>
+        ) : (
+          "No options specified"
+        )}
+      </div>
+      <div>
+        <h2 className="mb-6 font-soehneBreit text-lg">Description</h2>
+        <p className="mb-12 font-soehneBreit md:text-xl">
+          {raffleWithMatchingProducts.products[0].description}
+        </p>
 
-          {secondaryImages
-            ? secondaryImages.map((image, index) => {
-                return <Image key={index} src={image} className="mb-6" />;
-              })
-            : null}
+        {secondaryImages
+          ? secondaryImages.map((image, index) => {
+              return <Image key={index} src={image} className="mb-6" />;
+            })
+          : null}
 
-          <ProductDetails metafields={product.metafields} />
-        </div>
-      </FlexContainer>
+        <ProductDetails metafields={product.metafields} />
+      </div>
     </Form>
   ) : null;
 }

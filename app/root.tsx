@@ -65,31 +65,25 @@ export default function App() {
       </head>
       <body className="flex h-full flex-col items-center bg-neutral100 font-soehne text-primary700">
         <Header>
-          <Link to="/">
-            <Button color="inverse" className="w-full md:w-auto">
-              Dashboard
-            </Button>
-          </Link>
-          <Link to="/raffles">
-            <Button color="inverse" className="w-full md:w-auto">
-              All Raffles
-            </Button>
-          </Link>
-
-          {isAdmin && (
-            <Link to="/admin">
-              <Button color="tertiary" className="w-full md:w-auto">
-                Admin
-              </Button>
-            </Link>
-          )}
-
           {user ? (
-            <Link to="/logout">
-              <Button color="danger" className="w-full md:w-auto">
-                Log Out ({user.email})
-              </Button>
-            </Link>
+            <>
+              <Link to="/">
+                <Button color="inverse" className="w-full md:w-auto">
+                  Dashboard
+                </Button>
+              </Link>
+              <Link to="/raffles">
+                <Button color="inverse" className="w-full md:w-auto">
+                  All Raffles
+                </Button>
+              </Link>
+
+              <Link to="/logout">
+                <Button color="danger" className="w-full md:w-auto">
+                  Log Out ({user.email})
+                </Button>
+              </Link>
+            </>
           ) : (
             <>
               <Link to="/join">
@@ -103,6 +97,13 @@ export default function App() {
                 </Button>
               </Link>
             </>
+          )}
+          {isAdmin && (
+            <Link to="/admin">
+              <Button color="tertiary" className="w-full md:w-auto">
+                Admin
+              </Button>
+            </Link>
           )}
         </Header>
         <Main>
