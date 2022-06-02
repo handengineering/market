@@ -8,7 +8,6 @@ import {
   ScrollRestoration,
   useLoaderData,
 } from "@remix-run/react";
-import { globalStyles } from "./styles/globalStyles";
 import type {
   ErrorBoundaryComponent,
   LinksFunction,
@@ -23,10 +22,14 @@ import { authenticator } from "./services/auth.server";
 import { checkPermissions } from "./services/permissions.server";
 import permissions from "prisma/permissions";
 
+import globalStylesheetUrl from "./styles/global.css";
 import tailwindStylesheetUrl from "./styles/tailwind.css";
 
 export const links: LinksFunction = () => {
-  return [{ rel: "stylesheet", href: tailwindStylesheetUrl }];
+  return [
+    { rel: "stylesheet", href: globalStylesheetUrl },
+    { rel: "stylesheet", href: tailwindStylesheetUrl },
+  ];
 };
 
 export const meta: MetaFunction = () => ({
@@ -52,8 +55,6 @@ type LoaderData = {
 };
 
 export default function App() {
-  globalStyles();
-
   const { user, isAdmin } = useLoaderData() as LoaderData;
 
   return (
@@ -62,7 +63,7 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body>
+      <body className="flex flex-col items-center bg-neutral100 font-soehne text-primary700">
         <Header>
           <Link to="/">
             <Button color="inverse">Dashboard</Button>

@@ -20,7 +20,7 @@ export interface RaffleItemProps {
 }
 
 const raffleStatusClasses = {
-  base: "bg-neutral100 rounded py-2 px-4 mb-4 border-2 border-solid text-sm",
+  base: "bg-neutral100 rounded py-1 px-2 mb-4 border-2 border-solid text-sm",
   status: {
     UPCOMING: "text-yellow-700 bg-yellow300 border-yellow500",
     ACTIVE: "text-green-700 bg-green300 border-green500",
@@ -60,7 +60,7 @@ export default function RaffleItem({
         alt={raffle.name}
         className="mb-6 w-3/4"
       />
-      <h2 className="whitespace-nowrap text-lg text-primary500">
+      <h2 className="mb-4 whitespace-nowrap text-lg text-primary500">
         {raffle.name}
       </h2>
 
@@ -80,9 +80,11 @@ export default function RaffleItem({
         {formattedStartDateTime}–{formattedEndDateTime}
       </RaffleDate>
       <br />
-      <p>From {raffle.products[0].formattedPrice}</p>
+      <p className="mb-2">From {raffle.products[0].formattedPrice}</p>
       <Link to={raffle.id}>
-        <Button color="primary">View Details</Button>
+        <Button color="primary" className="mb-2">
+          View Details
+        </Button>
       </Link>
       <RaffleDate>{raffleEntryExists && `Raffle Entry Submitted`}</RaffleDate>
     </div>

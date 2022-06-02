@@ -53,7 +53,7 @@ export default function Raffles() {
     useLoaderData() as LoaderData;
   return (
     <>
-      <h2>All Raffles</h2>
+      <h1 className="mb-6 font-soehneBreit text-xl uppercase">All Raffles</h1>
       <Grid columns={2}>
         {rafflesWithMatchingProducts &&
           rafflesWithMatchingProducts.map((raffle) => {

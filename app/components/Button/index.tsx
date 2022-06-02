@@ -21,8 +21,14 @@ const classes = {
   },
 };
 
-export default function Button({ children, color, size }: ButtonProps) {
+export default function Button({
+  children,
+  color,
+  size,
+  className,
+}: ButtonProps) {
   const buttonClasses = clsx(
+    className,
     classes.base,
     color && classes.color[color],
     size && classes.size[size]
