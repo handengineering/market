@@ -1,9 +1,9 @@
-import { styled } from "~/styles/stitches.config";
+export interface DiscordStatusTextFieldsProps {
+  children: React.ReactNode;
+}
 
-const DiscordStatusTextFields = styled('div', {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-  });
-
-export default DiscordStatusTextFields;
+export default function DiscordStatusTextFields({
+  children,
+}: DiscordStatusTextFieldsProps) {
+  <div className="flex flex-col justify-center">{children}</div>;
+}
