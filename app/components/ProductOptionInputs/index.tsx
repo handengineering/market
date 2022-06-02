@@ -37,14 +37,13 @@ export default function ProductOptionInputs({
   product,
   onChange,
   selectedOptions,
-  key,
 }: ProductOptionInputsProps) {
   const selectedOption = selectedOptions && selectedOptions[option.name];
   return (
-    <ProductOptionInputsOuterWrapper key={key}>
+    <ProductOptionInputsOuterWrapper key={option.name}>
       <h4 style={{ marginBottom: 0 }}>{option.name}</h4>
       <Label>{selectedOption}</Label>
-      <ProductOptionInputsInnerWrapper key={key}>
+      <ProductOptionInputsInnerWrapper key={option.name}>
         {option.values.map((value) => {
           return (
             <ProductOptionInput
