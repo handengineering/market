@@ -1,4 +1,3 @@
-import { styled } from "~/styles/stitches.config";
 import ProductOptionInput from "~/components/ProductOptionInput";
 import type {
   FullProduct,
@@ -7,18 +6,6 @@ import type {
 } from "~/models/ecommerce-provider.server";
 import { getProductOptionIcon } from "~/utils/product";
 import Label from "../Label";
-
-const ProductOptionInputsInnerWrapper = styled("div", {
-  display: "flex",
-  gap: "$5",
-  justifyContent: "flex-start",
-});
-
-const ProductOptionInputsOuterWrapper = styled("div", {
-  "&:not(:last-child)": {
-    marginBottom: "$5",
-  },
-});
 
 export type SelectedOptions = {
   [name: string]: string;
@@ -40,10 +27,10 @@ export default function ProductOptionInputs({
 }: ProductOptionInputsProps) {
   const selectedOption = selectedOptions && selectedOptions[option.name];
   return (
-    <ProductOptionInputsOuterWrapper key={option.name}>
+    <div key={option.name} className="mb-6 last:mb-0">
       <h4 style={{ marginBottom: 0 }}>{option.name}</h4>
       <Label>{selectedOption}</Label>
-      <ProductOptionInputsInnerWrapper key={option.name}>
+      <div key={option.name} className="flex items-start gap-4">
         {option.values.map((value) => {
           return (
             <ProductOptionInput
@@ -62,7 +49,7 @@ export default function ProductOptionInputs({
             />
           );
         })}
-      </ProductOptionInputsInnerWrapper>
-    </ProductOptionInputsOuterWrapper>
+      </div>
+    </div>
   );
 }

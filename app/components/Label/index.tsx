@@ -1,6 +1,11 @@
-export interface LabelProps {
+export interface LabelProps
+  extends React.LabelHTMLAttributes<HTMLLabelElement> {
   children: React.ReactNode;
 }
 export default function Label({ children }: LabelProps) {
-  return <label className="flex-1 text-sm  text-neutral700">{children}</label>;
+  return (
+    <label className="mb-2 inline-block flex-1 text-sm text-neutral700">
+      {children}
+    </label>
+  );
 }
