@@ -1,9 +1,7 @@
-import { styled } from "~/styles/stitches.config";
+export interface ErrorTextProps {
+  children: React.ReactNode;
+}
 
-const ErrorText = styled("p", {
-  fontSize: "$3",
-  marginBottom: "0",
-  color: "tomato",
-});
-
-export default ErrorText;
+export default function ErrorText({ children }: ErrorTextProps) {
+  return <p className="mb-0 text-base text-red500">{children}</p>;
+}
