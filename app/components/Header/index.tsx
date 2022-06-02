@@ -64,15 +64,13 @@ export default function Header({
   children,
 }: HeaderWrapperProps): React.ReactElement {
   return (
-    <HeaderWrapper layout={{ "@initial": "mobile", "@bp2": "desktop" }}>
+    <HeaderWrapper>
       <Link to="/" style={{ textDecoration: "none" }}>
-        <HeaderTitle layout={{ "@initial": "mobile", "@bp2": "desktop" }}>
+        <HeaderTitle>
           <b>Hand Engineering</b> Market
         </HeaderTitle>
       </Link>
-      <HeaderLinks layout={{ "@initial": "mobile", "@bp2": "desktop" }}>
-        {children}
-      </HeaderLinks>
+      <HeaderLinks>{children}</HeaderLinks>
     </HeaderWrapper>
   );
 }

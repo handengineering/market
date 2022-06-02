@@ -32,7 +32,7 @@ export default function Products() {
   return (
     <div>
       <h2>Products</h2>
-      <Grid layout={{ "@initial": "mobile", "@bp2": "desktop" }}>
+      <Grid>
         {products.map((product: Product) => (
           <Card key={product.id}>
             <Link to={product.slug}>

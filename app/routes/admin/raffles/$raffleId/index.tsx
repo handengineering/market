@@ -124,7 +124,7 @@ export default function Index() {
   const [canRemoveAll, setCanRemoveAll] = useState(false);
 
   return (
-    <Grid layout={{ "@initial": "mobile", "@bp2": "desktop" }}>
+    <Grid>
       {users && (
         <>
           <Card>

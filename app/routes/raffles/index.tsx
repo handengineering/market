@@ -63,7 +63,7 @@ export default function Raffles() {
   return (
     <>
       <h2>All Raffles</h2>
-      <Grid layout={{ "@initial": "mobile", "@bp2": "desktop" }}>
+      <Grid columns={2}>
         {rafflesWithMatchingProducts &&
           rafflesWithMatchingProducts.map((raffle) => {
             const raffleEntryExists = raffleEntries?.some(

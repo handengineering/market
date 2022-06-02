@@ -9,8 +9,8 @@ import FlexContainer from "~/components/FlexContainer";
 
 export default function Index() {
   return (
-    <SidebarWraper layout={{ "@initial": "mobile", "@bp2": "desktop" }}>
-      <Sidebar layout={{ "@initial": "mobile", "@bp2": "desktop" }}>
+    <SidebarWraper>
+      <Sidebar>
         <h2>🛠 Admin</h2>
 
         <ul>
@@ -31,7 +31,7 @@ export default function Index() {
           </li>
         </ul>
       </Sidebar>
-      <FlexContainer layout={{ "@initial": "mobile", "@bp2": "desktop" }}>
+      <FlexContainer>
         <Outlet />
       </FlexContainer>
     </SidebarWraper>

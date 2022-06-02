@@ -225,7 +225,7 @@ export default function Configure() {
 
   return product ? (
     <Form method="post">
-      <FlexContainer layout={{ "@initial": "mobile", "@bp2": "desktop" }}>
+      <FlexContainer>
         <ProductImageWrapper>
           <ProductImage src={product.image} />
           <div style={{ flex: 1 }} />
@@ -257,7 +257,7 @@ export default function Configure() {
           </Button>
         </ProductDetailsWrapper>
       </FlexContainer>
-      <FlexContainer layout={{ "@initial": "mobile", "@bp2": "desktop" }}>
+      <FlexContainer>
         <div style={{ flex: 1 }}>
           <SelectedVariant>
             {Object.keys(selectedOptions).length !== 0 ? (
@@ -277,7 +277,7 @@ export default function Configure() {
           </SelectedVariant>
         </div>
       </FlexContainer>
-      <FlexContainer layout={{ "@initial": "mobile", "@bp2": "desktop" }}>
+      <FlexContainer>
         <div>
           <ProductDescription>
             {raffleWithMatchingProducts.products[0].description}

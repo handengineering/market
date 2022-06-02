@@ -45,7 +45,7 @@ export default function Raffles() {
   return (
     <>
       <h2>All Raffles</h2>
-      <Grid layout={{ "@initial": "mobile", "@bp2": "desktop" }}>
+      <Grid>
         {rafflesWithMatchingProducts &&
           rafflesWithMatchingProducts.map((raffle) => {
             return (

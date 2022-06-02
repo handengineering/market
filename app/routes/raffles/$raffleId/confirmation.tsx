@@ -221,7 +221,7 @@ export default function Confirmation() {
 
   return (
     <Form method="post">
-      <FlexContainer layout={{ "@initial": "mobile", "@bp2": "desktop" }}>
+      <FlexContainer>
         <ProductImageWrapper>
           <ProductImage src={product.image} />
         </ProductImageWrapper>

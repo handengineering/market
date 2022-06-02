@@ -53,7 +53,7 @@ export default function Index() {
     useLoaderData() as LoaderData;
 
   return (
-    <Grid layout={{ "@initial": "mobile", "@bp2": "desktop" }}>
+    <Grid>
       {raffleWithMatchingProducts && (
         <>
           <Card>
