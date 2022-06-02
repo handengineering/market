@@ -13,7 +13,6 @@ import { getRaffleEntriesByRaffleIdAndUserId } from "~/models/raffleEntry.server
 import { getRaffleEntryProductsByRaffleEntryId } from "~/models/raffleEntryProduct.server";
 import { authenticator } from "~/services/auth.server";
 import commerce from "~/services/commerce.server";
-import { styled } from "~/styles/stitches.config";
 import {
   getSelectedAccessories,
   getSelectedAccessoriesWithOptions,
@@ -177,55 +176,16 @@ export let action: ActionFunction = async ({ request, params }) => {
   return redirect(checkoutUrl);
 };
 
-const ProductImageWrapper = styled("div", {
-  flex: "2",
-  display: "flex",
-  alignItems: "flex-start",
-  flexDirection: "column",
-  gap: "$5",
-  marginBottom: "$5",
-});
-
-const ProductImage = styled(Image, {
-  height: "$9",
-  width: "100%",
-});
-
-const ProductConfirmationWrapper = styled("div", {
-  flex: "1",
-  overflow: "hidden",
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "space-between",
-  marginBottom: "$5",
-});
-
-const MatchingAccessoryWrapper = styled("div", {
-  display: "flex",
-  gap: "$5",
-  marginBottom: "$5",
-});
-
-const MatchingAccessoryImage = styled(Image, {});
-
-const MatchingAccessoryImageWrapper = styled("div", {
-  flexGrow: "0",
-  flexShrink: "0",
-  flexBasis: "$5",
-});
-
-const MatchingAccessoryOptionsWrapper = styled("div", { flex: "1" });
-
 export default function Confirmation() {
   const { product, matchingAccessories } = useLoaderData() as LoaderData;
 
   return (
     <Form method="post">
       <FlexContainer>
-        <ProductImageWrapper>
-          <ProductImage src={product.image} />
-        </ProductImageWrapper>
-        <ProductConfirmationWrapper>
+        <div className="flex flex-1 flex-col items-start gap-6">
+          <Image src={product.image} />
+        </div>
+        <div className="mb-6 flex flex-1 flex-col justify-between overflow-hidden">
           <h1 className="mb-6 font-soehneBreit text-xl font-bold">
             {product.title}
           </h1>
@@ -243,11 +203,14 @@ export default function Confirmation() {
               <FlexContainer key={matchingAccessory.id}>
                 <h3 style={{ marginBottom: 0 }}>{matchingAccessory.title}</h3>
 
-                <MatchingAccessoryWrapper key={matchingAccessory.id}>
-                  <MatchingAccessoryImageWrapper>
-                    <MatchingAccessoryImage src={matchingAccessory.image} />
-                  </MatchingAccessoryImageWrapper>
-                  <MatchingAccessoryOptionsWrapper>
+                <div
+                  key={matchingAccessory.id}
+                  className="mb-6 flex w-full gap-6"
+                >
+                  <div className="flex-shrink-0 flex-grow-0 basis-24">
+                    <Image src={matchingAccessory.image} className="w-24" />
+                  </div>
+                  <div className="flex-1">
                     {!hasOptions && (
                       <>
                         <Label htmlFor="quantity">Standard</Label>
@@ -302,15 +265,15 @@ export default function Confirmation() {
                           })
                         : null;
                     })}
-                  </MatchingAccessoryOptionsWrapper>
-                </MatchingAccessoryWrapper>
+                  </div>
+                </div>
               </FlexContainer>
             );
           })}
           <Button color="primary" size="large">
             Confirm Entry
           </Button>
-        </ProductConfirmationWrapper>
+        </div>
       </FlexContainer>
     </Form>
   );
