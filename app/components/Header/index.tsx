@@ -10,7 +10,7 @@ export default function Header({
   return (
     <header className="flex w-full max-w-7xl flex-col items-center justify-between gap-4 p-6 md:flex-row">
       <Link to="/" style={{ textDecoration: "none" }}>
-        <h1 className="m-0 whitespace-nowrap text-center text-xl text-primary500 md:text-2xl">
+        <h1 className="m-0 whitespace-nowrap text-center text-xl text-primary-500 md:text-2xl">
           <b className="font-soehneBreit uppercase">Hand Engineering</b> Market
         </h1>
       </Link>

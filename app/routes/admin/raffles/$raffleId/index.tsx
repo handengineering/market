@@ -135,7 +135,7 @@ export default function Index() {
                   return (
                     <li
                       key={raffleEntry.id}
-                      className="mb-2 rounded bg-yellow200 p-2"
+                      className="mb-2 rounded bg-yellow-200 p-2"
                     >
                       {matchingUser?.email}
                     </li>
@@ -197,8 +197,8 @@ export default function Index() {
                     <li
                       key={raffleEntry.id}
                       className={clsx(
-                        "mb-2 rounded bg-green200 p-2",
-                        canRemoveAll && "bg-red200"
+                        "mb-2 rounded bg-green-200 p-2",
+                        canRemoveAll && "bg-red-200"
                       )}
                     >
                       {matchingUser?.email}

@@ -266,8 +266,8 @@ export default function Confirmation() {
       <div className="grid gap-6 md:grid-cols-2">
         <div className="flex flex-1 flex-col items-start gap-6">
           <Image src={product.image} />
-          <div className="w-full bg-neutral200 p-6">
-            <div className="mb-6 w-full rounded bg-yellow200 p-6 text-xl">
+          <div className="w-full bg-neutral-200 p-6">
+            <div className="mb-6 w-full rounded bg-yellow-200 p-6 text-xl">
               Total (before shipping & tax):{" "}
               <b>{formattedEstimatedTotalBeforeShipping}</b>
             </div>

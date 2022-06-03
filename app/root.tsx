@@ -63,7 +63,7 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body className="flex h-full flex-col items-center bg-neutral100 font-soehne text-primary700">
+      <body className="flex h-full flex-col items-center bg-neutral-100 font-soehne text-primary-700">
         <Header>
           {user ? (
             <>

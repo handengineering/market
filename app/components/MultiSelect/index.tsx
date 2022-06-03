@@ -68,7 +68,7 @@ const MultiSelect = ({ items, name }: MultiSelectProps) => {
           {selectedItems.map((selectedItem, index) => (
             <div
               key={`selected-item-${index}`}
-              className="mr-4 mb-4 flex items-center rounded bg-neutral100 p-2"
+              className="mr-4 mb-4 flex items-center rounded bg-neutral-100 p-2"
               {...getSelectedItemProps({ selectedItem, index })}
             >
               {selectedItem}
@@ -93,7 +93,7 @@ const MultiSelect = ({ items, name }: MultiSelectProps) => {
 
             <ul
               {...getMenuProps()}
-              className="absolute w-full rounded bg-neutral300"
+              className="absolute w-full rounded bg-neutral-300"
             >
               {isOpen &&
                 getFilteredItems(items).map((item, index) => (
@@ -105,7 +105,7 @@ const MultiSelect = ({ items, name }: MultiSelectProps) => {
                     }
                     key={`${item}${index}`}
                     {...getItemProps({ item, index })}
-                    className="cursor-pointer border-l-2 border-r-2 border-b-2 border-solid border-neutral500 p-4 text-sm"
+                    className="cursor-pointer border-l-2 border-r-2 border-b-2 border-solid border-neutral-500 p-4 text-sm"
                   >
                     {item}
                   </li>
@@ -115,7 +115,7 @@ const MultiSelect = ({ items, name }: MultiSelectProps) => {
 
           <div
             {...getToggleButtonProps()}
-            className="ml-4 flex h-6 w-6 flex-shrink-0 flex-grow-0 basis-6 items-center justify-center rounded-full bg-primary500 text-neutral100 hover:cursor-pointer hover:opacity-50"
+            className="ml-4 flex h-6 w-6 flex-shrink-0 flex-grow-0 basis-6 items-center justify-center rounded-full bg-primary-500 text-neutral-100 hover:cursor-pointer hover:opacity-50"
             aria-label={"toggle menu"}
           >
             &#8595;

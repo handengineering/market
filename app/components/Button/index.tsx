@@ -8,13 +8,13 @@ export interface ButtonProps
 }
 
 const classes = {
-  base: "cursor-pointer whitespace-nowrap rounded-sm bg-neutral500 py-2 px-4 text-primary500",
+  base: "cursor-pointer whitespace-nowrap rounded-sm bg-neutral-500 py-2 px-4 text-primary-500",
   color: {
-    primary: "bg-primary500 text-primary100 hover:bg-primary600",
-    secondary: "bg-green500 text-green100 hover:bg-green600",
-    tertiary: "bg-yellow500 text-yellow900 hover:bg-yellow600",
-    inverse: "bg-neutral100 text-primary500 hover:bg-neutral200",
-    danger: "bg-red500 text-red100 hover:bg-red600",
+    primary: "bg-primary-500 text-primary-100 hover:bg-primary-600",
+    secondary: "bg-green-500 text-green-100 hover:bg-green-600",
+    tertiary: "bg-yellow-500 text-yellow-900 hover:bg-yellow-600",
+    inverse: "bg-neutral-100 text-primary-500 hover:bg-neutral-200",
+    danger: "bg-red-500 text-red-100 hover:bg-red-600",
   },
   size: {
     large: "text-xl py-6 px-4 rounded-md",

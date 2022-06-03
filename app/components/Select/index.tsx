@@ -8,7 +8,7 @@ export default function Select({ children, ...rest }: SelectProps) {
   return (
     <select
       {...rest}
-      className="border-neutral-500 mb-4 ml-0 mr-0 grid w-full appearance-none items-center rounded border-2 border-solid border-neutral500 p-2 text-sm focus:border-primary300 focus:outline-none"
+      className="border-neutral-500 mb-4 ml-0 mr-0 grid w-full appearance-none items-center rounded border-2 border-solid border-neutral-500 p-2 text-sm focus:border-primary-300 focus:outline-none"
     >
       {children}
     </select>
