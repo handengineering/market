@@ -1,6 +1,7 @@
 import { RaffleEntryStatus } from "@prisma/client";
 import { Form, useLoaderData } from "@remix-run/react";
 import type { ActionFunction, LoaderFunction } from "@remix-run/server-runtime";
+import clsx from "clsx";
 import { useState } from "react";
 import Button from "~/components/Button";
 import Input from "~/components/Input";
@@ -131,7 +132,7 @@ export default function Index() {
                   return (
                     <li
                       key={raffleEntry.id}
-                      className="rounded border-2 border-solid border-neutral500 p-2"
+                      className="mb-2 rounded bg-yellow200 p-2"
                     >
                       {matchingUser?.email}
                     </li>
@@ -192,7 +193,10 @@ export default function Index() {
                   return (
                     <li
                       key={raffleEntry.id}
-                      className="mb-2 rounded bg-green200 p-2"
+                      className={clsx(
+                        "mb-2 rounded bg-green200 p-2",
+                        canRemoveAll && "bg-red200"
+                      )}
                     >
                       {matchingUser?.email}
                     </li>
