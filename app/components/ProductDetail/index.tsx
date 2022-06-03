@@ -28,8 +28,8 @@ export default function ProductDetail({ metafield }: ProductDetailProps) {
     case "list.dimension":
       const dimensionsArray = JSON.parse(metafield.value);
       return (
-        <div key={metafield.id}>
-          <h3>{metafield.key}</h3>
+        <div key={metafield.id} className="prose prose-brand">
+          <h3>Dimensions</h3>
           <p>
             {dimensionsArray.map(
               (dimension: { value: string; unit: string }, i: number) =>
@@ -44,19 +44,22 @@ export default function ProductDetail({ metafield }: ProductDetailProps) {
       const weight = JSON.parse(metafield.value);
 
       return (
-        <div key={metafield.id}>
-          <h3>{metafield.key}</h3>
+        <div key={metafield.id} className="prose prose-brand">
+          <h3>Weight</h3>
           <p>{`${weight.value} ${getWeightUnitShorthand(weight.unit)}`}</p>
         </div>
       );
     default:
       return (
-        <div
-          key={metafield.id}
-          dangerouslySetInnerHTML={{
-            __html: marked.parse(metafield.value),
-          }}
-        />
+        <div>
+          <div
+            key={metafield.id}
+            dangerouslySetInnerHTML={{
+              __html: marked.parse(metafield.value),
+            }}
+            className="prose prose-brand"
+          />
+        </div>
       );
   }
 }

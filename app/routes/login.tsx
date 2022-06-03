@@ -53,7 +53,7 @@ export default function Login() {
 
   return (
     <div className="flex h-full flex-col items-center md:py-24">
-      <h2 className="mb-4 font-soehneBreit text-lg uppercase text-primary500">
+      <h2 className="mb-4 font-soehneBreit text-lg uppercase text-primary-500">
         Login
       </h2>
       <FormWrapper>
@@ -69,7 +69,7 @@ export default function Login() {
           />
 
           {magicLinkSent ? (
-            <p className="rounded bg-yellow200 px-2 py-4 text-center text-sm">
+            <p className="rounded bg-yellow-200 px-2 py-4 text-center text-sm">
               Magic link has been sent!
               <br /> Please check your email and click the link to login.
             </p>

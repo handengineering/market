@@ -54,7 +54,7 @@ export default function Raffles() {
                 key={raffle.id}
                 className="mb-6 items-center justify-center space-y-6"
               >
-                <h2 className="whitespace-nowrap text-lg text-primary500">
+                <h2 className="whitespace-nowrap text-lg text-primary-500">
                   {raffle.name}
                 </h2>
                 <p>From {raffle.products[0].formattedPrice}</p>

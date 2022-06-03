@@ -234,13 +234,12 @@ export default function Configure() {
       </div>
       <div>
         {descriptionHtml ? (
-          <p className="mb-12 font-soehneBreit md:text-xl">
-            <div
-              dangerouslySetInnerHTML={{
-                __html: descriptionHtml,
-              }}
-            />
-          </p>
+          <div
+            dangerouslySetInnerHTML={{
+              __html: descriptionHtml,
+            }}
+            className="prose prose-brand mb-12 max-w-none rounded bg-neutral-200 p-6"
+          />
         ) : null}
 
         {secondaryImages
