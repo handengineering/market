@@ -284,8 +284,8 @@ export function createShopifyProvider({
           values: option.values,
         })),
         variants: variants.edges.map(
-          ({ node: { id, title, selectedOptions, icon } }: any) => {
-            return { id, title, selectedOptions, icon };
+          ({ node: { id, title, selectedOptions, priceV2, icon } }: any) => {
+            return { id, title, selectedOptions, priceV2, icon };
           }
         ),
       };

@@ -175,6 +175,10 @@ export default function Configure() {
 
   const secondaryImages = product?.images.slice(1);
 
+  const descriptionHtml =
+    raffleWithMatchingProducts &&
+    raffleWithMatchingProducts.products[0].descriptionHtml;
+
   return product ? (
     <Form method="post">
       <div className="mb-6 flex flex-col gap-6 md:flex-row">
@@ -183,7 +187,7 @@ export default function Configure() {
         </div>
         <div className="flex w-full max-w-xs flex-initial flex-col justify-between">
           <div className="mb-6">
-            <h1 className="mb-2 font-soehneBreit text-xl font-bold uppercase">
+            <h1 className="mb-2 font-soehneBreit text-xl uppercase">
               {raffleWithMatchingProducts?.name}
             </h1>
             <h2 className="mb-6 font-soehneBreit text-lg ">
@@ -229,10 +233,15 @@ export default function Configure() {
         )}
       </div>
       <div>
-        <h2 className="mb-6 font-soehneBreit text-lg">Description</h2>
-        <p className="mb-12 font-soehneBreit md:text-xl">
-          {raffleWithMatchingProducts.products[0].description}
-        </p>
+        {descriptionHtml ? (
+          <p className="mb-12 font-soehneBreit md:text-xl">
+            <div
+              dangerouslySetInnerHTML={{
+                __html: descriptionHtml,
+              }}
+            />
+          </p>
+        ) : null}
 
         {secondaryImages
           ? secondaryImages.map((image, index) => {

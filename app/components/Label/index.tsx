@@ -4,7 +4,7 @@ export interface LabelProps
 }
 export default function Label({ children }: LabelProps) {
   return (
-    <label className="mb-2 inline-block flex-1 text-sm text-neutral700">
+    <label className="mb-4 inline-block flex-1 text-sm text-neutral700">
       {children}
     </label>
   );
