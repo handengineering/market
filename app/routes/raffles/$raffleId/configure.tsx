@@ -8,7 +8,6 @@ import type {
 import { useEffect, useState } from "react";
 import invariant from "tiny-invariant";
 import Button from "~/components/Button";
-import FlexContainer from "~/components/FlexContainer";
 import Image from "~/components/Image";
 import ProductDetails from "~/components/ProductDetails";
 import type { SelectedOptions } from "~/components/ProductOptionInputs";
