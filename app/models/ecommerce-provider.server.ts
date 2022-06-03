@@ -67,6 +67,10 @@ export interface ProductVariant {
       };
     };
   };
+  priceV2: {
+    amount: string;
+    currencyCode: string;
+  };
   selectedOptions: SelectedProductOption[];
 }
 

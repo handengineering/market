@@ -8,7 +8,7 @@ export interface ButtonProps
 }
 
 const classes = {
-  base: "cursor-pointer whitespace-nowrap rounded-sm bg-neutral500 py-2 px-4 text-xs text-primary500",
+  base: "cursor-pointer whitespace-nowrap rounded-sm bg-neutral500 py-2 px-4 text-primary500",
   color: {
     primary: "bg-primary500 text-primary100 hover:bg-primary600",
     secondary: "bg-green500 text-green100 hover:bg-green600",
@@ -17,7 +17,7 @@ const classes = {
     danger: "bg-red500 text-red100 hover:bg-red600",
   },
   size: {
-    large: "text-lg py-2 px-4 rounded-md",
+    large: "text-xl py-6 px-4 rounded-md",
   },
 };
 

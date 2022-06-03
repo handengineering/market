@@ -1,6 +1,7 @@
 import { Form, useLoaderData } from "@remix-run/react";
 import type { ActionFunction, LoaderFunction } from "@remix-run/server-runtime";
 import { redirect } from "@remix-run/server-runtime";
+import React, { useState } from "react";
 import invariant from "tiny-invariant";
 import Button from "~/components/Button";
 import FlexContainer from "~/components/FlexContainer";
@@ -17,6 +18,7 @@ import {
   getSelectedAccessories,
   getSelectedAccessoriesWithOptions,
 } from "~/utils/product";
+import type { ParsedFormDataEntryValue } from "~/utils/raffleEntryProduct";
 import {
   serializeFormDataOptionQuantities,
   serializeFormDataQuantities,
@@ -178,17 +180,104 @@ export let action: ActionFunction = async ({ request, params }) => {
 
 export default function Confirmation() {
   const { product, matchingAccessories } = useLoaderData() as LoaderData;
+  const initialVariant = product.variants.find(
+    (variant) => variant.id === product.defaultVariantId
+  );
+  const initialEstimatedTotalBeforeShipping = initialVariant
+    ? parseInt(initialVariant.priceV2.amount)
+    : 0;
+
+  const [estimatedTotalBeforeShipping, setEstimatedTotalBeforeShipping] =
+    useState<number>(initialEstimatedTotalBeforeShipping);
+
+  const [selectedItems, setSelectedItems] = useState<
+    {
+      productId: string;
+      variantId: string;
+      productOption: string;
+      quantity: number;
+    }[]
+  >([]);
+
+  const handleSelectedItemsChange = (
+    productId: string,
+    variantId: string,
+    productOption: string,
+    e: React.FormEvent<HTMLSelectElement>
+  ) => {
+    let newSelectedItems = selectedItems;
+    let value = e.currentTarget.value;
+    let parsedValue: ParsedFormDataEntryValue = JSON.parse(value);
+    let quantity = parseInt(parsedValue.value);
+
+    let index = newSelectedItems.findIndex(
+      (item) =>
+        item.productId === productId && item.productOption === productOption
+    );
+
+    if (index === -1) {
+      newSelectedItems.push({
+        productId,
+        variantId,
+        productOption: productOption,
+        quantity: quantity,
+      });
+    } else {
+      newSelectedItems[index] = {
+        productId,
+        variantId,
+        productOption: productOption,
+        quantity: quantity,
+      };
+    }
+
+    setSelectedItems(newSelectedItems);
+    let newEstimatedTotalBeforeShipping = initialVariant
+      ? parseInt(initialVariant.priceV2.amount)
+      : 0;
+    selectedItems.forEach((item) => {
+      let product =
+        matchingAccessories &&
+        matchingAccessories.find(
+          (accessory) => accessory.id === item.productId
+        );
+      let variant = product?.variants.find(
+        (variant) => variant.id === item.variantId
+      );
+      if (variant) {
+        newEstimatedTotalBeforeShipping +=
+          parseInt(variant.priceV2.amount) * item.quantity;
+      }
+    });
+
+    setEstimatedTotalBeforeShipping(newEstimatedTotalBeforeShipping);
+  };
+
+  const formattedEstimatedTotalBeforeShipping = new Intl.NumberFormat("en-GB", {
+    style: "currency",
+    currency: initialVariant?.priceV2.currencyCode,
+  })
+    .formatToParts(estimatedTotalBeforeShipping)
+    .map((val) => val.value)
+    .join("");
 
   return (
     <Form method="post">
       <div className="grid gap-6 md:grid-cols-2">
         <div className="flex flex-1 flex-col items-start gap-6">
           <Image src={product.image} />
+          <div className="w-full bg-neutral200 p-6">
+            <div className="mb-6 w-full rounded bg-yellow200 p-6 text-xl">
+              Total (before shipping & tax):{" "}
+              <b>{formattedEstimatedTotalBeforeShipping}</b>
+            </div>
+            <Button color="primary" size="large" className="w-full">
+              Confirm Entry
+            </Button>
+          </div>
         </div>
         <div className="mb-6 flex flex-1 flex-col justify-between overflow-hidden">
-          <h1 className="mb-6 font-soehneBreit text-xl font-bold">
-            {product.title}
-          </h1>
+          <h1 className="mb-6 font-soehneBreit text-xl">{product.title}</h1>
           <p className="mb-6">
             You have been selected to recieve a spot in the {product.title}{" "}
             group buy. Before you checkout, you may want to include some extra
@@ -208,13 +297,23 @@ export default function Confirmation() {
                   className="mb-6 flex w-full gap-6"
                 >
                   <div className="flex-shrink-0 flex-grow-0 basis-24">
-                    <Image src={matchingAccessory.image} className="w-24" />
+                    <Image src={matchingAccessory.image} className="h-20" />
                   </div>
                   <div className="flex-1">
                     {!hasOptions && (
                       <>
                         <Label htmlFor="quantity">Standard</Label>
-                        <Select name="quantity">
+                        <Select
+                          name="quantity"
+                          onChange={(e) =>
+                            handleSelectedItemsChange(
+                              matchingAccessory.id,
+                              matchingAccessory.defaultVariantId,
+                              "Default",
+                              e
+                            )
+                          }
+                        >
                           {[...Array(accessoryCount)].map((_, i) => {
                             const quantityCount = i;
                             return (
@@ -237,12 +336,22 @@ export default function Confirmation() {
                       return hasOptions
                         ? option.values.map((optionValue) => {
                             return (
-                              <>
-                                <Label key={optionValue} htmlFor={option.name}>
+                              <div key={optionValue}>
+                                <Label htmlFor={option.name}>
                                   {optionValue}
                                 </Label>
 
-                                <Select name="optionQuantity">
+                                <Select
+                                  name="optionQuantity"
+                                  onChange={(e) =>
+                                    handleSelectedItemsChange(
+                                      matchingAccessory.id,
+                                      matchingAccessory.defaultVariantId,
+                                      optionValue,
+                                      e
+                                    )
+                                  }
+                                >
                                   {[...Array(accessoryCount)].map((_, i) => {
                                     const quantityCount = i;
                                     return (
@@ -260,7 +369,7 @@ export default function Confirmation() {
                                     );
                                   })}
                                 </Select>
-                              </>
+                              </div>
                             );
                           })
                         : null;
@@ -270,9 +379,6 @@ export default function Confirmation() {
               </FlexContainer>
             );
           })}
-          <Button color="primary" size="large">
-            Confirm Entry
-          </Button>
         </div>
       </div>
     </Form>
