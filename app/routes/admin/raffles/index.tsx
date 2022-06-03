@@ -7,6 +7,7 @@ import type { Raffle } from "~/models/raffle.server";
 import { getRaffles } from "~/models/raffle.server";
 import type { RaffleEntry } from "~/models/raffleEntry.server";
 import commerce from "~/services/commerce.server";
+import { requireAdminPermissions } from "~/services/permissions.server";
 
 type RaffleWithMatchingProducts = Raffle & { products: FullProduct[] };
 
@@ -16,6 +17,8 @@ type LoaderData = {
 };
 
 export let loader: LoaderFunction = async ({ request }) => {
+  await requireAdminPermissions(request);
+
   const raffles: Raffle[] = await getRaffles();
 
   const rafflesWithMatchingProducts = await Promise.all(

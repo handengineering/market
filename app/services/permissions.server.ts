@@ -1,4 +1,5 @@
 import { redirect } from "@remix-run/server-runtime";
+import permissions from "prisma/permissions";
 import { getRolesByUserId } from "~/models/role.server";
 import { authenticator } from "./auth.server";
 
@@ -14,6 +15,17 @@ export async function checkPermissions(request: Request, permissions: number) {
     });
 
   return hasPermissions;
+}
+
+export async function requireAdminPermissions(request: Request) {
+  const hasPermissions = await checkPermissions(
+    request,
+    permissions.administrator
+  );
+
+  if (!hasPermissions) {
+    throw redirect("/");
+  }
 }
 
 export async function redirectUnlessPermissions(

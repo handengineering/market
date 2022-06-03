@@ -1,8 +1,6 @@
 import { Link, Outlet } from "@remix-run/react";
-import permissions from "prisma/permissions";
 import type { LoaderFunction } from "@remix-run/server-runtime";
-import { redirect } from "@remix-run/server-runtime";
-import { checkPermissions } from "~/services/permissions.server";
+import { requireAdminPermissions } from "~/services/permissions.server";
 
 export default function Index() {
   return (
@@ -28,12 +26,6 @@ export default function Index() {
 }
 
 export let loader: LoaderFunction = async ({ request }) => {
-  const hasPermissions = await checkPermissions(
-    request,
-    permissions.administrator
-  );
-
-  if (!hasPermissions) return redirect("/");
-
-  return {};
+  await requireAdminPermissions(request);
+  return null;
 };
