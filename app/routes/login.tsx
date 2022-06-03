@@ -52,10 +52,8 @@ export default function Login() {
   let { magicLinkSent } = useLoaderData<LoaderData>();
 
   return (
-    <div className="flex h-full flex-col items-center md:py-24">
-      <h2 className="mb-4 font-soehneBreit text-lg uppercase text-primary-500">
-        Login
-      </h2>
+    <div className="flex h-full flex-col items-center md:py-12">
+      <h1 className="mb-6 font-soehneBreit text-xl">Login</h1>
       <FormWrapper>
         <Form action="/login" method="post">
           <Label htmlFor="email">Email</Label>

@@ -54,7 +54,7 @@ export default function Index() {
     <>
       {raffleWithMatchingProducts ? (
         <>
-          <h1 className="mb-4 font-soehneBreit text-xl font-bold uppercase text-primary-500">
+          <h1 className="mb-4 font-soehneBreit text-xl text-primary-500">
             {raffleWithMatchingProducts.name}
           </h1>
           <div className="grid gap-6 md:grid-cols-2">

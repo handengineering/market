@@ -53,7 +53,7 @@ export default function RaffleItem({
         alt={raffle.name}
         className="h-full max-h-48"
       />
-      <h2 className="whitespace-nowrap font-soehneBreit text-lg uppercase text-primary-500">
+      <h2 className="whitespace-nowrap font-soehneBreit text-lg text-primary-500">
         {raffle.name}
       </h2>
 
