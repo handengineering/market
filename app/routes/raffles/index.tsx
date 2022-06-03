@@ -52,7 +52,7 @@ export default function Raffles() {
     useLoaderData() as LoaderData;
   return (
     <>
-      <h1 className="mb-6 font-soehneBreit text-xl uppercase">All Raffles</h1>
+      <h1 className="mb-6 font-soehneBreit text-xl">All Raffles</h1>
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {rafflesWithMatchingProducts &&
           rafflesWithMatchingProducts.map((raffle) => {

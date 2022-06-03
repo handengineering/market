@@ -66,6 +66,16 @@ export default function Raffles() {
               </Card>
             );
           })}
+        <Card className="mb-6 items-center justify-center space-y-6">
+          <h2 className="whitespace-nowrap text-lg text-primary-500">
+            New Raffle
+          </h2>
+          <Link to="/admin/raffle/new">
+            <Button size="large" color="primary">
+              Create New Rafle
+            </Button>
+          </Link>
+        </Card>
       </div>
     </div>
   );

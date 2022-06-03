@@ -34,7 +34,7 @@ export default function Screen() {
 
   return (
     <>
-      <h1 className="mb-6 font-soehneBreit text-xl uppercase">Dashboard</h1>
+      <h1 className="mb-6 font-soehneBreit text-xl">Dashboard</h1>
       <Card>
         <h2>Discord Status</h2>
 

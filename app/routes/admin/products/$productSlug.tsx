@@ -29,14 +29,12 @@ export default function Products() {
 
   return (
     <div>
-      <h1 className="mb-2 font-soehneBreit text-xl font-bold uppercase">
-        Products
-      </h1>
+      <h1 className="mb-2 font-soehneBreit text-xl">Products</h1>
       <h2 className="mb-6">{product.title}</h2>
       <Image
         alt={product.title}
         src={product.image}
-        className="mb-6 max-h-48"
+        className="mb-6 max-w-xl"
       />
       <p>{product.description}</p>
     </div>

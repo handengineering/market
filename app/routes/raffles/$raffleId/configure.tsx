@@ -187,10 +187,10 @@ export default function Configure() {
         </div>
         <div className="flex w-full max-w-xs flex-initial flex-col justify-between">
           <div className="mb-6">
-            <h1 className="mb-2 font-soehneBreit text-xl uppercase">
+            <h1 className="mb-2 font-soehneBreit text-2xl ">
               {raffleWithMatchingProducts?.name}
             </h1>
-            <h2 className="mb-6 font-soehneBreit text-lg ">
+            <h2 className="mb-6 font-soehneBreit text-xl ">
               {raffleWithMatchingProducts.products[0].formattedPrice}
             </h2>
             <div>
