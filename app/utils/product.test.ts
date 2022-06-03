@@ -16,6 +16,10 @@ const expectedVariant: ProductVariant = {
       },
     },
   },
+  priceV2: {
+    amount: "10.00",
+    currencyCode: "USD",
+  },
   selectedOptions: [
     { name: "Color", value: "Silverstone Metallic" },
     { name: "Type", value: "Standard" },
@@ -58,6 +62,10 @@ const product: FullProduct = {
             originalSrc: "image-src",
           },
         },
+      },
+      priceV2: {
+        amount: "10.00",
+        currencyCode: "USD",
       },
       selectedOptions: [
         { name: "Color", value: "New Formula Red" },
