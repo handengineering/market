@@ -4,12 +4,15 @@ import invariant from "tiny-invariant";
 import type { FullProduct } from "~/models/ecommerce-provider.server";
 import commerce from "~/services/commerce.server";
 import Image from "~/components/Image";
+import { requireAdminPermissions } from "~/services/permissions.server";
 
 type LoaderData = {
   product: FullProduct;
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
+  await requireAdminPermissions(request);
+
   let productSlug = params.productSlug;
 
   invariant(productSlug, "Product slug not found");

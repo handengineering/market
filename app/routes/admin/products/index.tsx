@@ -3,6 +3,7 @@ import type { LoaderFunction } from "@remix-run/server-runtime";
 import Image from "~/components/Image";
 import type { Product } from "~/models/ecommerce-provider.server";
 import commerce from "~/services/commerce.server";
+import { requireAdminPermissions } from "~/services/permissions.server";
 
 type LoaderData = {
   hasNextPage: boolean;
@@ -10,6 +11,8 @@ type LoaderData = {
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
+  await requireAdminPermissions(request);
+
   const productsResponse = await commerce.getProducts(
     "en",
     undefined,

@@ -11,6 +11,7 @@ import type { RaffleEntry } from "~/models/raffleEntry.server";
 import { getRaffleEntriesByRaffleId } from "~/models/raffleEntry.server";
 import type { User } from "~/models/user.server";
 import { getUsers } from "~/models/user.server";
+import { requireAdminPermissions } from "~/services/permissions.server";
 
 type LoaderData = {
   createdRaffleEntries?: RaffleEntry[];
@@ -36,6 +37,8 @@ function shuffleArray<T>(array: T[]) {
 }
 
 export let loader: LoaderFunction = async ({ request, params }) => {
+  await requireAdminPermissions(request);
+
   const raffleId = params.raffleId as string;
 
   const raffleEntries = await getRaffleEntriesByRaffleId(raffleId);

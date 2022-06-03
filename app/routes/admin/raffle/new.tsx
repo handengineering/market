@@ -11,6 +11,7 @@ import type { Product } from "~/models/ecommerce-provider.server";
 import MultiSelect from "~/components/MultiSelect";
 import Textarea from "~/components/Textarea";
 import Label from "~/components/Label";
+import { requireAdminPermissions } from "~/services/permissions.server";
 
 export default function Index() {
   const { products } = useLoaderData<LoaderData>();
@@ -117,6 +118,8 @@ type LoaderData = {
 };
 
 export let loader: LoaderFunction = async ({ request }) => {
+  await requireAdminPermissions(request);
+
   const productsResponse = await commerce.getProducts(
     "en",
     undefined,
