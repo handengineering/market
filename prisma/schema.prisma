@@ -106,6 +106,18 @@ model RaffleEntryProduct {
   updatedAt DateTime @updatedAt
 }
 
+model SerialNumber {
+  id               String  @id @default(cuid())
+  serialNumber     String  @unique
+  productId        String
+  productVariantId String
+  userId           String?
+  orderId          String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Password {
   hash String
 
