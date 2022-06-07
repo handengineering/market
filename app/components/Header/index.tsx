@@ -74,14 +74,24 @@ export default function Header({
           </h2>
           <ul className="space-y-2">
             {user ? (
-              <li>
-                <Link
-                  to="/logout"
-                  className="text-neutral-700 hover:text-primary-500"
-                >
-                  Log Out
-                </Link>
-              </li>
+              <>
+                <li>
+                  <Link
+                    to="/account"
+                    className="text-neutral-700 hover:text-primary-500"
+                  >
+                    Settings
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/logout"
+                    className="text-neutral-700 hover:text-primary-500"
+                  >
+                    Log Out
+                  </Link>
+                </li>
+              </>
             ) : (
               <>
                 <li>
