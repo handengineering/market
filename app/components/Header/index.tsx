@@ -37,38 +37,6 @@ export default function Header({
             <ul className="space-y-2">
               <li>
                 <Link
-                  to="/"
-                  className="text-neutral-700 hover:text-primary-500"
-                >
-                  2000 Mini
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/"
-                  className="text-neutral-700 hover:text-primary-500"
-                >
-                  959 Mini
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/"
-                  className="text-neutral-700 hover:text-primary-500"
-                >
-                  Kage
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/"
-                  className="text-neutral-700 hover:text-primary-500"
-                >
-                  Haus
-                </Link>
-              </li>
-              <li>
-                <Link
                   to="/products"
                   className="text-neutral-700 hover:text-primary-500"
                 >

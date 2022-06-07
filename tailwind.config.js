@@ -61,6 +61,9 @@ module.exports = {
     fontFamily: {
       soehne: ["soehne, apple-system, sans-serif"],
       soehneBreit: ["soehne breit, apple-system, sans-serif"],
+      soehneMono: [
+        "soehne mono, Menlo, Consolas, Monaco, Liberation Mono, Lucida Console, monospace;",
+      ],
     },
     extend: {
       typography: ({ theme }) => ({
