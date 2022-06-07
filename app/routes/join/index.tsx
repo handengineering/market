@@ -34,7 +34,7 @@ type ActionData = {
 
 export let loader: LoaderFunction = async ({ request }) => {
   await authenticator.isAuthenticated(request, {
-    successRedirect: "/",
+    successRedirect: "/join/discord",
   });
   let session = await sessionStorage.getSession(request.headers.get("Cookie"));
   // This session key `auth:magiclink` is the default one used by the EmailLinkStrategy
@@ -47,7 +47,7 @@ export let loader: LoaderFunction = async ({ request }) => {
 
 export const action: ActionFunction = async ({ request }) => {
   await authenticator.authenticate("email-link", request, {
-    successRedirect: "/join",
+    successRedirect: "/join ",
   });
 };
 
