@@ -5,7 +5,7 @@ import { requireAdminPermissions } from "~/services/permissions.server";
 export default function Index() {
   return (
     <div>
-      <h1 className="mb-6 font-soehneBreit text-xl">Admin</h1>
+      <h1 className="mb-6 font-soehneBreit text-xl text-neutral-700">Admin</h1>
       <Outlet />
     </div>
   );
