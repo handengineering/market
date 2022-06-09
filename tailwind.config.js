@@ -20,8 +20,8 @@ module.exports = {
         600: "#A6A0AF",
         500: "#DAD2E2",
         400: "#E0D9E7",
-        300: "#E0D9E7",
-        200: "#E6E0EC",
+        300: "#E6E0EC",
+        200: "#ECE7F1",
         100: "#F2EFF5",
       },
       yellow: {
