@@ -1,23 +1,14 @@
-import { styled } from "~/styles/stitches.config";
+import clsx from "clsx";
 
-const FlexContainer = styled("div", {
-  height: "100%",
-  width: "100%",
-  display: "flex",
-  flexWrap: "wrap",
-  flexDirection: "row",
-  variants: {
-    layout: {
-      desktop: {
-        flexDirection: "row",
-        alignItems: "flex-start",
-      },
-      mobile: {
-        flexDirection: "column",
-        alignItems: "center",
-      },
-    },
-  },
-});
+export interface FlexContainerProps
+  extends React.HTMLAttributes<HTMLDivElement> {
+  children: React.ReactNode;
+}
 
-export default FlexContainer;
+export default function FlexContainer({
+  children,
+  className,
+}: FlexContainerProps) {
+  const flexContainerClasses = clsx("flex flex-row flex-wrap gap-6", className);
+  return <div className={flexContainerClasses}>{children}</div>;
+}

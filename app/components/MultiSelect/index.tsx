@@ -1,6 +1,5 @@
 import { useCombobox, useMultipleSelection } from "downshift";
 import { useState } from "react";
-import { styled } from "~/styles/stitches.config";
 import Input from "../Input";
 
 type Item = string | null;
@@ -10,85 +9,6 @@ export interface MultiSelectProps {
   items: Items;
   name: string;
 }
-
-const Pill = styled("div", {
-  display: "flex",
-  alignItems: "center",
-  backgroundColor: "$neutral100",
-  borderRadius: "4px",
-  padding: "$1",
-  height: "$1",
-  marginRight: "$1",
-  marginBottom: "$1",
-  fontSize: "$2",
-});
-
-const CloseIcon = styled("span", {
-  display: "inline",
-  marginLeft: "$1",
-  borderRadius: "50%",
-  aspectRatio: "1 / 1",
-  textAlign: "center",
-  cursor: "pointer",
-  "&:hover": {
-    opacity: 0.5,
-  },
-});
-
-const MultiSelectWrapper = styled("div", {
-  marginBottom: "$3",
-});
-
-const PillWrapper = styled("div", {
-  display: "flex",
-});
-
-const MultiSelectInputWrapper = styled("div", {
-  width: "100%",
-  position: "relative",
-});
-
-const MultiSelectInput = styled(Input, {
-  margin: "0",
-});
-
-const InputWrapper = styled("div", {
-  display: "flex",
-  alignItems: "flex-start",
-});
-
-const InputButton = styled("div", {
-  display: "flex",
-  flexGrow: "0",
-  flexBasis: "$1",
-  flexShrink: "0",
-  marginLeft: "$1",
-  alignItems: "center",
-  justifyContent: "center",
-  width: "$1",
-  height: "$1",
-  borderRadius: "50%",
-  backgroundColor: "$primary500",
-  color: "$neutral100",
-});
-
-const DropdownList = styled("ul", {
-  width: "100%",
-  backgroundColor: "$neutral300",
-  position: "absolute",
-  borderRadius: "4px",
-});
-
-const DropdownListItem = styled("li", {
-  padding: "$2",
-  cursor: "pointer",
-  borderLeftWidth: "1px",
-  borderRightWidth: "1px",
-  borderBottomWidth: "1px",
-  borderStyle: "solid",
-  borderColor: "$neutral500",
-  fontSize: "$2",
-});
 
 const MultiSelect = ({ items, name }: MultiSelectProps) => {
   const [inputValue, setInputValue] = useState("");
@@ -142,32 +62,42 @@ const MultiSelect = ({ items, name }: MultiSelectProps) => {
   });
 
   return (
-    <MultiSelectWrapper>
+    <div className="mb-4">
       <div>
-        <PillWrapper>
+        <div className="flex">
           {selectedItems.map((selectedItem, index) => (
-            <Pill
+            <div
               key={`selected-item-${index}`}
+              className="mr-4 mb-4 flex items-center rounded bg-neutral-100 p-2"
               {...getSelectedItemProps({ selectedItem, index })}
             >
               {selectedItem}
-              <CloseIcon onClick={() => removeSelectedItem(selectedItem)}>
+              <span
+                onClick={() => removeSelectedItem(selectedItem)}
+                className="ml-2 inline aspect-square rounded-full text-center hover:cursor-pointer hover:opacity-50"
+              >
                 &#10005;
-              </CloseIcon>
-            </Pill>
+              </span>
+            </div>
           ))}
-        </PillWrapper>
-        <InputWrapper {...getComboboxProps()}>
-          <MultiSelectInputWrapper>
-            <MultiSelectInput
+        </div>
+
+        <div {...getComboboxProps()} className="flex items-center">
+          <div className="relative w-full">
+            <Input
               name={selectItem.name}
               placeholder="Search"
               {...getInputProps(getDropdownProps({ preventKeyAction: isOpen }))}
+              className="mb-0"
             />
-            <DropdownList {...getMenuProps()}>
+
+            <ul
+              {...getMenuProps()}
+              className="absolute w-full rounded bg-neutral-300"
+            >
               {isOpen &&
                 getFilteredItems(items).map((item, index) => (
-                  <DropdownListItem
+                  <li
                     style={
                       highlightedIndex === index
                         ? { backgroundColor: "#DAD2E2" }
@@ -175,17 +105,22 @@ const MultiSelect = ({ items, name }: MultiSelectProps) => {
                     }
                     key={`${item}${index}`}
                     {...getItemProps({ item, index })}
+                    className="cursor-pointer border-l-2 border-r-2 border-b-2 border-solid border-neutral-500 p-4 text-sm"
                   >
                     {item}
-                  </DropdownListItem>
+                  </li>
                 ))}
-            </DropdownList>
-          </MultiSelectInputWrapper>
+            </ul>
+          </div>
 
-          <InputButton {...getToggleButtonProps()} aria-label={"toggle menu"}>
+          <div
+            {...getToggleButtonProps()}
+            className="ml-4 flex h-6 w-6 flex-shrink-0 flex-grow-0 basis-6 items-center justify-center rounded-full bg-primary-500 text-neutral-100 hover:cursor-pointer hover:opacity-50"
+            aria-label={"toggle menu"}
+          >
             &#8595;
-          </InputButton>
-        </InputWrapper>
+          </div>
+        </div>
       </div>
 
       {selectedItems.map((selectedItem) => {
@@ -193,7 +128,7 @@ const MultiSelect = ({ items, name }: MultiSelectProps) => {
           typeof selectedItem === "string" ? selectedItem : "";
         return <input key={value} hidden name={name} value={value} />;
       })}
-    </MultiSelectWrapper>
+    </div>
   );
 };
 

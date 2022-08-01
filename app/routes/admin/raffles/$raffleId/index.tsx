@@ -1,10 +1,9 @@
 import { RaffleEntryStatus } from "@prisma/client";
 import { Form, useLoaderData } from "@remix-run/react";
 import type { ActionFunction, LoaderFunction } from "@remix-run/server-runtime";
+import clsx from "clsx";
 import { useState } from "react";
 import Button from "~/components/Button";
-import Card from "~/components/Card";
-import Grid from "~/components/Grid";
 import Input from "~/components/Input";
 import Label from "~/components/Label";
 import { prisma } from "~/db.server";
@@ -12,7 +11,7 @@ import type { RaffleEntry } from "~/models/raffleEntry.server";
 import { getRaffleEntriesByRaffleId } from "~/models/raffleEntry.server";
 import type { User } from "~/models/user.server";
 import { getUsers } from "~/models/user.server";
-import { styled } from "~/styles/stitches.config";
+import { requireAdminPermissions } from "~/services/permissions.server";
 
 type LoaderData = {
   createdRaffleEntries?: RaffleEntry[];
@@ -38,6 +37,8 @@ function shuffleArray<T>(array: T[]) {
 }
 
 export let loader: LoaderFunction = async ({ request, params }) => {
+  await requireAdminPermissions(request);
+
   const raffleId = params.raffleId as string;
 
   const raffleEntries = await getRaffleEntriesByRaffleId(raffleId);
@@ -111,24 +112,19 @@ export let action: ActionFunction = async ({ request, params }) => {
   }
 };
 
-const RaffleEntryListItem = styled("li", {
-  border: "1px solid $neutral500",
-  backgroundColor: "$neutral100",
-  borderRadius: "$1",
-  padding: "$1",
-});
-
-export default function RaffleId() {
+export default function Index() {
   const { createdRaffleEntries, drawnRaffleEntries, users } =
     useLoaderData() as LoaderData;
   const [canRemoveAll, setCanRemoveAll] = useState(false);
 
   return (
-    <Grid layout={{ "@initial": "mobile", "@bp2": "desktop" }}>
+    <div className="grid gap-6 md:grid-cols-3">
       {users && (
         <>
-          <Card>
-            <h2>Created Raffle Entries ({createdRaffleEntries?.length})</h2>
+          <div className="mb-6">
+            <h2 className="mb-6 font-soehneBreit text-lg">
+              Created Raffle Entries ({createdRaffleEntries?.length})
+            </h2>
             <ul>
               {createdRaffleEntries &&
                 createdRaffleEntries.map((raffleEntry) => {
@@ -137,26 +133,39 @@ export default function RaffleId() {
                   });
 
                   return (
-                    <RaffleEntryListItem key={raffleEntry.id}>
+                    <li
+                      key={raffleEntry.id}
+                      className="mb-2 rounded bg-yellow-200 p-2"
+                    >
                       {matchingUser?.email}
-                    </RaffleEntryListItem>
+                    </li>
                   );
                 })}
             </ul>
-          </Card>
-          <Card>
-            <h2>Controls</h2>
+          </div>
+          <div className="mb-6">
+            <h2 className="mb-6 font-soehneBreit text-lg">Controls</h2>
             <Form method="post">
               <Label>
                 Draw Count
                 <Input type="number" name="drawCount" />
               </Label>
-              <Button name="action" value="draw" color="primary">
+              <Button
+                name="action"
+                value="draw"
+                color="primary"
+                className="mb-2 w-full last:mb-0"
+              >
                 Draw Participants
               </Button>
 
               {canRemoveAll ? (
-                <Button name="action" value="removeAll" color="danger">
+                <Button
+                  name="action"
+                  value="removeAll"
+                  color="danger"
+                  className="mb-2 w-full last:mb-0"
+                >
                   Confirm Remove All Partipants
                 </Button>
               ) : (
@@ -165,14 +174,17 @@ export default function RaffleId() {
                     e.preventDefault();
                     setCanRemoveAll(true);
                   }}
+                  className="mb-2 w-full last:mb-0"
                 >
                   Remove All Particpants
                 </Button>
               )}
             </Form>
-          </Card>
-          <Card>
-            <h2>Drawn Raffle Entries ({drawnRaffleEntries?.length})</h2>
+          </div>
+          <div className="mb-6">
+            <h2 className="mb-6 font-soehneBreit text-lg">
+              Drawn Raffle Entries ({drawnRaffleEntries?.length})
+            </h2>
 
             <ul>
               {drawnRaffleEntries &&
@@ -182,15 +194,21 @@ export default function RaffleId() {
                   });
 
                   return (
-                    <RaffleEntryListItem key={raffleEntry.id}>
+                    <li
+                      key={raffleEntry.id}
+                      className={clsx(
+                        "mb-2 rounded bg-green-200 p-2",
+                        canRemoveAll && "bg-red-200"
+                      )}
+                    >
                       {matchingUser?.email}
-                    </RaffleEntryListItem>
+                    </li>
                   );
                 })}
             </ul>
-          </Card>
+          </div>
         </>
       )}
-    </Grid>
+    </div>
   );
 }

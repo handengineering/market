@@ -1,9 +1,9 @@
 import { Link, useLoaderData } from "@remix-run/react";
 import type { LoaderFunction } from "@remix-run/server-runtime";
-import Card from "~/components/Card";
-import Grid from "~/components/Grid";
+import Image from "~/components/Image";
 import type { Product } from "~/models/ecommerce-provider.server";
 import commerce from "~/services/commerce.server";
+import { requireAdminPermissions } from "~/services/permissions.server";
 
 type LoaderData = {
   hasNextPage: boolean;
@@ -11,6 +11,8 @@ type LoaderData = {
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
+  await requireAdminPermissions(request);
+
   const productsResponse = await commerce.getProducts(
     "en",
     undefined,
@@ -31,17 +33,17 @@ export default function Products() {
 
   return (
     <div>
-      <h2>Products</h2>
-      <Grid layout={{ "@initial": "mobile", "@bp2": "desktop" }}>
+      <h2 className="mb-6 font-soehneBreit text-lg">Products</h2>
+      <div className="grid gap-6 md:grid-cols-3">
         {products.map((product: Product) => (
-          <Card key={product.id}>
+          <div key={product.id} className="mb-6">
             <Link to={product.slug}>
-              <h3>{product.title}</h3>
-              <img src={product.image} alt={product.title} width="100%" />
+              <h3 className="mb-6">{product.title}</h3>
+              <Image src={product.image} alt={product.title} />
             </Link>
-          </Card>
+          </div>
         ))}
-      </Grid>
+      </div>
     </div>
   );
 }

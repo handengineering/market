@@ -39,7 +39,7 @@ export let action: ActionFunction = async ({ request }) => {
 
 export const ErrorBoundary: ErrorBoundaryComponent = ({ error }) => {
   return (
-    <Card position="center">
+    <Card>
       <ErrorText>{error.message}</ErrorText>
       <Link to="/login">Try a different email?</Link>
     </Card>
@@ -52,26 +52,29 @@ export default function Login() {
   let { magicLinkSent } = useLoaderData<LoaderData>();
 
   return (
-    <>
-      <h2>Login</h2>
-
+    <div className="flex h-full flex-col items-center md:py-12">
+      <h1 className="mb-6 font-soehneBreit text-xl">Login</h1>
       <FormWrapper>
         <Form action="/login" method="post">
-          <Label>
-            Email
-            <Input
-              id="email"
-              type="email"
-              name="email"
-              aria-label="email"
-              required
-            />
-          </Label>
+          <Label htmlFor="email">Email</Label>
+
+          <Input
+            id="email"
+            type="email"
+            name="email"
+            aria-label="email"
+            required
+          />
 
           {magicLinkSent ? (
-            "Magic link has been sent!"
+            <p className="rounded bg-yellow-200 px-2 py-4 text-center text-sm">
+              Magic link has been sent!
+              <br /> Please check your email and click the link to login.
+            </p>
           ) : (
-            <Button color="primary">Email a login link</Button>
+            <Button color="primary" className="text-l w-full">
+              Email a login link
+            </Button>
           )}
         </Form>
       </FormWrapper>
@@ -87,6 +90,6 @@ export default function Login() {
           Join
         </Link>
       </div>
-    </>
+    </div>
   );
 }

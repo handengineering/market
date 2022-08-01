@@ -11,6 +11,7 @@ import type { Product } from "~/models/ecommerce-provider.server";
 import MultiSelect from "~/components/MultiSelect";
 import Textarea from "~/components/Textarea";
 import Label from "~/components/Label";
+import { requireAdminPermissions } from "~/services/permissions.server";
 
 export default function Index() {
   const { products } = useLoaderData<LoaderData>();
@@ -20,29 +21,22 @@ export default function Index() {
     <FormWrapper>
       <Form method="post" action="/admin/raffle/new">
         <h2>Create New Raffle</h2>
-        <Label>
-          Name
-          <Input name="name" aria-label="Name" type="text" />
-        </Label>
-        <Label>
-          Description
-          <Textarea name="description" aria-label="Description" />
-        </Label>
-        <Label>
-          Start Date
-          <Input name="startDateTime" aria-label="Start Date" type="date" />
-        </Label>
-        <Label>
-          End Date
-          <Input name="endDateTime" aria-label="End Date" type="date" />
-        </Label>
-        <Label>
-          Product SKUs
-          <MultiSelect
-            name="product"
-            items={products.map((product) => product.slug)}
-          />
-        </Label>
+        <Label htmlFor="name">Name </Label>
+
+        <Input name="name" aria-label="Name" type="text" />
+        <Label htmlFor="description">Description</Label>
+
+        <Textarea name="description" aria-label="Description" />
+        <Label htmlFor="startDateTime">Start Date </Label>
+        <Input name="startDateTime" aria-label="Start Date" type="date" />
+        <Label htmlFor="endDateTime">End Date </Label>
+        <Input name="endDateTime" aria-label="End Date" type="date" />
+        <Label htmlFor="product">Product SKUs</Label>
+
+        <MultiSelect
+          name="product"
+          items={products.map((product) => product.slug)}
+        />
         {actionResponse && actionResponse.raffle ? (
           <Button type="submit" disabled>
             Create New Raffle
@@ -124,6 +118,8 @@ type LoaderData = {
 };
 
 export let loader: LoaderFunction = async ({ request }) => {
+  await requireAdminPermissions(request);
+
   const productsResponse = await commerce.getProducts(
     "en",
     undefined,

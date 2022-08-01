@@ -1,6 +1,10 @@
 import { prisma } from "~/db.server";
 import type { Raffle } from "@prisma/client";
+import type { FullProduct } from "./ecommerce-provider.server";
 export type { Raffle } from "@prisma/client";
+
+export type RaffleWithMatchingProducts = Raffle & { products: FullProduct[] };
+
 
 export async function createRaffle(
   name: Raffle["name"],

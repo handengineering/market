@@ -1,75 +1,83 @@
-import { styled } from "~/styles/stitches.config";
+import { Link } from "@remix-run/react";
+import { format, parseISO } from "date-fns";
+import type { RaffleWithMatchingProducts } from "~/models/raffle.server";
+import { getRaffleActivityStatus } from "~/utils/raffle";
+import Button from "~/components/Button";
+import Image from "~/components/Image";
+import clsx from "clsx";
 
-const RaffleItem = styled("div", {
-  position: "relative",
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  height: "$8",
-  flex: "1",
-  "&:after": {
-    content: "",
-    borderRadius: "4px",
-    linearGradient: "0deg, $neutral100 0%, $neutral300 100%",
-    zIndex: "$negative",
-    top: "calc($sizes$7 / 2)",
-    height: "$8",
-    width: "100%",
-    position: "absolute",
+export interface RaffleItemProps {
+  raffle: RaffleWithMatchingProducts;
+  currentDateTime: string;
+  raffleEntryExists: boolean;
+}
+
+const raffleStatusClasses = {
+  base: "bg-neutral-100 rounded py-1 px-2 mb-4 border-2 border-solid text-xs",
+  status: {
+    UPCOMING: "text-yellow-700 bg-yellow-300 border-yellow-500",
+    ACTIVE: "text-green-700 bg-green-300 border-green-500",
+    PAST: "text-red-700 bg-red-300 border-red-500",
+    UNKNOWN: "text-neutral-700 bg-neutral-300 border-neutral-500",
   },
-});
+};
 
-export const RaffleItemImage = styled("img", {
-  height: "$7",
-  width: "auto",
-  marginBottom: "$3",
-  position: "relative",
-});
+export default function RaffleItem({
+  raffle,
+  currentDateTime,
+  raffleEntryExists,
+  ...rest
+}: RaffleItemProps) {
+  const formattedStartDateTime = format(
+    parseISO(raffle.startDateTime.toString()),
+    "do MMMM yyyy"
+  );
 
-export const RaffleTitle = styled("h2", {
-  fontSize: "$5",
-  color: "$primary500",
-  whiteSpace: "nowrap",
-});
+  const formattedEndDateTime = format(
+    parseISO(raffle.endDateTime.toString()),
+    "do MMMM yyyy"
+  );
+  let raffleStatus = getRaffleActivityStatus(
+    raffle.startDateTime.toString(),
+    raffle.endDateTime.toString(),
+    currentDateTime
+  );
 
-export const RaffleStatus = styled("span", {
-  backgroundColor: "$neutral100",
-  borderRadius: "$1",
-  padding: "0 $5",
-  fontSize: "$2",
-  marginBottom: "$1",
-  borderWidth: "1px",
-  borderStyle: "solid",
-  variants: {
-    status: {
-      UPCOMING: {
-        color: "$yellow700",
-        backgroundColor: "$yellow300",
-        borderColor: "$yellow500",
-      },
-      ACTIVE: {
-        color: "$green700",
-        backgroundColor: "$green300",
-        borderColor: "$green500",
-      },
-      PAST: {
-        color: "$red700",
-        backgroundColor: "$red300",
-        borderColor: "$red500",
-      },
-      UNKNOWN: {
-        color: "$neutral700",
-        backgroundColor: "$neutral300",
-        borderColor: "$neutral500",
-      },
-    },
-  },
-});
+  return (
+    <div
+      {...rest}
+      className="relative mb-12 flex flex-col items-center space-y-6 after:absolute after:bottom-0 after:left-0 after:top-24 after:-z-10  after:w-full after:rounded after:bg-gradient-to-b after:from-neutral-300 after:to-neutral-100 after:content-['']"
+    >
+      <Image
+        src={raffle.products[0].image}
+        alt={raffle.name}
+        className="h-full max-h-48"
+      />
+      <h2 className="whitespace-nowrap font-soehneBreit text-lg text-primary-500">
+        {raffle.name}
+      </h2>
 
-export const RaffleDate = styled("p", {
-  fontSize: "$2",
-  marginBottom: "$3",
-  opacity: ".5",
-});
-
-export default RaffleItem;
+      <span
+        className={clsx(
+          raffleStatusClasses.base,
+          raffleStatus && raffleStatusClasses.status[raffleStatus]
+        )}
+      >
+        {getRaffleActivityStatus(
+          raffle.startDateTime.toString(),
+          raffle.endDateTime.toString(),
+          currentDateTime
+        )}
+      </span>
+      <p className="text-sm">
+        {formattedStartDateTime}–{formattedEndDateTime}
+      </p>
+      <p>From {raffle.products[0].formattedPrice}</p>
+      <Link to={raffle.id}>
+        <Button color="primary" className="mb-2">
+          View Details
+        </Button>
+      </Link>
+    </div>
+  );
+}

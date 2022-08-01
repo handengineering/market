@@ -1,24 +1,3 @@
-import { styled } from "~/styles/stitches.config";
-
-const NavigationWrapper = styled("nav", {
-  height: "$5",
-  backgroundColor: "$primary500",
-  display: "flex",
-  gap: "$3",
-  alignItems: "center",
-  justifyContent: "space-between",
-  padding: "$5",
-});
-
-const NavigationTitle = styled("h1", {
-  color: "$neutral100",
-  margin: "0",
-});
-const NavigationLinks = styled("div", {
-  display: "flex",
-  gap: "$3",
-});
-
 export interface NavigationWrapperProps {
   children: React.ReactNode;
 }
@@ -27,9 +6,9 @@ export default function Navigation({
   children,
 }: NavigationWrapperProps): React.ReactElement {
   return (
-    <NavigationWrapper>
-      <NavigationTitle>Hand Engineering Market</NavigationTitle>
-      <NavigationLinks> {children}</NavigationLinks>
-    </NavigationWrapper>
+    <nav className="flex items-center justify-between gap-4 bg-primary-500 p-6">
+      <h1 className="m-0 text-neutral-100">Hand Engineering Market</h1>
+      <div className="flex gap-4"> {children}</div>
+    </nav>
   );
 }
