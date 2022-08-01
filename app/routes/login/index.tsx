@@ -55,7 +55,7 @@ export default function Login() {
     <div className="flex h-full flex-col items-center md:py-12">
       <h1 className="mb-6 font-soehneBreit text-xl">Login</h1>
       <FormWrapper>
-        <Form method="post">
+        <Form action="/login" method="post">
           <Label htmlFor="email">Email</Label>
 
           <Input
