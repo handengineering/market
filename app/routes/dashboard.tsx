@@ -25,7 +25,8 @@ type LoaderData = {
 };
 
 export default function Screen() {
-  const { user, discordProfile, result } = useLoaderData() as LoaderData;
+  const { user, discordProfile, result } =
+    useLoaderData() as unknown as LoaderData;
   const hasJoinedDiscord =
     discordProfile &&
     result &&
