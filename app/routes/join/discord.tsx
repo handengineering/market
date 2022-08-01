@@ -22,7 +22,7 @@ type LoaderData = {
 };
 
 export default function JoinDiscord() {
-  const { discordProfile, result } = useLoaderData() as LoaderData;
+  const { discordProfile, result } = useLoaderData() as unknown as LoaderData;
   const hasJoinedDiscord =
     discordProfile &&
     result &&

@@ -61,7 +61,7 @@ export const ErrorBoundary: ErrorBoundaryComponent = ({ error }) => {
 };
 
 export default function App() {
-  const { user, isAdmin } = useLoaderData() as LoaderData;
+  const { user, isAdmin } = useLoaderData() as unknown as LoaderData;
 
   return (
     <html lang="en" className="h-full">
