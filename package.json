@@ -76,6 +76,7 @@
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
     "@vitejs/plugin-react": "^2.1.0",
+    "@vitest/coverage-c8": "^0.23.4",
     "autoprefixer": "^10.4.12",
     "binode": "^1.0.5",
     "c8": "^7.12.0",
