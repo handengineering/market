@@ -1,9 +1,5 @@
-import invariant from "tiny-invariant";
-import { getDiscordProfileByUserId } from "~/models/discordProfile.server";
 import { authenticator } from "~/services/auth.server";
 import type { LoaderFunction } from "@remix-run/server-runtime";
-
-const guildId = "605444240016801879";
 
 export default function Screen() {
   return (
