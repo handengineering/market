@@ -41,11 +41,14 @@ authenticator.use(
     }) => {
       let user = await getUserByEmail(email);
 
+      console.log(user);
+
       if (!user) return await createUser(email);
 
       return user;
     }
-  )
+  ),
+  "email-link"
 );
 
 discordAuthenticator.use(
@@ -62,7 +65,7 @@ discordAuthenticator.use(
       const { emails, displayName, id, __json } = profile;
       const { avatar } = __json;
 
-      const user: User = context.user;
+      const user: User | undefined = context && (context.user as User);
 
       invariant(emails, "emails not found");
       invariant(avatar, "avatar not found");

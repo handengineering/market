@@ -8,7 +8,6 @@ import {
   useLoaderData,
 } from "@remix-run/react";
 import type {
-  ActionFunction,
   ErrorBoundaryComponent,
   LinksFunction,
   LoaderFunction,
@@ -48,10 +47,6 @@ export let loader: LoaderFunction = async ({ request }) => {
   let isAdmin = await checkPermissions(request, permissions.administrator);
 
   return { user, isAdmin };
-};
-
-export let action: ActionFunction = () => {
-  return null;
 };
 
 export const ErrorBoundary: ErrorBoundaryComponent = ({ error }) => {
