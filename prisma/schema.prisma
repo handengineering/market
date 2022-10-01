@@ -1,10 +1,103 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
+model User {
+  id             String          @id @default(cuid())
+  email          String          @unique
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  discordProfile DiscordProfile?
+  password       Password?
+  raffleEntries  RaffleEntry[]
+  userRoles      UserRole[]
+}
+
+model UserRole {
+  id        String   @id @default(cuid())
+  userId    String
+  roleId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  role      Role     @relation(fields: [roleId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Role {
+  id          String     @id @default(cuid())
+  name        String
+  permissions Int
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  UserRoles   UserRole[]
+}
+
+model DiscordProfile {
+  id               String   @id @unique
+  userId           String   @unique
+  displayName      String
+  displayAvatarUrl String
+  authToken        String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Raffle {
+  id            String        @id @default(cuid())
+  name          String
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  productSlugs  String[]
+  description   String
+  endDateTime   DateTime
+  startDateTime DateTime
+  status        RaffleStatus  @default(CREATED)
+  raffleEntries RaffleEntry[]
+}
+
+model RaffleEntry {
+  id        String               @id @default(cuid())
+  raffleId  String
+  userId    String
+  status    RaffleEntryStatus    @default(CREATED)
+  createdAt DateTime             @default(now())
+  updatedAt DateTime             @updatedAt
+  raffle    Raffle               @relation(fields: [raffleId], references: [id], onDelete: Cascade)
+  user      User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  products  RaffleEntryProduct[]
+}
+
+model RaffleEntryProduct {
+  id               String       @id @default(cuid())
+  productId        String
+  productVariantId String
+  raffleEntryId    String?
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  raffleEntry      RaffleEntry? @relation(fields: [raffleEntryId], references: [id])
+}
+
+model SerialNumber {
+  id               String   @id @default(cuid())
+  serialNumber     String   @unique
+  productId        String
+  productVariantId String
+  userId           String?
+  orderId          String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model Password {
+  hash   String
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 enum RaffleEntryStatus {
@@ -19,108 +112,4 @@ enum RaffleStatus {
   DRAWN
   ARCHIVED
   CANCELED
-}
-
-model User {
-  id             String           @id @default(cuid())
-  email          String           @unique
-  password       Password?
-  userRoles      UserRole[]
-  raffleEntries  RaffleEntry[]
-  discordProfile DiscordProfile[]
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
-}
-
-model UserRole {
-  id     String @id @default(cuid())
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String
-  role   Role   @relation(fields: [roleId], references: [id])
-  roleId String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Role {
-  id          String     @id @default(cuid())
-  name        String
-  permissions Int
-  UserRoles   UserRole[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model DiscordProfile {
-  id               String @id @unique
-  user             User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId           String @unique
-  displayName      String
-  displayAvatarUrl String
-  authToken        String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Raffle {
-  id            String        @id @default(cuid())
-  name          String
-  description   String
-  status        RaffleStatus  @default(CREATED)
-  startDateTime DateTime
-  endDateTime   DateTime
-  productSlugs  String[]
-  raffleEntries RaffleEntry[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model RaffleEntry {
-  id       String               @id @default(cuid())
-  status   RaffleEntryStatus    @default(CREATED)
-  products RaffleEntryProduct[]
-
-  raffle   Raffle @relation(fields: [raffleId], references: [id], onDelete: Cascade)
-  raffleId String
-
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model RaffleEntryProduct {
-  id               String @id @default(cuid())
-  productId        String
-  productVariantId String
-
-  raffleEntry   RaffleEntry? @relation(fields: [raffleEntryId], references: [id])
-  raffleEntryId String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model SerialNumber {
-  id               String  @id @default(cuid())
-  serialNumber     String  @unique
-  productId        String
-  productVariantId String
-  userId           String?
-  orderId          String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Password {
-  hash String
-
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId String @unique
 }

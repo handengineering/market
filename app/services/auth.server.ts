@@ -62,7 +62,7 @@ discordAuthenticator.use(
       const { emails, displayName, id, __json } = profile;
       const { avatar } = __json;
 
-      const user: User = context.user;
+      const user: User | undefined = context && (context.user as User);
 
       invariant(emails, "emails not found");
       invariant(avatar, "avatar not found");
