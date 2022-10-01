@@ -32,4 +32,5 @@ export let sendMagicLinkEmail: SendEmailFunction<User> = async (options) => {
     });
 
   console.log(result);
+  console.log(msg);
 };
