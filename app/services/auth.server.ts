@@ -41,11 +41,14 @@ authenticator.use(
     }) => {
       let user = await getUserByEmail(email);
 
+      console.log(user);
+
       if (!user) return await createUser(email);
 
       return user;
     }
-  )
+  ),
+  "email-link"
 );
 
 discordAuthenticator.use(
