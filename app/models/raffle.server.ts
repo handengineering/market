@@ -5,7 +5,6 @@ export type { Raffle } from "@prisma/client";
 
 export type RaffleWithMatchingProducts = Raffle & { products: FullProduct[] };
 
-
 export async function createRaffle(
   name: Raffle["name"],
   description: Raffle["description"],
@@ -22,6 +21,10 @@ export async function createRaffle(
       endDateTime,
     },
   });
+}
+
+export async function deleteRaffleById(id: Raffle["id"]) {
+  return prisma.raffle.delete({ where: { id: id } });
 }
 
 export async function getRaffles() {

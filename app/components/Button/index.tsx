@@ -4,11 +4,11 @@ export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
   color?: "primary" | "secondary" | "tertiary" | "inverse" | "danger";
-  size?: "large";
+  size?: "large" | "small";
 }
 
 const classes = {
-  base: "cursor-pointer whitespace-nowrap rounded-sm bg-neutral-500 py-2 px-4 text-primary-500",
+  base: "cursor-pointer whitespace-nowrap rounded-md bg-neutral-500 py-2 px-4 text-primary-500",
   color: {
     primary: "bg-primary-500 text-primary-100 hover:bg-primary-600",
     secondary: "bg-green-500 text-green-100 hover:bg-green-600",
@@ -18,6 +18,7 @@ const classes = {
   },
   size: {
     large: "text-2xl py-4 px-2 rounded-md",
+    small: "text-sm py-0 px-2 rounded-md",
   },
 };
 
