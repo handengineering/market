@@ -14,8 +14,7 @@ import type {
   DiscordProfile,
 } from "~/models/discordProfile.server";
 import type { Raffle } from "~/models/raffle.server";
-
-const guildId = "605444240016801879";
+import { getDiscordGuildMembershipByProfileId } from "~/services/discord.server";
 
 type LoaderData = {
   user: User;
@@ -88,26 +87,13 @@ export default function Screen() {
 export let loader: LoaderFunction = async ({ request }) => {
   invariant(process.env.DISCORD_BOT_TOKEN, "DISCORD_BOT_TOKEN must be set");
 
-  let discordBotToken = process.env.DISCORD_BOT_TOKEN;
   let user = await authenticator.isAuthenticated(request);
 
   const discordProfile = user && (await getDiscordProfileByUserId(user.id));
 
-  const authHeaders = {
-    Authorization: `Bot ${discordBotToken}`,
-  };
-
-  let discordGuildMember =
+  const result =
     discordProfile &&
-    (await fetch(
-      `https://discordapp.com/api/guilds/${guildId}/members/${discordProfile.id}`,
-      {
-        headers: authHeaders,
-      }
-    ));
-
-  const result: DiscordGuildMember | null =
-    discordGuildMember && (await discordGuildMember.json());
+    (await getDiscordGuildMembershipByProfileId(discordProfile.id));
 
   return { user, discordProfile, result };
 };

@@ -1,6 +1,8 @@
 import { Link, useLoaderData } from "@remix-run/react";
 import type { LoaderFunction } from "@remix-run/server-runtime";
+import { redirect } from "@remix-run/server-runtime";
 import Button from "~/components/Button";
+import { getDiscordProfileByUserId } from "~/models/discordProfile.server";
 import type { FullProduct } from "~/models/ecommerce-provider.server";
 import type { Raffle } from "~/models/raffle.server";
 import { getRaffleById } from "~/models/raffle.server";
@@ -23,6 +25,12 @@ export let loader: LoaderFunction = async ({ request, params }) => {
   const raffleId = params.raffleId as string;
   const raffle: Raffle | null = await getRaffleById(raffleId);
   const raffleEntries = await getRaffleEntriesByUserId(user.id);
+
+  const discordProfile = getDiscordProfileByUserId(user.id);
+
+  if (!discordProfile) {
+    return redirect("/join/discord");
+  }
 
   const raffleEntry = raffleEntries.find(
     (raffleEntry) =>

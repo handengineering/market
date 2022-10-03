@@ -1,6 +1,8 @@
 import { useLoaderData } from "@remix-run/react";
 import type { LoaderFunction } from "@remix-run/server-runtime";
+import Banner from "~/components/Banner";
 import RaffleItem from "~/components/RaffleItem";
+import { getDiscordProfileByUserId } from "~/models/discordProfile.server";
 import type {
   Raffle,
   RaffleWithMatchingProducts,
@@ -10,11 +12,13 @@ import type { RaffleEntry } from "~/models/raffleEntry.server";
 import { getRaffleEntriesByUserId } from "~/models/raffleEntry.server";
 import { authenticator } from "~/services/auth.server";
 import commerce from "~/services/commerce.server";
+import { getDiscordGuildMembershipByProfileId } from "~/services/discord.server";
 
 type LoaderData = {
   rafflesWithMatchingProducts?: RaffleWithMatchingProducts[];
   raffleEntries?: RaffleEntry[];
   currentDateTime: string;
+  isMemberOfDiscord: boolean;
 };
 
 export let loader: LoaderFunction = async ({ request }) => {
@@ -23,6 +27,8 @@ export let loader: LoaderFunction = async ({ request }) => {
   let user = await authenticator.isAuthenticated(request, {
     failureRedirect: "/login",
   });
+
+  const discordProfile = await getDiscordProfileByUserId(user.id);
 
   const rafflesWithMatchingProducts = await Promise.all(
     raffles.map(async (raffle) => {
@@ -44,16 +50,41 @@ export let loader: LoaderFunction = async ({ request }) => {
 
   let currentDateTime = new Date().toISOString();
 
-  return { raffleEntries, rafflesWithMatchingProducts, currentDateTime };
+  const discordGuildProfile =
+    discordProfile &&
+    (await getDiscordGuildMembershipByProfileId(discordProfile.id));
+
+  const isMemberOfDiscord = discordGuildProfile?.user?.id;
+
+  return {
+    raffleEntries,
+    rafflesWithMatchingProducts,
+    currentDateTime,
+    isMemberOfDiscord: isMemberOfDiscord,
+  };
 };
 
 export default function Raffles() {
-  const { raffleEntries, rafflesWithMatchingProducts, currentDateTime } =
-    useLoaderData() as LoaderData;
+  const {
+    raffleEntries,
+    rafflesWithMatchingProducts,
+    currentDateTime,
+    isMemberOfDiscord,
+  } = useLoaderData() as LoaderData;
+
   return (
     <>
       <h1 className="mb-6 font-soehneBreit text-xl">All Raffles</h1>
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {!isMemberOfDiscord ? (
+        <Banner
+          linkText="Join Hand Engineering on Discord"
+          linkUrl="https://discord.gg/handengineering"
+        >
+          You need to be a member of the Hand Engineering Discord to join
+          raffles. Join here:
+        </Banner>
+      ) : null}
+      <div className={"grid gap-6 md:grid-cols-2 lg:grid-cols-3"}>
         {rafflesWithMatchingProducts &&
           rafflesWithMatchingProducts.map((raffle) => {
             const raffleEntryExists = !!raffleEntries?.some(
@@ -66,6 +97,7 @@ export default function Raffles() {
                 raffle={raffle}
                 currentDateTime={currentDateTime}
                 raffleEntryExists={raffleEntryExists}
+                disabled={!isMemberOfDiscord}
               />
             );
           })}

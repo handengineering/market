@@ -10,6 +10,7 @@ export interface RaffleItemProps {
   raffle: RaffleWithMatchingProducts;
   currentDateTime: string;
   raffleEntryExists: boolean;
+  disabled?: boolean;
 }
 
 const raffleStatusClasses = {
@@ -26,6 +27,7 @@ export default function RaffleItem({
   raffle,
   currentDateTime,
   raffleEntryExists,
+  disabled = false,
   ...rest
 }: RaffleItemProps) {
   const formattedStartDateTime = format(
@@ -46,7 +48,10 @@ export default function RaffleItem({
   return (
     <div
       {...rest}
-      className="relative mb-12 flex flex-col items-center space-y-6 after:absolute after:bottom-0 after:left-0 after:top-24 after:-z-10  after:w-full after:rounded after:bg-gradient-to-b after:from-neutral-300 after:to-neutral-100 after:content-['']"
+      className={clsx(
+        "relative mb-12 flex flex-col items-center space-y-6 after:absolute after:bottom-0 after:left-0 after:top-24 after:-z-10  after:w-full after:rounded after:bg-gradient-to-b after:from-neutral-300 after:to-neutral-100 after:content-['']",
+        disabled && "opacity-50"
+      )}
     >
       <Image
         src={raffle.products[0].image}
@@ -74,7 +79,11 @@ export default function RaffleItem({
       </p>
       <p>From {raffle.products[0].formattedPrice}</p>
       <Link to={raffle.id}>
-        <Button color="primary" className="mb-2">
+        <Button
+          color={disabled ? "disabled" : "primary"}
+          className="mb-2"
+          disabled={disabled}
+        >
           View Details
         </Button>
       </Link>

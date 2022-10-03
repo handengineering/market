@@ -36,12 +36,12 @@ export default function Header({
             </h2>
             <ul className="space-y-2">
               <li>
-                <Link
-                  to="/products"
+                <a
+                  href="https://hand.engineering/products"
                   className="text-neutral-700 hover:text-primary-500"
                 >
                   All Products
-                </Link>
+                </a>
               </li>
             </ul>
           </div>
@@ -61,9 +61,12 @@ export default function Header({
               </Link>
             </li>
             <li>
-              <Link to="/" className="text-neutral-700 hover:text-primary-500">
+              <a
+                href="https://hand.engineering"
+                className="text-neutral-700 hover:text-primary-500"
+              >
                 Store
-              </Link>
+              </a>
             </li>
           </ul>
         </div>

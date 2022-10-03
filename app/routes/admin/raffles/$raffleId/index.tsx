@@ -1,16 +1,20 @@
 import { RaffleEntryStatus } from "@prisma/client";
 import { Form, useLoaderData } from "@remix-run/react";
 import type { ActionFunction, LoaderFunction } from "@remix-run/server-runtime";
+import { redirect } from "@remix-run/server-runtime";
 import clsx from "clsx";
 import { useState } from "react";
 import Button from "~/components/Button";
 import Input from "~/components/Input";
 import Label from "~/components/Label";
 import { prisma } from "~/db.server";
+import { deleteRaffleById, getRaffleById } from "~/models/raffle.server";
 import type { RaffleEntry } from "~/models/raffleEntry.server";
 import { getRaffleEntriesByRaffleId } from "~/models/raffleEntry.server";
 import type { User } from "~/models/user.server";
+import { getUserById } from "~/models/user.server";
 import { getUsers } from "~/models/user.server";
+import { sendConfirmationEmail } from "~/services/email.server";
 import { requireAdminPermissions } from "~/services/permissions.server";
 
 type LoaderData = {
@@ -60,6 +64,7 @@ export let action: ActionFunction = async ({ request, params }) => {
   const raffleId = params.raffleId as string;
 
   const raffleEntries = await getRaffleEntriesByRaffleId(raffleId);
+  const raffle = await getRaffleById(raffleId);
 
   const formData = await request.formData();
   const drawCount = formData.get("drawCount");
@@ -109,6 +114,28 @@ export let action: ActionFunction = async ({ request, params }) => {
         status: RaffleEntryStatus.CREATED,
       },
     });
+  }
+
+  if (formData.get("action") === "sendConfirmation") {
+    for (const entry of drawnRaffleEntries) {
+      const user = await getUserById(entry.userId);
+
+      const confirmationLink = `${process.env.BASE_URL}/raffles/${raffleId}/confirmation`;
+
+      user &&
+        raffle &&
+        (await sendConfirmationEmail(
+          user.email,
+          raffle.productSlugs[0],
+          confirmationLink
+        ));
+    }
+    return redirect("/admin/raffles");
+  }
+
+  if (formData.get("action") === "deleteRaffle") {
+    raffle && deleteRaffleById(raffle.id);
+    return redirect("/admin/raffles");
   }
 };
 
@@ -179,6 +206,23 @@ export default function Index() {
                   Remove All Particpants
                 </Button>
               )}
+              <Button
+                name="action"
+                value="sendConfirmation"
+                color="danger"
+                className="mb-2 w-full last:mb-0"
+              >
+                Send Confirmation and Archive
+              </Button>
+              <Button
+                size="small"
+                name="action"
+                value="deleteRaffle"
+                color="danger"
+                className="mb-2 last:mb-0"
+              >
+                Delete Raffle
+              </Button>
             </Form>
           </div>
           <div className="mb-6">

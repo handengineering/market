@@ -52,11 +52,20 @@ export default function Account() {
             </span>
 
             <span>
-              You {hasJoinedDiscord ? "are" : "are not"} a member of our Discord
+              You {hasJoinedDiscord ? "are" : "are not"} a member of our
+              Discord.{" "}
+              {!hasJoinedDiscord ? (
+                <a
+                  href="https://discord.gg/handengineering"
+                  className="text-primary-500"
+                >
+                  Join the Hand Engineering Discord
+                </a>
+              ) : null}
             </span>
           </DiscordStatusTextFields>
         </DiscordStatusWrapper>
-        {!hasJoinedDiscord ? (
+        {!discordProfile ? (
           <Form method="post" action="/auth/discord">
             <Button color="primary">Connect Discord Profile</Button>
           </Form>
