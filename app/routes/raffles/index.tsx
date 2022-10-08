@@ -1,5 +1,6 @@
 import { useLoaderData } from "@remix-run/react";
 import type { LoaderFunction } from "@remix-run/server-runtime";
+import type { DiscordProfile } from "remix-auth-socials";
 import Banner from "~/components/Banner";
 import RaffleItem from "~/components/RaffleItem";
 import { getDiscordProfileByUserId } from "~/models/discordProfile.server";
@@ -18,6 +19,7 @@ type LoaderData = {
   rafflesWithMatchingProducts?: RaffleWithMatchingProducts[];
   raffleEntries?: RaffleEntry[];
   currentDateTime: string;
+  discordProfile: DiscordProfile | null;
   isMemberOfDiscord: boolean;
 };
 
@@ -60,6 +62,7 @@ export let loader: LoaderFunction = async ({ request }) => {
     raffleEntries,
     rafflesWithMatchingProducts,
     currentDateTime,
+    discordProfile: discordProfile,
     isMemberOfDiscord: isMemberOfDiscord,
   };
 };
@@ -69,13 +72,22 @@ export default function Raffles() {
     raffleEntries,
     rafflesWithMatchingProducts,
     currentDateTime,
+    discordProfile,
     isMemberOfDiscord,
   } = useLoaderData() as LoaderData;
 
   return (
     <>
       <h1 className="mb-6 font-soehneBreit text-xl">All Raffles</h1>
-      {!isMemberOfDiscord ? (
+
+      {!discordProfile ? (
+        <Banner linkText="Connect your Discord Account" linkUrl="/dashboard">
+          You need to connect your Discord account, and be a member of the Hand
+          Engineering Discord to join raffles. Connect your Discord profile
+          here:
+        </Banner>
+      ) : null}
+      {!isMemberOfDiscord && discordProfile ? (
         <Banner
           linkText="Join Hand Engineering on Discord"
           linkUrl="https://discord.gg/handengineering"

@@ -17,7 +17,8 @@ const classes = {
   base: "cursor-pointer whitespace-nowrap rounded-md py-2 px-4 text-primary-500",
   color: {
     primary: "bg-primary-500 text-primary-100 hover:bg-primary-600",
-    disabled: "bg-neutral-500 text-neutral-100 hover:bg-neutral-600",
+    disabled:
+      "bg-neutral-500 text-neutral-100 hover:bg-neutral-500 cursor-default",
     secondary: "bg-green-500 text-green-100 hover:bg-green-600",
     tertiary: "bg-yellow-500 text-yellow-900 hover:bg-yellow-600",
     inverse: "bg-neutral-100 text-primary-500 hover:bg-neutral-200",

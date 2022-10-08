@@ -5,6 +5,8 @@ import type {
   ErrorBoundaryComponent,
   LoaderFunction,
 } from "@remix-run/server-runtime";
+import { redirect } from "@remix-run/server-runtime";
+import { isAfter, isBefore } from "date-fns";
 import { useEffect, useState } from "react";
 import invariant from "tiny-invariant";
 import Button from "~/components/Button";
@@ -47,7 +49,18 @@ export let loader: LoaderFunction = async ({ request, params }) => {
   const raffleId = params.raffleId as string;
   const raffle: Raffle | null = await getRaffleById(raffleId);
   const raffleEntries = await getRaffleEntriesByUserId(user.id);
+  const currentDateTime = new Date();
 
+  if (!raffle) {
+    return redirect("/raffles");
+  }
+
+  if (
+    isBefore(currentDateTime, new Date(raffle?.startDateTime)) ||
+    isAfter(currentDateTime, new Date(raffle?.endDateTime))
+  ) {
+    return redirect(`/raffles/${raffle.id}`);
+  }
   const raffleEntry: RaffleEntry | undefined = raffleEntries.find(
     (raffleEntry) =>
       raffleEntry.userId === user.id && raffleEntry.raffleId === raffleId

@@ -1,10 +1,10 @@
 import { Link } from "@remix-run/react";
-import { format, parseISO } from "date-fns";
 import type { RaffleWithMatchingProducts } from "~/models/raffle.server";
 import { getRaffleActivityStatus } from "~/utils/raffle";
 import Button from "~/components/Button";
 import Image from "~/components/Image";
 import clsx from "clsx";
+import { formatDateTime } from "~/utils/date";
 
 export interface RaffleItemProps {
   raffle: RaffleWithMatchingProducts;
@@ -13,7 +13,7 @@ export interface RaffleItemProps {
   disabled?: boolean;
 }
 
-const raffleStatusClasses = {
+export const raffleStatusClasses = {
   base: "bg-neutral-100 rounded py-1 px-2 mb-4 border-2 border-solid text-xs",
   status: {
     UPCOMING: "text-yellow-700 bg-yellow-300 border-yellow-500",
@@ -30,15 +30,10 @@ export default function RaffleItem({
   disabled = false,
   ...rest
 }: RaffleItemProps) {
-  const formattedStartDateTime = format(
-    parseISO(raffle.startDateTime.toString()),
-    "do MMMM yyyy"
-  );
+  const formattedStartDateTime = formatDateTime(raffle.startDateTime);
 
-  const formattedEndDateTime = format(
-    parseISO(raffle.endDateTime.toString()),
-    "do MMMM yyyy"
-  );
+  const formattedEndDateTime = formatDateTime(raffle.endDateTime);
+
   let raffleStatus = getRaffleActivityStatus(
     raffle.startDateTime.toString(),
     raffle.endDateTime.toString(),
