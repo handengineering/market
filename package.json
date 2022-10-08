@@ -42,6 +42,7 @@
     "@remix-run/node": "^1.7.2",
     "@remix-run/react": "^1.7.2",
     "@remix-run/serve": "^1.7.2",
+    "@xstate/react": "^3.0.1",
     "bcryptjs": "^2.4.3",
     "burner-email-providers": "^1.0.67",
     "clsx": "^1.2.1",

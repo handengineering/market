@@ -2,14 +2,10 @@ import { Link, useLoaderData } from "@remix-run/react";
 import type { LoaderFunction } from "@remix-run/server-runtime";
 import { redirect } from "@remix-run/server-runtime";
 import clsx from "clsx";
-import {
-  formatDuration,
-  intervalToDuration,
-  isAfter,
-  isBefore,
-} from "date-fns";
-import { useEffect, useState } from "react";
+import { isAfter, isBefore } from "date-fns";
 import invariant from "tiny-invariant";
+import { useMachine } from "@xstate/react";
+
 import Button from "~/components/Button";
 import { raffleStatusClasses } from "~/components/RaffleItem";
 import { getDiscordProfileByUserId } from "~/models/discordProfile.server";
@@ -22,6 +18,7 @@ import { authenticator } from "~/services/auth.server";
 import commerce from "~/services/commerce.server";
 import { formatDateTime } from "~/utils/date";
 import { getRaffleActivityStatus } from "~/utils/raffle";
+import durationMachine from "./durationMachine";
 
 type RaffleWithMatchingProducts = Raffle & {
   products: (FullProduct | undefined)[];
@@ -88,29 +85,13 @@ export default function Index() {
   const { startDateTime, status, endDateTime, name } =
     raffleWithMatchingProducts;
 
-  const currentDateTime = new Date();
-
-  const initialDuration = formatDuration(
-    intervalToDuration({
-      start: currentDateTime,
-      end: new Date(startDateTime),
-    })
-  );
-
-  const [countDown, setCountDown] = useState<string>();
-
-  useEffect(() => {
-    const duration = intervalToDuration({
-      start: currentDateTime,
-      end: new Date(startDateTime),
-    });
-
-    const interval = setInterval(() => {
-      setCountDown(formatDuration(duration));
-    }, 1000);
-
-    return () => clearInterval(interval);
+  const [state] = useMachine(durationMachine, {
+    context: { startDateTime },
   });
+
+  const { timeUntilRaffle } = state.context;
+
+  console.log(state);
 
   const raffleActivityStatus = getRaffleActivityStatus(
     startDateTime.toString(),
@@ -119,6 +100,8 @@ export default function Index() {
   );
 
   const firstRaffleProduct = raffleWithMatchingProducts.products[0];
+
+  const currentDateTime = new Date();
 
   return (
     <>
@@ -148,7 +131,7 @@ export default function Index() {
                   </p>
                 </div>
                 <div className="mb-6 text-sm text-neutral-700">
-                  {countDown || initialDuration}
+                  {timeUntilRaffle}
                 </div>
               </div>
             ) : (
