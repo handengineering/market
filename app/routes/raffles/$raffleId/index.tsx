@@ -91,8 +91,6 @@ export default function Index() {
 
   const { timeUntilRaffle } = state.context;
 
-  console.log(state);
-
   const raffleActivityStatus = getRaffleActivityStatus(
     startDateTime.toString(),
     endDateTime.toString(),
