@@ -17,16 +17,18 @@ export default function Banner({
     <div
       className={clsx(
         className,
-        "w-full rounded-lg bg-primary-500 p-4 text-lg text-neutral-100"
+        "flex w-full justify-center rounded-lg bg-primary-500 p-4 text-lg text-neutral-100"
       )}
       {...rest}
     >
-      {children}{" "}
-      {linkText && linkUrl && (
-        <a className="text-yellow-500 underline" href={linkUrl}>
-          {linkText}
-        </a>
-      )}
+      <p className="max-w-xl">
+        {children}{" "}
+        {linkText && linkUrl && (
+          <a className="text-yellow-500 underline" href={linkUrl}>
+            {linkText}
+          </a>
+        )}
+      </p>
     </div>
   );
 }
