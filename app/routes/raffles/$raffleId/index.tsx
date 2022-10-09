@@ -23,10 +23,9 @@ import { authenticator } from "~/services/auth.server";
 import commerce from "~/services/commerce.server";
 import { formatDateTime } from "~/utils/date";
 import type { RaffleActivityStatus } from "~/utils/raffle";
-import { getRaffleActivityStatus } from "~/utils/raffle";
+import { getRaffleActivityStatus, getRaffleStatusText } from "~/utils/raffle";
 import durationMachine from "./durationMachine";
 import { marked } from "marked";
-import type { RaffleEntryStatus } from "@prisma/client";
 
 type RaffleWithMatchingProducts = Raffle & {
   products: (FullProduct | undefined)[];
@@ -86,19 +85,52 @@ export let loader: LoaderFunction = async ({ request, params }) => {
   return { raffleWithMatchingProducts, raffleEntry };
 };
 
-function getRaffleStatusText(raffleEntryStatus: RaffleEntryStatus) {
-  switch (raffleEntryStatus) {
-    case "DRAWN":
-      return `You won the raffle`;
-    case "CREATED":
-      return "Entry successful";
-    case "ARCHIVED":
-      return "You didn't win the raffle";
-    case "CANCELED":
-      return "Raffle cancelled";
-    default:
-      return "Unknown";
+function getRaffleActivityInfo(
+  raffleEntry: RaffleEntry | undefined,
+  raffleWithMatchingProducts: RaffleWithMatchingProducts,
+  canEnterRaffle: boolean,
+  raffleActivityStatus: RaffleActivityStatus,
+  getRaffleActivitySubtitle: (status: RaffleActivityStatus) => string
+) {
+  if (!raffleEntry && raffleActivityStatus !== "PAST") {
+    return (
+      <>
+        <Link to={`/raffles/${raffleWithMatchingProducts.id}/configure`}>
+          <Button
+            color={canEnterRaffle ? "disabled" : "primary"}
+            size="large"
+            disabled={canEnterRaffle}
+            className="w-full"
+          >
+            {getRaffleActivitySubtitle(raffleActivityStatus)}
+          </Button>
+        </Link>
+      </>
+    );
   }
+
+  if (raffleEntry) {
+    return (
+      <>
+        Entry successful!{" "}
+        <div className="text-yellow-700">
+          Sent on {formatDateTime(raffleEntry.createdAt)}
+        </div>
+        <div className="text-yellow-700">
+          Status: {getRaffleStatusText(raffleEntry.status)}
+        </div>
+      </>
+    );
+  }
+
+  return (
+    <>
+      You didn't enter this raffle{" "}
+      <div className="text-yellow-700">
+        Raffle drawn on {formatDateTime(raffleWithMatchingProducts.endDateTime)}
+      </div>
+    </>
+  );
 }
 
 export default function Index() {
@@ -172,7 +204,7 @@ export default function Index() {
     <>
       <>
         {firstRaffleProduct ? (
-          <div className="grid-cols-3 gap-8 md:grid">
+          <div className="grid-cols-3 gap-16 md:grid">
             <div className="col-span-2">
               <div className="flex flex-col">
                 <div className="flex items-center gap-4 md:basis-2/3">
@@ -208,32 +240,15 @@ export default function Index() {
               />
             </div>
             <div className="col-span-1 flex flex-col">
-              {!raffleEntry ? (
-                <div className="mb-4 rounded-md bg-yellow-100 p-4">
-                  <Link
-                    to={`/raffles/${raffleWithMatchingProducts.id}/configure`}
-                  >
-                    <Button
-                      color={canEnterRaffle ? "disabled" : "primary"}
-                      size="large"
-                      disabled={canEnterRaffle}
-                      className="w-full"
-                    >
-                      {getRaffleActivitySubtitle(raffleActivityStatus)}
-                    </Button>
-                  </Link>
-                </div>
-              ) : (
-                <div className="mb-4 rounded-md bg-yellow-100 p-4">
-                  Entry successful!{" "}
-                  <div className="text-yellow-700">
-                    Sent on {formatDateTime(raffleEntry.createdAt)}
-                  </div>
-                  <div className="text-yellow-700">
-                    Status: {getRaffleStatusText(raffleEntry.status)}
-                  </div>
-                </div>
-              )}
+              <div className="mb-4 rounded-md bg-yellow-100 p-4">
+                {getRaffleActivityInfo(
+                  raffleEntry,
+                  raffleWithMatchingProducts,
+                  canEnterRaffle,
+                  raffleActivityStatus,
+                  getRaffleActivitySubtitle
+                )}
+              </div>
               <div>
                 <p className="mb-6 text-2xl">
                   {firstRaffleProduct.formattedPrice}
