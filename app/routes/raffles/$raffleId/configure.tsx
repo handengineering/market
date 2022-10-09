@@ -141,7 +141,12 @@ export let action: ActionFunction = async ({ request, params }) => {
   return (
     product &&
     matchingVariant &&
-    createRaffleEntryProduct(product.id, matchingVariant.id, raffleEntry.id)
+    (await createRaffleEntryProduct(
+      product.id,
+      matchingVariant.id,
+      raffleEntry.id
+    )) &&
+    redirect(`/raffles/${raffleId}`)
   );
 };
 

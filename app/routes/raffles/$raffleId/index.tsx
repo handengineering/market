@@ -102,7 +102,9 @@ function getRaffleActivityInfo(
             disabled={canEnterRaffle}
             className="w-full"
           >
-            {getRaffleActivitySubtitle(raffleActivityStatus)}
+            {raffleActivityStatus === "ACTIVE"
+              ? "Enter Raffle"
+              : getRaffleActivitySubtitle(raffleActivityStatus)}
           </Button>
         </Link>
       </>
