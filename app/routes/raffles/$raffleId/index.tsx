@@ -8,8 +8,9 @@ import {
   isAfter,
   isBefore,
 } from "date-fns";
-import { useEffect, useState } from "react";
 import invariant from "tiny-invariant";
+import { useMachine } from "@xstate/react";
+
 import Button from "~/components/Button";
 import { raffleStatusClasses } from "~/components/RaffleItem";
 import { getDiscordProfileByUserId } from "~/models/discordProfile.server";
@@ -21,7 +22,10 @@ import { getRaffleEntriesByUserId } from "~/models/raffleEntry.server";
 import { authenticator } from "~/services/auth.server";
 import commerce from "~/services/commerce.server";
 import { formatDateTime } from "~/utils/date";
-import { getRaffleActivityStatus } from "~/utils/raffle";
+import type { RaffleActivityStatus } from "~/utils/raffle";
+import { getRaffleActivityStatus, getRaffleStatusText } from "~/utils/raffle";
+import durationMachine from "./durationMachine";
+import { marked } from "marked";
 
 type RaffleWithMatchingProducts = Raffle & {
   products: (FullProduct | undefined)[];
@@ -81,6 +85,54 @@ export let loader: LoaderFunction = async ({ request, params }) => {
   return { raffleWithMatchingProducts, raffleEntry };
 };
 
+function getRaffleActivityInfo(
+  raffleEntry: RaffleEntry | undefined,
+  raffleWithMatchingProducts: RaffleWithMatchingProducts,
+  canEnterRaffle: boolean,
+  raffleActivityStatus: RaffleActivityStatus,
+  getRaffleActivitySubtitle: (status: RaffleActivityStatus) => string
+) {
+  if (!raffleEntry && raffleActivityStatus !== "PAST") {
+    return (
+      <>
+        <Link to={`/raffles/${raffleWithMatchingProducts.id}/configure`}>
+          <Button
+            color={canEnterRaffle ? "disabled" : "primary"}
+            size="large"
+            disabled={canEnterRaffle}
+            className="w-full"
+          >
+            {getRaffleActivitySubtitle(raffleActivityStatus)}
+          </Button>
+        </Link>
+      </>
+    );
+  }
+
+  if (raffleEntry) {
+    return (
+      <>
+        Entry successful!{" "}
+        <div className="text-yellow-700">
+          Sent on {formatDateTime(raffleEntry.createdAt)}
+        </div>
+        <div className="text-yellow-700">
+          Status: {getRaffleStatusText(raffleEntry.status)}
+        </div>
+      </>
+    );
+  }
+
+  return (
+    <>
+      You didn't enter this raffle{" "}
+      <div className="text-yellow-700">
+        Raffle drawn on {formatDateTime(raffleWithMatchingProducts.endDateTime)}
+      </div>
+    </>
+  );
+}
+
 export default function Index() {
   const { raffleWithMatchingProducts, raffleEntry } =
     useLoaderData() as unknown as LoaderData;
@@ -88,29 +140,34 @@ export default function Index() {
   const { startDateTime, status, endDateTime, name } =
     raffleWithMatchingProducts;
 
-  const currentDateTime = new Date();
-
-  const initialDuration = formatDuration(
-    intervalToDuration({
-      start: currentDateTime,
-      end: new Date(startDateTime),
-    })
-  );
-
-  const [countDown, setCountDown] = useState<string>();
-
-  useEffect(() => {
-    const duration = intervalToDuration({
-      start: currentDateTime,
-      end: new Date(startDateTime),
-    });
-
-    const interval = setInterval(() => {
-      setCountDown(formatDuration(duration));
-    }, 1000);
-
-    return () => clearInterval(interval);
+  const [state] = useMachine(durationMachine, {
+    context: {
+      startDateTime,
+      timeUntilRaffle: formatDuration(
+        intervalToDuration({
+          start: new Date(),
+          end: new Date(startDateTime),
+        })
+      ),
+    },
   });
+
+  const { timeUntilRaffle } = state.context;
+
+  function getRaffleActivitySubtitle(
+    raffleActivityStatus: RaffleActivityStatus
+  ) {
+    switch (raffleActivityStatus) {
+      case "UPCOMING":
+        return timeUntilRaffle;
+      case "ACTIVE":
+        return "Live now";
+      case "PAST":
+        return "Completed";
+      default:
+        return "Unknown";
+    }
+  }
 
   const raffleActivityStatus = getRaffleActivityStatus(
     startDateTime.toString(),
@@ -120,86 +177,99 @@ export default function Index() {
 
   const firstRaffleProduct = raffleWithMatchingProducts.products[0];
 
+  if (!firstRaffleProduct) {
+    return redirect("/raffles");
+  }
+
+  const { metafields } = firstRaffleProduct;
+
+  const detailsMetafields = metafields.filter(
+    (metafield) => metafield.namespace === "details"
+  );
+
+  const componentsMetafield = detailsMetafields.find(
+    (metafield) => metafield.key === "components"
+  );
+  const accessoriesMetafield = detailsMetafields.find(
+    (metafield) => metafield.key === "accessories"
+  );
+
+  const currentDateTime = new Date();
+
+  const canEnterRaffle =
+    isBefore(currentDateTime, new Date(startDateTime)) ||
+    isAfter(currentDateTime, new Date(endDateTime));
+
   return (
     <>
       <>
-        <div>
-          <div className="flex flex-col">
-            <div className="flex items-center gap-4">
-              <h1 className="mb-4  font-soehneBreit text-2xl text-primary-500">
-                {name}
-              </h1>
-              <span
-                className={clsx(
-                  raffleStatusClasses.base,
-                  status && raffleStatusClasses.status[raffleActivityStatus]
-                )}
-              >
-                {raffleActivityStatus}
-              </span>
-            </div>
-
-            {raffleActivityStatus === "UPCOMING" ? (
-              <div>
-                <div>
-                  <p className="mb-2 text-xl">
-                    {formatDateTime(startDateTime)}–
-                    {formatDateTime(endDateTime)}{" "}
-                  </p>
-                </div>
-                <div className="mb-6 text-sm text-neutral-700">
-                  {countDown || initialDuration}
-                </div>
-              </div>
-            ) : (
-              <div>
-                <p className="mb-6 text-xl">
-                  {formatDateTime(startDateTime)}–{formatDateTime(endDateTime)}{" "}
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
-
         {firstRaffleProduct ? (
-          <div className="grid gap-6 md:grid-cols-2">
-            <div>
+          <div className="grid-cols-3 gap-16 md:grid">
+            <div className="col-span-2">
+              <div className="flex flex-col">
+                <div className="flex items-center gap-4 md:basis-2/3">
+                  <h1 className="mb-4 font-soehneBreit text-2xl text-primary-500">
+                    {name}
+                  </h1>
+                  <span
+                    className={clsx(
+                      raffleStatusClasses.base,
+                      status && raffleStatusClasses.status[raffleActivityStatus]
+                    )}
+                  >
+                    {raffleActivityStatus}
+                  </span>
+                </div>
+
+                <div>
+                  <div>
+                    <p className="mb-2 text-xl">
+                      {formatDateTime(startDateTime)}–
+                      {formatDateTime(endDateTime)}{" "}
+                    </p>
+                  </div>
+                  <div className="mb-6 text-sm text-neutral-700">
+                    {getRaffleActivitySubtitle(raffleActivityStatus)}
+                  </div>
+                </div>
+              </div>
               <img
                 src={firstRaffleProduct.image}
                 alt={raffleWithMatchingProducts?.name}
                 width="100%"
               />
             </div>
-            <div className="flex flex-col justify-between">
-              <div>
-                <h2 className="mb-4 text-lg">Description</h2>
-                <p className="mb-6">{firstRaffleProduct.description}</p>
+            <div className="col-span-1 flex flex-col">
+              <div className="mb-4 rounded-md bg-yellow-100 p-4">
+                {getRaffleActivityInfo(
+                  raffleEntry,
+                  raffleWithMatchingProducts,
+                  canEnterRaffle,
+                  raffleActivityStatus,
+                  getRaffleActivitySubtitle
+                )}
               </div>
-              {!raffleEntry ? (
-                <Link
-                  to={`/raffles/${raffleWithMatchingProducts.id}/configure`}
-                >
-                  <Button
-                    color={
-                      isBefore(currentDateTime, new Date(startDateTime)) ||
-                      isAfter(currentDateTime, new Date(endDateTime))
-                        ? "disabled"
-                        : "primary"
-                    }
-                    className="w-full rounded-lg py-6 text-xl"
-                    disabled={
-                      isBefore(currentDateTime, new Date(startDateTime)) ||
-                      isAfter(currentDateTime, new Date(endDateTime))
-                    }
-                  >
-                    Configure
-                  </Button>
-                </Link>
-              ) : (
-                <Button disabled className="w-full rounded-lg py-6 text-xl">
-                  Entry Sent
-                </Button>
-              )}
+              <div>
+                <p className="mb-6 text-2xl">
+                  {firstRaffleProduct.formattedPrice}
+                </p>
+                {componentsMetafield ? (
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: marked.parse(componentsMetafield?.value),
+                    }}
+                    className="prose prose-brand"
+                  />
+                ) : null}
+                {accessoriesMetafield ? (
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: marked.parse(accessoriesMetafield?.value),
+                    }}
+                    className="prose prose-brand"
+                  />
+                ) : null}
+              </div>
             </div>
           </div>
         ) : null}

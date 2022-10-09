@@ -17,7 +17,7 @@ export default function Banner({
     <div
       className={clsx(
         className,
-        "flex w-full justify-center rounded-lg bg-primary-500 p-4 text-lg text-neutral-100"
+        "mb-8 flex w-full justify-center rounded-lg bg-primary-500 p-4 text-lg text-neutral-100"
       )}
       {...rest}
     >

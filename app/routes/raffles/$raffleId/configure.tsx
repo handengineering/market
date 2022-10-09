@@ -188,9 +188,14 @@ export default function Configure() {
 
   const secondaryImages = product?.images.slice(1);
 
-  const descriptionHtml =
-    raffleWithMatchingProducts &&
-    raffleWithMatchingProducts.products[0].descriptionHtml;
+  const firstProduct =
+    raffleWithMatchingProducts && raffleWithMatchingProducts.products[0];
+
+  if (!firstProduct) {
+    return redirect("/raffles");
+  }
+
+  const { descriptionHtml } = firstProduct;
 
   return product ? (
     <Form method="post">
@@ -203,9 +208,9 @@ export default function Configure() {
             <h1 className="mb-2 font-soehneBreit text-2xl ">
               {raffleWithMatchingProducts?.name}
             </h1>
-            <h2 className="mb-6 font-soehneBreit text-xl ">
+            <p className="mb-6 font-soehneBreit text-xl ">
               {raffleWithMatchingProducts.products[0].formattedPrice}
-            </h2>
+            </p>
             <div>
               {product?.options.map((option) => {
                 return (

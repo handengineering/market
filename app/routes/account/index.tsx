@@ -6,7 +6,6 @@ import DiscordStatusTextFields from "~/components/DiscordStatusTextFields";
 import DiscordStatusWrapper from "~/components/DiscordStatusWrapper";
 import { getDiscordProfileByUserId } from "~/models/discordProfile.server";
 import { authenticator } from "~/services/auth.server";
-import Card from "~/components/Card";
 import type { LoaderFunction } from "@remix-run/server-runtime";
 import type { User } from "~/models/user.server";
 import type {
@@ -35,49 +34,46 @@ export default function Account() {
   return (
     <>
       <h1 className="mb-6 font-soehneBreit text-xl">Account Settings</h1>
-      <Card>
-        <h2>Discord Status</h2>
+      <h2>Discord Status</h2>
 
-        <DiscordStatusWrapper>
-          {discordProfile && discordProfile.displayAvatarUrl && (
-            <DiscordAvatar
-              src={`https://cdn.discordapp.com/avatars/${discordProfile.id}/${discordProfile.displayAvatarUrl}`}
-            />
-          )}
-          <DiscordStatusTextFields>
-            <span>
-              {discordProfile && discordProfile.displayName
-                ? `Signed in as ${discordProfile.displayName}`
-                : "Not signed into Discord"}
-            </span>
-
-            <span>
-              You {hasJoinedDiscord ? "are" : "are not"} a member of our
-              Discord.{" "}
-              {!hasJoinedDiscord ? (
-                <a
-                  href="https://discord.gg/handengineering"
-                  className="text-primary-500"
-                >
-                  Join the Hand Engineering Discord
-                </a>
-              ) : null}
-            </span>
-          </DiscordStatusTextFields>
-        </DiscordStatusWrapper>
-        {!discordProfile ? (
-          <Form method="post" action="/auth/discord">
-            <Button color="primary">Connect Discord Profile</Button>
-          </Form>
-        ) : (
-          <Form
-            method="post"
-            action={`/discordProfile/${discordProfile.id}/delete`}
-          >
-            <Button color="danger">Remove Discord Profile</Button>
-          </Form>
+      <DiscordStatusWrapper>
+        {discordProfile && discordProfile.displayAvatarUrl && (
+          <DiscordAvatar
+            src={`https://cdn.discordapp.com/avatars/${discordProfile.id}/${discordProfile.displayAvatarUrl}`}
+          />
         )}
-      </Card>
+        <DiscordStatusTextFields>
+          <span>
+            {discordProfile && discordProfile.displayName
+              ? `Signed in as ${discordProfile.displayName}`
+              : "Not signed into Discord"}
+          </span>
+
+          <span>
+            You {hasJoinedDiscord ? "are" : "are not"} a member of our Discord.{" "}
+            {!hasJoinedDiscord ? (
+              <a
+                href="https://discord.gg/handengineering"
+                className="text-primary-500"
+              >
+                Join the Hand Engineering Discord
+              </a>
+            ) : null}
+          </span>
+        </DiscordStatusTextFields>
+      </DiscordStatusWrapper>
+      {!discordProfile ? (
+        <Form method="post" action="/auth/discord">
+          <Button color="primary">Connect Discord Profile</Button>
+        </Form>
+      ) : (
+        <Form
+          method="post"
+          action={`/discordProfile/${discordProfile.id}/delete`}
+        >
+          <Button color="danger">Remove Discord Profile</Button>
+        </Form>
+      )}
     </>
   );
 }
