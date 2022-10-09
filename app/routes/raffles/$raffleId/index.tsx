@@ -22,6 +22,7 @@ import { getRaffleEntriesByUserId } from "~/models/raffleEntry.server";
 import { authenticator } from "~/services/auth.server";
 import commerce from "~/services/commerce.server";
 import { formatDateTime } from "~/utils/date";
+import type { RaffleActivityStatus } from "~/utils/raffle";
 import { getRaffleActivityStatus } from "~/utils/raffle";
 import durationMachine from "./durationMachine";
 
@@ -104,6 +105,21 @@ export default function Index() {
 
   const { timeUntilRaffle } = state.context;
 
+  function getRaffleActivitySubtitle(
+    raffleActivityStatus: RaffleActivityStatus
+  ) {
+    switch (raffleActivityStatus) {
+      case "UPCOMING":
+        return timeUntilRaffle;
+      case "ACTIVE":
+        return "Live now";
+      case "PAST":
+        return "Completed";
+      default:
+        return "Unknown";
+    }
+  }
+
   const raffleActivityStatus = getRaffleActivityStatus(
     startDateTime.toString(),
     endDateTime.toString(),
@@ -133,25 +149,16 @@ export default function Index() {
               </span>
             </div>
 
-            {raffleActivityStatus === "UPCOMING" ? (
+            <div>
               <div>
-                <div>
-                  <p className="mb-2 text-xl">
-                    {formatDateTime(startDateTime)}–
-                    {formatDateTime(endDateTime)}{" "}
-                  </p>
-                </div>
-                <div className="mb-6 text-sm text-neutral-700">
-                  {timeUntilRaffle}
-                </div>
-              </div>
-            ) : (
-              <div>
-                <p className="mb-6 text-xl">
+                <p className="mb-2 text-xl">
                   {formatDateTime(startDateTime)}–{formatDateTime(endDateTime)}{" "}
                 </p>
               </div>
-            )}
+              <div className="mb-6 text-sm text-neutral-700">
+                {getRaffleActivitySubtitle(raffleActivityStatus)}
+              </div>
+            </div>
           </div>
         </div>
 
@@ -180,7 +187,7 @@ export default function Index() {
                         ? "disabled"
                         : "primary"
                     }
-                    className="w-full rounded-lg py-6 text-xl"
+                    size="large"
                     disabled={
                       isBefore(currentDateTime, new Date(startDateTime)) ||
                       isAfter(currentDateTime, new Date(endDateTime))
@@ -190,7 +197,7 @@ export default function Index() {
                   </Button>
                 </Link>
               ) : (
-                <Button disabled className="w-full rounded-lg py-6 text-xl">
+                <Button size="large" disabled>
                   Entry Sent
                 </Button>
               )}

@@ -25,8 +25,8 @@ const classes = {
     danger: "bg-red-500 text-red-100 hover:bg-red-600",
   },
   size: {
-    large: "text-2xl py-4 px-2 rounded-md",
     small: "text-sm py-0 px-2 rounded-md",
+    large: "text-2xl py-4 px-8 rounded-md",
   },
 };
 
