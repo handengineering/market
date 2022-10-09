@@ -69,7 +69,7 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body className="flex h-full flex-col items-center bg-neutral-100 font-soehne text-primary-700">
+      <body className="flex h-full flex-col items-center font-soehne text-primary-700">
         <Header user={user} isAdmin={isAdmin} />
 
         <Main>

@@ -11,7 +11,7 @@ export default function Header({
   isAdmin,
 }: HeaderProps): React.ReactElement {
   return (
-    <header className="flex w-full max-w-7xl flex-col items-center justify-between gap-4 py-12 md:h-72 md:flex-row">
+    <header className="mb-16 flex w-full max-w-7xl flex-col items-center justify-between gap-4 py-4 md:flex-row">
       <div className="flex h-full justify-start md:w-96">
         <Link to="/" style={{ textDecoration: "none" }}>
           <h1 className="m-0 whitespace-nowrap text-left font-soehneBreit text-xl font-bold uppercase leading-5 text-primary-500 md:text-2xl md:leading-6">
@@ -38,7 +38,7 @@ export default function Header({
               <li>
                 <a
                   href="https://hand.engineering/products"
-                  className="text-neutral-700 hover:text-primary-500"
+                  className="text-primary-700 hover:text-primary-500"
                 >
                   All Products
                 </a>
@@ -55,7 +55,7 @@ export default function Header({
             <li>
               <Link
                 to="/raffles"
-                className="text-neutral-700 hover:text-primary-500"
+                className="text-primary-700 hover:text-primary-500"
               >
                 Raffles
               </Link>
@@ -63,7 +63,7 @@ export default function Header({
             <li>
               <a
                 href="https://hand.engineering"
-                className="text-neutral-700 hover:text-primary-500"
+                className="text-primary-700 hover:text-primary-500"
               >
                 Store
               </a>
@@ -81,7 +81,7 @@ export default function Header({
                 <li>
                   <Link
                     to="/account"
-                    className="text-neutral-700 hover:text-primary-500"
+                    className="text-primary-700 hover:text-primary-500"
                   >
                     Settings
                   </Link>
@@ -89,7 +89,7 @@ export default function Header({
                 <li>
                   <Link
                     to="/logout"
-                    className="text-neutral-700 hover:text-primary-500"
+                    className="text-primary-700 hover:text-primary-500"
                   >
                     Log Out
                   </Link>
@@ -100,7 +100,7 @@ export default function Header({
                 <li>
                   <Link
                     to="/join"
-                    className="text-neutral-700 hover:text-primary-500"
+                    className="text-primary-700 hover:text-primary-500"
                   >
                     Sign up
                   </Link>
@@ -108,7 +108,7 @@ export default function Header({
                 <li>
                   <Link
                     to="/login"
-                    className="text-neutral-700 hover:text-primary-500"
+                    className="text-primary-700 hover:text-primary-500"
                   >
                     Log In
                   </Link>
@@ -127,7 +127,7 @@ export default function Header({
               <li>
                 <Link
                   to="/admin/raffles"
-                  className="text-neutral-700 hover:text-primary-500"
+                  className="text-primary-700 hover:text-primary-500"
                 >
                   Raffles
                 </Link>
@@ -135,7 +135,7 @@ export default function Header({
               <li>
                 <Link
                   to="/admin/products"
-                  className="text-neutral-700 hover:text-primary-500"
+                  className="text-primary-700 hover:text-primary-500"
                 >
                   Products
                 </Link>
