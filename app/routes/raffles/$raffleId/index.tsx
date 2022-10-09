@@ -2,7 +2,12 @@ import { Link, useLoaderData } from "@remix-run/react";
 import type { LoaderFunction } from "@remix-run/server-runtime";
 import { redirect } from "@remix-run/server-runtime";
 import clsx from "clsx";
-import { isAfter, isBefore } from "date-fns";
+import {
+  formatDuration,
+  intervalToDuration,
+  isAfter,
+  isBefore,
+} from "date-fns";
 import invariant from "tiny-invariant";
 import { useMachine } from "@xstate/react";
 
@@ -86,7 +91,15 @@ export default function Index() {
     raffleWithMatchingProducts;
 
   const [state] = useMachine(durationMachine, {
-    context: { startDateTime },
+    context: {
+      startDateTime,
+      timeUntilRaffle: formatDuration(
+        intervalToDuration({
+          start: new Date(),
+          end: new Date(startDateTime),
+        })
+      ),
+    },
   });
 
   const { timeUntilRaffle } = state.context;
