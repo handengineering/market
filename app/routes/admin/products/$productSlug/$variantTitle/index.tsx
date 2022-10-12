@@ -66,7 +66,10 @@ export const action: ActionFunction = async ({ request, params }) => {
 
   const productVariant = product.variants.find(
     (productVariant) =>
-      productVariant.title.toLowerCase().replace(/ /g, "-") === variantTitle
+      productVariant.title
+        .toLowerCase()
+        .replace(/[^a-zA-Z0-9]/g, "-")
+        .replace(/(?:-)+/g, "-") === variantTitle
   );
   invariant(productVariant, "productVariant not found");
 
