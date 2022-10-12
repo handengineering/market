@@ -35,10 +35,15 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
   invariant(product, "product not found");
 
-  const productVariant = product.variants.find(
-    (productVariant) =>
-      productVariant.title.toLowerCase().replace(/ /g, "-") === variantTitle
-  );
+  console.log(product.variants);
+  const productVariant = product.variants.find((productVariant) => {
+    return (
+      productVariant.title
+        .toLowerCase()
+        .replace(/[^a-zA-Z0-9]/g, "-")
+        .replace(/(?:-)+/g, "-") === variantTitle
+    );
+  });
 
   invariant(productVariant, "productVariant not found");
 

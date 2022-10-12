@@ -35,7 +35,12 @@ export default function ProductSlug() {
         {product.variants.map((productVariant) => {
           return (
             <li key={productVariant.id} className="mb-4">
-              <Link to={productVariant.title.toLowerCase().replace(/ /g, "-")}>
+              <Link
+                to={productVariant.title
+                  .toLowerCase()
+                  .replace(/[^a-zA-Z0-9]/g, "-")
+                  .replace(/(?:-)+/g, "-")}
+              >
                 {productVariant.title}
               </Link>
             </li>
