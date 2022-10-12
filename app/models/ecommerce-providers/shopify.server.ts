@@ -343,7 +343,7 @@ export function createShopifyProvider({
       );
 
       let productsInfo = category
-        ? json.data.collections.edges[0]?.node.products
+        ? json.data.collections.edges[0]?.node?.products
         : json.data.products;
 
       let { edges, pageInfo } = productsInfo;
