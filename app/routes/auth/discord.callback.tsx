@@ -3,7 +3,6 @@ import { useEffect } from "react";
 
 export default function Screen() {
   let submit = useSubmit();
-  console.log("hello");
   useEffect(() => {
     let fragment = new URLSearchParams(window.location.hash.slice(1));
 
