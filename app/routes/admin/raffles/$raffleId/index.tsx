@@ -126,7 +126,7 @@ export let action: ActionFunction = async ({ request, params }) => {
         raffle &&
         (await sendConfirmationEmail(
           user.email,
-          raffle.productSlugs[0],
+          raffle.name,
           confirmationLink
         ));
     }

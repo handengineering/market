@@ -26,6 +26,7 @@ import type { RaffleActivityStatus } from "~/utils/raffle";
 import { getRaffleActivityStatus, getRaffleStatusText } from "~/utils/raffle";
 import durationMachine from "./durationMachine";
 import { marked } from "marked";
+import type { MetaFunction } from "@remix-run/node";
 
 type RaffleWithMatchingProducts = Raffle & {
   products: (FullProduct | undefined)[];
@@ -34,6 +35,7 @@ type RaffleWithMatchingProducts = Raffle & {
 type LoaderData = {
   raffleWithMatchingProducts: RaffleWithMatchingProducts;
   raffleEntry?: RaffleEntry;
+  currentUrl: string;
 };
 
 export let loader: LoaderFunction = async ({ request, params }) => {
@@ -82,7 +84,41 @@ export let loader: LoaderFunction = async ({ request, params }) => {
     return redirect("/raffles");
   }
 
-  return { raffleWithMatchingProducts, raffleEntry };
+  return { raffleWithMatchingProducts, raffleEntry, currentUrl: request.url };
+};
+
+export let meta: MetaFunction<typeof loader> = ({
+  data,
+}: {
+  data: LoaderData;
+  params: any;
+}) => {
+  const firstProduct = data.raffleWithMatchingProducts.products[0];
+
+  invariant(firstProduct, "firstProduct not found");
+
+  const { startDateTime } = data.raffleWithMatchingProducts;
+  const { title, description } = firstProduct;
+  const formattedStartDateTime = formatDateTime(startDateTime);
+
+  const fullDescription = `${title} Raffle is going live on ${formattedStartDateTime}. ${description}`;
+
+  return {
+    title: `${title} Raffle`,
+    description: fullDescription,
+    "twitter:card": `${title} Raffle`,
+    "twitter:site": "@haveanicedayeng",
+    "twitter:title": `${title} Raffle`,
+    "twitter:description": `${title} Raffle is going live on ${formattedStartDateTime}. More info: ${data.currentUrl}.`,
+    "twitter:creator": "@haveanicedayeng",
+    "twitter:image": firstProduct.image,
+    "og:title": `${title} Raffle`,
+    "og:type": "website",
+    "og:url": data.currentUrl,
+    "og:image": firstProduct.image,
+    "og:description": fullDescription,
+    "og:site_name": "Hand Engineering",
+  };
 };
 
 function getRaffleActivityInfo(

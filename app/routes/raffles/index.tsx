@@ -1,3 +1,4 @@
+import type { MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import type { LoaderFunction } from "@remix-run/server-runtime";
 import type { DiscordProfile } from "remix-auth-socials";
@@ -21,6 +22,7 @@ type LoaderData = {
   currentDateTime: string;
   discordProfile: DiscordProfile | null;
   isMemberOfDiscord: boolean;
+  currentUrl: string;
 };
 
 export let loader: LoaderFunction = async ({ request }) => {
@@ -64,6 +66,39 @@ export let loader: LoaderFunction = async ({ request }) => {
     currentDateTime,
     discordProfile: discordProfile,
     isMemberOfDiscord: isMemberOfDiscord,
+    currentUrl: request.url,
+  };
+};
+
+export let meta: MetaFunction<typeof loader> = ({
+  data,
+}: {
+  data: LoaderData;
+  params: any;
+}) => {
+  const { rafflesWithMatchingProducts } = data;
+  const firstRaffleWithMatchingProducts = rafflesWithMatchingProducts
+    ? rafflesWithMatchingProducts[0]
+    : undefined;
+  const matchingProduct = firstRaffleWithMatchingProducts
+    ? firstRaffleWithMatchingProducts.products[0]
+    : undefined;
+  const productImage = matchingProduct ? matchingProduct.image : "";
+  return {
+    title: `Hand Engineering Raffles`,
+    description: "Hand Engineering Raffles",
+    "twitter:card": `Hand Engineering Raffles`,
+    "twitter:site": "@haveanicedayeng",
+    "twitter:title": `Hand Engineering Raffles`,
+    "twitter:description": `Hand Engineering Raffles`,
+    "twitter:creator": "@haveanicedayeng",
+    "twitter:image": productImage,
+    "og:title": `Hand Engineering Raffles`,
+    "og:type": "website",
+    "og:url": data.currentUrl,
+    "og:image": productImage,
+    "og:description": `Hand Engineering Raffles`,
+    "og:site_name": "Hand Engineering",
   };
 };
 

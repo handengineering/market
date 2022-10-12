@@ -13,10 +13,14 @@ export let sendMagicLinkEmail: SendEmailFunction<User> = async (options) => {
 
   const msg = {
     to: options.emailAddress, // Change to your recipient
-    from: "contact@hand.engineering", // Change to your verified sender
+    from: "Hand Engineering <contact@hand.engineering>", // Change to your verified sender
     subject: subject,
     text: "Click here to login onto Hand Engineering Market",
-    html: `<a href="${options.magicLink}">Click here to login onto Hand Engineering Market</a>`,
+    template: "main",
+    "h:X-Mailgun-Variables": JSON.stringify({
+      title: subject,
+      description: `<a href="${options.magicLink}">Click here to login in to Hand Engineering Market</a>`,
+    }),
   };
 
   const mg = mailgun.client({
@@ -46,10 +50,15 @@ export let sendConfirmationEmail = async (
 
   const msg = {
     to: emailAddress, // Change to your recipient
-    from: "contact@hand.engineering", // Change to your verified sender
+    from: "Hand Engineering <contact@hand.engineering>", // Change to your verified sender
     subject: subject,
     text: "Click here to complete your purchase",
-    html: `<a href="${confirmationLink}">Click here to complete your purchase</a>`,
+    template: "main",
+    "h:X-Mailgun-Variables": JSON.stringify({
+      // be sure to stringify your payload
+      title: subject,
+      description: `<a href="${confirmationLink}">Click here to complete your purchase</a>`,
+    }),
   };
 
   const mg = mailgun.client({

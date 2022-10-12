@@ -9,7 +9,7 @@ export default function Screen() {
       <Banner className="mb-4" linkText="View Raffles" linkUrl="/raffles">
         2000 Mini SE Raffle live Monday 17th October, 2022.
       </Banner>
-      <Image src="/images/banner.png" />
+      <Image src="/images/banner.jpg" />
     </>
   );
 }
