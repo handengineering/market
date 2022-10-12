@@ -6,9 +6,9 @@ export interface ProductDetailsProps {
 }
 
 export default function ProductDetails({ metafields }: ProductDetailsProps) {
-  const componentsMetafield = metafields.find(
-    (metafield) => metafield.key === "components"
-  );
+  const componentsMetafield =
+    metafields.length > 0 &&
+    metafields.find((metafield) => metafield.key === "components");
   const accessoriesMetafield = metafields.find(
     (metafield) => metafield.key === "accessories"
   );

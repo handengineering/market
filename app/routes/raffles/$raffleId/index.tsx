@@ -239,16 +239,14 @@ export default function Index() {
     return redirect("/raffles");
   }
 
-  const { metafields } = firstRaffleProduct;
+  const metafields = firstRaffleProduct.metafields.filter(Boolean);
 
-  console.log(metafields);
-
-  const componentsMetafield = metafields.find(
-    (metafield) => metafield.key === "components"
-  );
-  const accessoriesMetafield = metafields.find(
-    (metafield) => metafield.key === "accessories"
-  );
+  const componentsMetafield =
+    metafields.length > 0 &&
+    metafields.find((metafield) => metafield.key === "components");
+  const accessoriesMetafield =
+    metafields &&
+    metafields.find((metafield) => metafield.key === "accessories");
 
   const currentDateTime = new Date();
 

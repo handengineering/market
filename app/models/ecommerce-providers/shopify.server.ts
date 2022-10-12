@@ -452,8 +452,17 @@ export function createShopifyProvider({
   };
 }
 
-function formatPrice({ amount }: { amount: string; currencyCode: string }) {
-  return `$${amount}`;
+function formatPrice({
+  amount,
+  currencyCode,
+}: {
+  amount: string;
+  currencyCode: string;
+}) {
+  return new Intl.NumberFormat("en-GB", {
+    style: "currency",
+    currency: currencyCode,
+  }).format(Number(amount));
 }
 
 let createCheckoutUrlMutation = /* GraphQL */ `
