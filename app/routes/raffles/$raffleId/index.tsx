@@ -27,6 +27,9 @@ import { getRaffleActivityStatus, getRaffleStatusText } from "~/utils/raffle";
 import durationMachine from "./durationMachine";
 import { marked } from "marked";
 import type { MetaFunction } from "@remix-run/node";
+import type { DiscordProfile, User } from "@prisma/client";
+import Banner from "~/components/Banner";
+import { getDiscordGuildMembershipByProfileId } from "~/services/discord.server";
 
 type RaffleWithMatchingProducts = Raffle & {
   products: (FullProduct | undefined)[];
@@ -36,30 +39,35 @@ type LoaderData = {
   raffleWithMatchingProducts: RaffleWithMatchingProducts;
   raffleEntry?: RaffleEntry;
   currentUrl: string;
+  user?: User;
+  discordProfile?: DiscordProfile;
+  isMemberOfDiscord: boolean;
 };
 
 export let loader: LoaderFunction = async ({ request, params }) => {
-  const user = await authenticator.isAuthenticated(request, {
-    failureRedirect: "/login",
-  });
+  const user = await authenticator.isAuthenticated(request);
   const raffleId = params.raffleId as string;
   const raffle: Raffle | null = await getRaffleById(raffleId);
-  const raffleEntries = await getRaffleEntriesByUserId(user.id);
+  const raffleEntries = user && (await getRaffleEntriesByUserId(user.id));
 
-  const discordProfile = getDiscordProfileByUserId(user.id);
+  const discordProfile = user && (await getDiscordProfileByUserId(user.id));
 
-  if (!discordProfile) {
-    return redirect("/join/discord");
-  }
+  const discordGuildProfile =
+    discordProfile &&
+    (await getDiscordGuildMembershipByProfileId(discordProfile.id));
+
+  const isMemberOfDiscord = !!discordGuildProfile?.user?.id;
 
   if (!raffle) {
     return redirect("/raffles");
   }
 
-  const raffleEntry = raffleEntries.find(
-    (raffleEntry) =>
-      raffleEntry.userId === user.id && raffleEntry.raffleId === raffleId
-  );
+  const raffleEntry =
+    raffleEntries &&
+    raffleEntries.find(
+      (raffleEntry) =>
+        raffleEntry.userId === user.id && raffleEntry.raffleId === raffleId
+    );
 
   const matchingProducts: (FullProduct | undefined)[] = await Promise.all(
     raffle.productSlugs
@@ -84,7 +92,14 @@ export let loader: LoaderFunction = async ({ request, params }) => {
     return redirect("/raffles");
   }
 
-  return { raffleWithMatchingProducts, raffleEntry, currentUrl: request.url };
+  return {
+    raffleWithMatchingProducts,
+    raffleEntry,
+    currentUrl: request.url,
+    user,
+    discordProfile,
+    isMemberOfDiscord,
+  };
 };
 
 export let meta: MetaFunction<typeof loader> = ({
@@ -172,8 +187,13 @@ function getRaffleActivityInfo(
 }
 
 export default function Index() {
-  const { raffleWithMatchingProducts, raffleEntry } =
-    useLoaderData() as unknown as LoaderData;
+  const {
+    raffleWithMatchingProducts,
+    raffleEntry,
+    user,
+    discordProfile,
+    isMemberOfDiscord,
+  } = useLoaderData() as unknown as LoaderData;
 
   const { startDateTime, status, endDateTime, name } =
     raffleWithMatchingProducts;
@@ -241,6 +261,28 @@ export default function Index() {
   return (
     <>
       <>
+        {!user ? (
+          <Banner linkText="Join Hand Engineering Market" linkUrl="/login">
+            You need an account to enter raffles.
+          </Banner>
+        ) : null}
+
+        {!discordProfile && user ? (
+          <Banner linkText="Connect your Discord Account" linkUrl="/dashboard">
+            You need to connect your Discord account, and be a member of the
+            Hand Engineering Discord to join raffles. Connect your Discord
+            profile here:
+          </Banner>
+        ) : null}
+        {!isMemberOfDiscord && discordProfile && user ? (
+          <Banner
+            linkText="Join Hand Engineering on Discord"
+            linkUrl="https://discord.gg/handengineering"
+          >
+            You need to be a member of the Hand Engineering Discord to join
+            raffles. Join here:
+          </Banner>
+        ) : null}
         {firstRaffleProduct ? (
           <div className="grid-cols-3 gap-16 md:grid">
             <div className="col-span-2">
@@ -249,6 +291,7 @@ export default function Index() {
                   <h1 className="mb-4 font-soehneBreit text-2xl text-primary-500">
                     {name}
                   </h1>
+
                   <span
                     className={clsx(
                       raffleStatusClasses.base,
@@ -278,15 +321,17 @@ export default function Index() {
               />
             </div>
             <div className="col-span-1 flex flex-col">
-              <div className="mb-4 rounded-md bg-yellow-100 p-4">
-                {getRaffleActivityInfo(
-                  raffleEntry,
-                  raffleWithMatchingProducts,
-                  canEnterRaffle,
-                  raffleActivityStatus,
-                  getRaffleActivitySubtitle
-                )}
-              </div>
+              {user && discordProfile && isMemberOfDiscord ? (
+                <div className="mb-4 rounded-md bg-yellow-100 p-4">
+                  {getRaffleActivityInfo(
+                    raffleEntry,
+                    raffleWithMatchingProducts,
+                    canEnterRaffle,
+                    raffleActivityStatus,
+                    getRaffleActivitySubtitle
+                  )}
+                </div>
+              ) : null}
               <div>
                 <p className="mb-6 text-2xl">
                   {firstRaffleProduct.formattedPrice}

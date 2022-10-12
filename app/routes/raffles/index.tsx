@@ -1,3 +1,4 @@
+import type { User } from "@prisma/client";
 import type { MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import type { LoaderFunction } from "@remix-run/server-runtime";
@@ -23,16 +24,15 @@ type LoaderData = {
   discordProfile: DiscordProfile | null;
   isMemberOfDiscord: boolean;
   currentUrl: string;
+  user?: User;
 };
 
 export let loader: LoaderFunction = async ({ request }) => {
   const raffles: Raffle[] = await getRaffles();
 
-  let user = await authenticator.isAuthenticated(request, {
-    failureRedirect: "/login",
-  });
+  let user = await authenticator.isAuthenticated(request);
 
-  const discordProfile = await getDiscordProfileByUserId(user.id);
+  const discordProfile = user && (await getDiscordProfileByUserId(user.id));
 
   const rafflesWithMatchingProducts = await Promise.all(
     raffles.map(async (raffle) => {
@@ -50,7 +50,7 @@ export let loader: LoaderFunction = async ({ request }) => {
     })
   );
 
-  let raffleEntries = await getRaffleEntriesByUserId(user.id);
+  let raffleEntries = user && (await getRaffleEntriesByUserId(user.id));
 
   let currentDateTime = new Date().toISOString();
 
@@ -67,6 +67,7 @@ export let loader: LoaderFunction = async ({ request }) => {
     discordProfile: discordProfile,
     isMemberOfDiscord: isMemberOfDiscord,
     currentUrl: request.url,
+    user,
   };
 };
 
@@ -109,20 +110,27 @@ export default function Raffles() {
     currentDateTime,
     discordProfile,
     isMemberOfDiscord,
+    user,
   } = useLoaderData() as LoaderData;
 
   return (
     <>
       <h1 className="mb-6 font-soehneBreit text-xl">All Raffles</h1>
 
-      {!discordProfile ? (
+      {!user ? (
+        <Banner linkText="Join Hand Engineering Market" linkUrl="/login">
+          You need an account to enter raffles.
+        </Banner>
+      ) : null}
+
+      {!discordProfile && user ? (
         <Banner linkText="Connect your Discord Account" linkUrl="/dashboard">
           You need to connect your Discord account, and be a member of the Hand
           Engineering Discord to join raffles. Connect your Discord profile
           here:
         </Banner>
       ) : null}
-      {!isMemberOfDiscord && discordProfile ? (
+      {!isMemberOfDiscord && discordProfile && user ? (
         <Banner
           linkText="Join Hand Engineering on Discord"
           linkUrl="https://discord.gg/handengineering"
