@@ -6,51 +6,40 @@ export interface ProductDetailsProps {
 }
 
 export default function ProductDetails({ metafields }: ProductDetailsProps) {
-  const componentsMetafield =
-    metafields.length > 0 &&
-    metafields.find((metafield) => metafield.key === "components");
-  const accessoriesMetafield = metafields.find(
-    (metafield) => metafield.key === "accessories"
+  const filteredMetafields = metafields.filter(Boolean);
+  const componentsMetafield = filteredMetafields.find(
+    (metafield) => (metafield.key = "components")
   );
-  const dimensionsMetafield = metafields.find(
+  const dimensionsMetafield = filteredMetafields.find(
     (metafield) => metafield.type === "list.dimension"
   );
-  const weightMetafield = metafields.find(
+  const weightMetafield = filteredMetafields.find(
     (metafield) => metafield.type === "weight"
+  );
+  const accessoriesMetafield = filteredMetafields.find(
+    (metafield) => metafield.type === "accessories"
   );
 
   return (
     <div className="grid md:grid-cols-4">
       {componentsMetafield ? (
         <div className="p-6">
-          <ProductDetail
-            key={componentsMetafield.key}
-            metafield={componentsMetafield}
-          />
+          <ProductDetail metafield={componentsMetafield} />
         </div>
       ) : null}
       {accessoriesMetafield ? (
         <div className="p-6">
-          <ProductDetail
-            key={accessoriesMetafield.key}
-            metafield={accessoriesMetafield}
-          />
+          <ProductDetail metafield={accessoriesMetafield} />
         </div>
       ) : null}
       {dimensionsMetafield ? (
         <div className="p-6">
-          <ProductDetail
-            key={dimensionsMetafield.key}
-            metafield={dimensionsMetafield}
-          />
+          <ProductDetail metafield={dimensionsMetafield} />
         </div>
       ) : null}
       {weightMetafield ? (
         <div className="p-6">
-          <ProductDetail
-            key={weightMetafield.key}
-            metafield={weightMetafield}
-          />
+          <ProductDetail metafield={weightMetafield} />
         </div>
       ) : null}
     </div>
