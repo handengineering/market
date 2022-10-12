@@ -15,20 +15,19 @@ import type {
   DiscordGuildMember,
   DiscordProfile,
 } from "~/models/discordProfile.server";
-import type { Raffle } from "~/models/raffle.server";
 import type { ActionFunction } from "@remix-run/node";
 
 const guildId = "605444240016801879";
 
 type LoaderData = {
-  user: User;
-  raffles: Raffle[];
   discordProfile: DiscordProfile | null;
   result: DiscordGuildMember | null;
+  encodedUrl: string;
 };
 
 export default function Account() {
-  const { discordProfile, result } = useLoaderData() as unknown as LoaderData;
+  const { discordProfile, result, encodedUrl } =
+    useLoaderData() as unknown as LoaderData;
   const hasJoinedDiscord =
     discordProfile &&
     result &&
@@ -67,7 +66,9 @@ export default function Account() {
         </DiscordStatusTextFields>
       </DiscordStatusWrapper>
       {!discordProfile ? (
-        <a href="https://discord.com/api/oauth2/authorize?client_id=973191766905856010&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fauth%2Fdiscord%2Fcallback&response_type=token&scope=identify%20email">
+        <a
+          href={`https://discord.com/api/oauth2/authorize?client_id=973191766905856010&redirect_uri=${encodedUrl}%2Fauth%2Fdiscord%2Fcallback&response_type=token&scope=identify%20email`}
+        >
           <Button color="primary">Connect Discord Profile</Button>
         </a>
       ) : (
@@ -96,6 +97,10 @@ export let loader: LoaderFunction = async ({ request }) => {
     Authorization: `Bot ${discordBotToken}`,
   };
 
+  invariant(process.env.BASE_URL, "BASE_URL must be set");
+
+  const encodedUrl = encodeURIComponent(process.env.BASE_URL);
+
   let discordGuildMember =
     discordProfile &&
     (await fetch(
@@ -108,7 +113,7 @@ export let loader: LoaderFunction = async ({ request }) => {
   const result: DiscordGuildMember | null =
     discordGuildMember && (await discordGuildMember.json());
 
-  return { user, discordProfile, result };
+  return { discordProfile, result, encodedUrl };
 };
 
 export let action: ActionFunction = async ({ request }) => {
