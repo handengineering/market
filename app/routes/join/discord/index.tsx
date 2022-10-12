@@ -77,7 +77,7 @@ export let loader: LoaderFunction = async ({ request }) => {
 
   invariant(process.env.BASE_URL, "BASE_URL must be set");
 
-  const loginLink = generateLoginLink(process.env.BASE_URL, "/join/discord");
+  const loginLink = generateLoginLink(process.env.BASE_URL, "/raffles");
 
   const authHeaders = {
     Authorization: `Bot ${discordBotToken}`,
