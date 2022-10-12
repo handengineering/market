@@ -270,8 +270,6 @@ export default function Configure() {
               return <Image key={index} src={image} className="mb-6" />;
             })
           : null}
-
-        <ProductDetails metafields={product.metafields} />
       </div>
     </Form>
   ) : null;
