@@ -11,7 +11,6 @@ import { useEffect, useState } from "react";
 import invariant from "tiny-invariant";
 import Button from "~/components/Button";
 import Image from "~/components/Image";
-import ProductDetails from "~/components/ProductDetails";
 import type { SelectedOptions } from "~/components/ProductOptionInputs";
 import ProductOptionInputs from "~/components/ProductOptionInputs";
 import type {
