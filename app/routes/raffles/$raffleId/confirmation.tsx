@@ -184,7 +184,7 @@ export default function Confirmation() {
     (variant) => variant.id === product.defaultVariantId
   );
   const initialEstimatedTotalBeforeShipping = initialVariant
-    ? parseInt(initialVariant.priceV2.amount)
+    ? parseInt(initialVariant.price.amount)
     : 0;
 
   const [estimatedTotalBeforeShipping, setEstimatedTotalBeforeShipping] =
@@ -233,7 +233,7 @@ export default function Confirmation() {
 
     setSelectedItems(newSelectedItems);
     let newEstimatedTotalBeforeShipping = initialVariant
-      ? parseInt(initialVariant.priceV2.amount)
+      ? parseInt(initialVariant.price.amount)
       : 0;
     selectedItems.forEach((item) => {
       let product =
@@ -246,7 +246,7 @@ export default function Confirmation() {
       );
       if (variant) {
         newEstimatedTotalBeforeShipping +=
-          parseInt(variant.priceV2.amount) * item.quantity;
+          parseInt(variant.price.amount) * item.quantity;
       }
     });
 
@@ -255,7 +255,7 @@ export default function Confirmation() {
 
   const formattedEstimatedTotalBeforeShipping = new Intl.NumberFormat("en-GB", {
     style: "currency",
-    currency: initialVariant?.priceV2.currencyCode,
+    currency: initialVariant?.price.currencyCode,
   })
     .formatToParts(estimatedTotalBeforeShipping)
     .map((val) => val.value)

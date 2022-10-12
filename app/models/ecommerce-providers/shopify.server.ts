@@ -23,7 +23,7 @@ export function createShopifyProvider({
   shop,
   storefrontAccessToken,
 }: ShopifyProviderOptions): EcommerceProvider {
-  let href = `https://${shop}.myshopify.com/api/2022-04/graphql.json`;
+  let href = `https://${shop}.myshopify.com/api/2022-10/graphql.json`;
   async function query(
     locale: string,
     query: string,
@@ -63,6 +63,7 @@ export function createShopifyProvider({
       }
       let subtotal = new Decimal(0);
       let itemsMap = new Map(items.map((item) => [item.variantId, item]));
+
       let fullItems: FullCartItem[] = [];
       for (let item of json.data.nodes) {
         let itemInput = !!item && itemsMap.get(item.id);
@@ -71,7 +72,7 @@ export function createShopifyProvider({
         }
 
         subtotal = subtotal.plus(
-          new Decimal(item.priceV2.amount).times(itemInput.quantity)
+          new Decimal(item.price.amount).times(itemInput.quantity)
         );
 
         fullItems.push({
@@ -80,7 +81,7 @@ export function createShopifyProvider({
           info: {
             defaultVariantId: item.id,
             id: item.product.id,
-            formattedPrice: formatPrice(item.priceV2),
+            formattedPrice: formatPrice(item.price),
             tags: item.product.tags,
             image:
               item.image?.originalSrc ||
@@ -99,9 +100,8 @@ export function createShopifyProvider({
 
       let formattedSubTotal = formatPrice({
         amount: subtotal.toDecimalPlaces(2).toString(),
-        currencyCode: json.data.nodes.find(
-          (n: any) => !!n?.priceV2?.currencyCode
-        ).priceV2.currencyCode,
+        currencyCode: json.data.nodes.find((n: any) => !!n?.price?.currencyCode)
+          .price.currencyCode,
       });
 
       let translations = getTranslations(locale, ["Calculated at checkout"]);
@@ -255,7 +255,7 @@ export function createShopifyProvider({
         ) {
           selectedVariantId = node.id;
           availableForSale = node.availableForSale;
-          price = node.priceV2;
+          price = node.price;
         }
       }
 
@@ -272,11 +272,7 @@ export function createShopifyProvider({
         description,
         descriptionHtml,
         tags,
-        metafields: metafields.edges.map(
-          ({ node: { id, namespace, key, value, type } }: any) => {
-            return { id, namespace, key, value, type };
-          }
-        ),
+        metafields,
         selectedVariantId,
         availableForSale,
         options: options.map((option: any) => ({
@@ -284,8 +280,8 @@ export function createShopifyProvider({
           values: option.values,
         })),
         variants: variants.edges.map(
-          ({ node: { id, title, selectedOptions, priceV2, icon } }: any) => {
-            return { id, title, selectedOptions, priceV2, icon };
+          ({ node: { id, title, selectedOptions, price, icon } }: any) => {
+            return { id, title, selectedOptions, price, icon };
           }
         ),
       };
@@ -434,7 +430,7 @@ export function createShopifyProvider({
           info: {
             defaultVariantId: item.id,
             id: item.product.id,
-            formattedPrice: formatPrice(item.priceV2),
+            formattedPrice: formatPrice(item.price),
             tags: item.product.tags,
             image:
               item.image?.originalSrc ||
@@ -479,7 +475,7 @@ let getProductVariantsQuery = /* GraphQL */ `
         image {
           originalSrc
         }
-        priceV2 {
+        price {
           amount
           currencyCode
         }
@@ -652,16 +648,20 @@ let getProductQuery = /* GraphQL */ `
         name
         values
       }
-      metafields(first: 250) {
-        edges {
-          node {
-            id
-            namespace
-            key
-            value
-            type
-          }
-        }
+      metafields(
+        identifiers: [
+          { namespace: "options", key: "icons" }
+          { namespace: "details", key: "accessories" }
+          { namespace: "details", key: "components" }
+          { namespace: "details", key: "list.dimension" }
+          { namespace: "details", key: "weight" }
+        ]
+      ) {
+        id
+        namespace
+        key
+        value
+        type
       }
       priceRange {
         maxVariantPrice {
@@ -694,11 +694,11 @@ let getProductQuery = /* GraphQL */ `
               name
               value
             }
-            priceV2 {
+            price {
               amount
               currencyCode
             }
-            compareAtPriceV2 {
+            compareAtPrice {
               amount
               currencyCode
             }

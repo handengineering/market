@@ -6,20 +6,16 @@ export interface ProductDetailsProps {
 }
 
 export default function ProductDetails({ metafields }: ProductDetailsProps) {
-  const detailsMetafields = metafields?.filter(
-    (metafield) => metafield.namespace === "details"
-  );
-
-  const componentsMetafield = detailsMetafields.find(
+  const componentsMetafield = metafields.find(
     (metafield) => metafield.key === "components"
   );
-  const accessoriesMetafield = detailsMetafields.find(
+  const accessoriesMetafield = metafields.find(
     (metafield) => metafield.key === "accessories"
   );
-  const dimensionsMetafield = detailsMetafields.find(
+  const dimensionsMetafield = metafields.find(
     (metafield) => metafield.type === "list.dimension"
   );
-  const weightMetafield = detailsMetafields.find(
+  const weightMetafield = metafields.find(
     (metafield) => metafield.type === "weight"
   );
 

@@ -241,14 +241,12 @@ export default function Index() {
 
   const { metafields } = firstRaffleProduct;
 
-  const detailsMetafields = metafields.filter(
-    (metafield) => metafield.namespace === "details"
-  );
+  console.log(metafields);
 
-  const componentsMetafield = detailsMetafields.find(
+  const componentsMetafield = metafields.find(
     (metafield) => metafield.key === "components"
   );
-  const accessoriesMetafield = detailsMetafields.find(
+  const accessoriesMetafield = metafields.find(
     (metafield) => metafield.key === "accessories"
   );
 

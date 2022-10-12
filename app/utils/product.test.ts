@@ -16,7 +16,7 @@ const expectedVariant: ProductVariant = {
       },
     },
   },
-  priceV2: {
+  price: {
     amount: "10.00",
     currencyCode: "USD",
   },
@@ -63,7 +63,7 @@ const product: FullProduct = {
           },
         },
       },
-      priceV2: {
+      price: {
         amount: "10.00",
         currencyCode: "USD",
       },

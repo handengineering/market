@@ -67,7 +67,7 @@ export interface ProductVariant {
       };
     };
   };
-  priceV2: {
+  price: {
     amount: string;
     currencyCode: string;
   };
