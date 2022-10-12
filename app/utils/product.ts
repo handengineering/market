@@ -41,7 +41,7 @@ export function getProductOptionIcon(
   const filteredMetafields = product.metafields.filter(Boolean);
   const optionsIconsMetafield = filteredMetafields.find(
     (metafield) =>
-      metafield.namespace === "options" && metafield.key === "components"
+      metafield.namespace === "options" && metafield.key === "icons"
   );
 
   const parsedOptionsIconsMetafield: OptionsIconsMetafieldValue[] | undefined =
