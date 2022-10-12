@@ -10,6 +10,7 @@ import type {
   DiscordProfile,
 } from "~/models/discordProfile.server";
 import type { Raffle } from "~/models/raffle.server";
+import { generateLoginLink } from "~/utils/discord";
 
 const guildId = "605444240016801879";
 const guildInviteUrl = "https://discord.gg/NjzC8pe";
@@ -19,10 +20,12 @@ type LoaderData = {
   raffles: Raffle[];
   discordProfile: DiscordProfile | null;
   result: DiscordGuildMember | null;
+  loginLink: string;
 };
 
 export default function JoinDiscord() {
-  const { discordProfile, result } = useLoaderData() as unknown as LoaderData;
+  const { discordProfile, result, loginLink } =
+    useLoaderData() as unknown as LoaderData;
   const hasJoinedDiscord =
     discordProfile &&
     result &&
@@ -45,11 +48,11 @@ export default function JoinDiscord() {
       </p>
 
       {!hasJoinedDiscord ? (
-        <Form method="post" action="/auth/discord">
+        <a href={loginLink}>
           <Button color="secondary" size="large">
             Connect Discord Profile
           </Button>
-        </Form>
+        </a>
       ) : (
         <Form
           method="post"
@@ -72,6 +75,10 @@ export let loader: LoaderFunction = async ({ request }) => {
 
   const discordProfile = await getDiscordProfileByUserId(user.id);
 
+  invariant(process.env.BASE_URL, "BASE_URL must be set");
+
+  const loginLink = generateLoginLink(process.env.BASE_URL, "/join/discord");
+
   const authHeaders = {
     Authorization: `Bot ${discordBotToken}`,
   };
@@ -88,5 +95,5 @@ export let loader: LoaderFunction = async ({ request }) => {
   const result: DiscordGuildMember | null =
     discordGuildMember && (await discordGuildMember.json());
 
-  return { user, discordProfile, result };
+  return { user, discordProfile, result, loginLink };
 };

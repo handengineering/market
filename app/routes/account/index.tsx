@@ -10,23 +10,23 @@ import {
 } from "~/models/discordProfile.server";
 import { authenticator } from "~/services/auth.server";
 import type { LoaderFunction } from "@remix-run/server-runtime";
-import type { User } from "~/models/user.server";
 import type {
   DiscordGuildMember,
   DiscordProfile,
 } from "~/models/discordProfile.server";
 import type { ActionFunction } from "@remix-run/node";
+import { generateLoginLink } from "~/utils/discord";
 
 const guildId = "605444240016801879";
 
 type LoaderData = {
   discordProfile: DiscordProfile | null;
   result: DiscordGuildMember | null;
-  encodedUrl: string;
+  loginLink: string;
 };
 
 export default function Account() {
-  const { discordProfile, result, encodedUrl } =
+  const { discordProfile, result, loginLink } =
     useLoaderData() as unknown as LoaderData;
   const hasJoinedDiscord =
     discordProfile &&
@@ -66,9 +66,7 @@ export default function Account() {
         </DiscordStatusTextFields>
       </DiscordStatusWrapper>
       {!discordProfile ? (
-        <a
-          href={`https://discord.com/api/oauth2/authorize?client_id=973191766905856010&redirect_uri=${encodedUrl}%2Fauth%2Fdiscord%2Fcallback&response_type=token&scope=identify%20email`}
-        >
+        <a href={loginLink}>
           <Button color="primary">Connect Discord Profile</Button>
         </a>
       ) : (
@@ -99,7 +97,7 @@ export let loader: LoaderFunction = async ({ request }) => {
 
   invariant(process.env.BASE_URL, "BASE_URL must be set");
 
-  const encodedUrl = encodeURIComponent(process.env.BASE_URL);
+  const loginLink = generateLoginLink(process.env.BASE_URL, "/account");
 
   let discordGuildMember =
     discordProfile &&
@@ -113,7 +111,7 @@ export let loader: LoaderFunction = async ({ request }) => {
   const result: DiscordGuildMember | null =
     discordGuildMember && (await discordGuildMember.json());
 
-  return { discordProfile, result, encodedUrl };
+  return { discordProfile, result, loginLink };
 };
 
 export let action: ActionFunction = async ({ request }) => {
