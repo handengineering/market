@@ -3,8 +3,9 @@ import {
   deleteDiscordProfileById,
   getDiscordProfileByUserId,
 } from "~/models/discordProfile.server";
-import { authenticator, discordAuthenticator } from "~/services/auth.server";
+import { authenticator } from "~/services/auth.server";
 import type { ActionFunction } from "@remix-run/server-runtime";
+import { redirect } from "@remix-run/server-runtime";
 
 export let action: ActionFunction = async ({ request, params }) => {
   let user = await authenticator.isAuthenticated(request, {
@@ -24,5 +25,5 @@ export let action: ActionFunction = async ({ request, params }) => {
     }
   }
 
-  return discordAuthenticator.logout(request, { redirectTo: "/" });
+  return redirect("/account");
 };

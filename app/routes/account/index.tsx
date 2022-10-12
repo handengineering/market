@@ -4,7 +4,10 @@ import Button from "~/components/Button";
 import DiscordAvatar from "~/components/DiscordAvatar";
 import DiscordStatusTextFields from "~/components/DiscordStatusTextFields";
 import DiscordStatusWrapper from "~/components/DiscordStatusWrapper";
-import { getDiscordProfileByUserId } from "~/models/discordProfile.server";
+import {
+  createDiscordProfile,
+  getDiscordProfileByUserId,
+} from "~/models/discordProfile.server";
 import { authenticator } from "~/services/auth.server";
 import type { LoaderFunction } from "@remix-run/server-runtime";
 import type { User } from "~/models/user.server";
@@ -13,6 +16,7 @@ import type {
   DiscordProfile,
 } from "~/models/discordProfile.server";
 import type { Raffle } from "~/models/raffle.server";
+import type { ActionFunction } from "@remix-run/node";
 
 const guildId = "605444240016801879";
 
@@ -63,9 +67,9 @@ export default function Account() {
         </DiscordStatusTextFields>
       </DiscordStatusWrapper>
       {!discordProfile ? (
-        <Form method="post" action="/auth/discord">
+        <a href="https://discord.com/api/oauth2/authorize?client_id=973191766905856010&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fauth%2Fdiscord%2Fcallback&response_type=token&scope=identify%20email">
           <Button color="primary">Connect Discord Profile</Button>
-        </Form>
+        </a>
       ) : (
         <Form
           method="post"
@@ -105,4 +109,39 @@ export let loader: LoaderFunction = async ({ request }) => {
     discordGuildMember && (await discordGuildMember.json());
 
   return { user, discordProfile, result };
+};
+
+export let action: ActionFunction = async ({ request }) => {
+  const user = await authenticator.isAuthenticated(request);
+
+  invariant(user, "user not found");
+
+  const formData = await request.formData();
+  const tokenType = await formData.get("tokenType");
+  const accessToken = await formData.get("accessToken");
+
+  invariant(accessToken, "accessToken not found");
+
+  const discordProfileResult = await fetch(
+    "https://discord.com/api/users/@me",
+    {
+      headers: {
+        authorization: `${tokenType} ${accessToken}`,
+      },
+    }
+  );
+
+  const discordProfileJson = await discordProfileResult.json();
+
+  const { id, username, avatar } = discordProfileJson;
+
+  await createDiscordProfile(
+    id,
+    user.id,
+    username,
+    avatar,
+    accessToken?.toString()
+  );
+
+  return null;
 };

@@ -1,13 +1,20 @@
-import { authenticator, discordAuthenticator } from "~/services/auth.server";
-import type { LoaderFunction } from "@remix-run/node";
+import { useSubmit } from "@remix-run/react";
+import { useEffect } from "react";
 
-export let loader: LoaderFunction = async ({ request }) => {
-  const user = await authenticator.isAuthenticated(request);
-  return discordAuthenticator.authenticate("discord", request, {
-    successRedirect: "/",
-    failureRedirect: "/login",
-    context: {
-      user,
-    },
+export default function Screen() {
+  let submit = useSubmit();
+  console.log("hello");
+  useEffect(() => {
+    let fragment = new URLSearchParams(window.location.hash.slice(1));
+
+    const accessToken = fragment.get("access_token");
+    const tokenType = fragment.get("token_type");
+
+    accessToken &&
+      tokenType &&
+      submit(
+        { accessToken, tokenType },
+        { action: "/account?index", method: "post", replace: true }
+      );
   });
-};
+}

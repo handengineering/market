@@ -2,7 +2,6 @@ import type { User } from "@prisma/client";
 import type { MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import type { LoaderFunction } from "@remix-run/server-runtime";
-import type { DiscordProfile } from "remix-auth-socials";
 import Banner from "~/components/Banner";
 import RaffleItem from "~/components/RaffleItem";
 import { getDiscordProfileByUserId } from "~/models/discordProfile.server";
@@ -21,7 +20,7 @@ type LoaderData = {
   rafflesWithMatchingProducts?: RaffleWithMatchingProducts[];
   raffleEntries?: RaffleEntry[];
   currentDateTime: string;
-  discordProfile: DiscordProfile | null;
+  discordProfile: { id: string } | null;
   isMemberOfDiscord: boolean;
   currentUrl: string;
   user?: User;

@@ -1,11 +1,9 @@
 // app/services/auth.server.ts
 import { Authenticator } from "remix-auth";
-import { DiscordStrategy } from "remix-auth-socials";
 import { EmailLinkStrategy } from "remix-auth-email-link";
 import invariant from "tiny-invariant";
-import { createDiscordProfile } from "~/models/discordProfile.server";
 import { createUser, getUserByEmail } from "~/models/user.server";
-import { sessionStorage, discordSessionStorage } from "./session.server";
+import { sessionStorage } from "./session.server";
 import { sendMagicLinkEmail } from "./email.server";
 import { verifyEmailAddress } from "~/services/verifier.server";
 import type { User } from "~/models/user.server";
@@ -18,9 +16,7 @@ invariant(
 invariant(process.env.MAGIC_LINK_SECRET, "MAGIC_LINK_SECRET must be set");
 
 export let authenticator = new Authenticator<User>(sessionStorage);
-export let discordAuthenticator = new Authenticator<User>(
-  discordSessionStorage
-);
+
 authenticator.use(
   new EmailLinkStrategy(
     {
@@ -49,37 +45,4 @@ authenticator.use(
     }
   ),
   "email-link"
-);
-
-discordAuthenticator.use(
-  new DiscordStrategy(
-    {
-      clientID: process.env.DISCORD_CLIENT_ID,
-      clientSecret: process.env.DISCORD_CLIENT_SECRET,
-      callbackURL: "/auth/discord/callback",
-      scope: ["identify", "email"],
-    },
-    async ({ accessToken, profile, context }) => {
-      invariant(profile, "profile not found");
-
-      const { emails, displayName, id, __json } = profile;
-      const { avatar } = __json;
-
-      const user: User | undefined = context && (context.user as User);
-
-      invariant(emails, "emails not found");
-      invariant(avatar, "avatar not found");
-      invariant(id, "id not found");
-      invariant(user, "user not found");
-
-      return await createDiscordProfile(
-        id,
-        user.id,
-        displayName,
-        avatar,
-        accessToken
-      );
-    }
-  ),
-  "discord"
 );

@@ -14,17 +14,6 @@ export const sessionStorage = createCookieSessionStorage({
   },
 });
 
-export const discordSessionStorage = createCookieSessionStorage({
-  cookie: {
-    name: "__session_discord",
-    httpOnly: true,
-    path: "/",
-    sameSite: "lax",
-    secrets: [process.env.SESSION_SECRET],
-    secure: process.env.NODE_ENV === "production",
-  },
-});
-
 const USER_SESSION_KEY = "userId";
 
 export async function getSession(request: Request) {
