@@ -30,6 +30,7 @@ import type { MetaFunction } from "@remix-run/node";
 import type { DiscordProfile, User } from "@prisma/client";
 import Banner from "~/components/Banner";
 import { getDiscordGuildMembershipByProfileId } from "~/services/discord.server";
+import { generateLoginLink } from "~/utils/discord";
 
 type RaffleWithMatchingProducts = Raffle & {
   products: (FullProduct | undefined)[];
@@ -42,6 +43,7 @@ type LoaderData = {
   user?: User;
   discordProfile?: DiscordProfile;
   isMemberOfDiscord: boolean;
+  discordLinkUrl: string;
 };
 
 export let loader: LoaderFunction = async ({ request, params }) => {
@@ -61,6 +63,13 @@ export let loader: LoaderFunction = async ({ request, params }) => {
   if (!raffle) {
     return redirect("/raffles");
   }
+
+  invariant(process.env.BASE_URL, "BASE_URL not set");
+
+  const discordLinkUrl = generateLoginLink(
+    process.env.BASE_URL,
+    `/raffles/${raffle.id}`
+  );
 
   const raffleEntry =
     raffleEntries &&
@@ -99,6 +108,7 @@ export let loader: LoaderFunction = async ({ request, params }) => {
     user,
     discordProfile,
     isMemberOfDiscord,
+    discordLinkUrl,
   };
 };
 
@@ -193,6 +203,7 @@ export default function Index() {
     user,
     discordProfile,
     isMemberOfDiscord,
+    discordLinkUrl,
   } = useLoaderData() as unknown as LoaderData;
 
   const { startDateTime, status, endDateTime, name } =
@@ -264,7 +275,10 @@ export default function Index() {
         ) : null}
 
         {!discordProfile && user ? (
-          <Banner linkText="Connect your Discord Account" linkUrl="/dashboard">
+          <Banner
+            linkText="Connect your Discord Account"
+            linkUrl={discordLinkUrl}
+          >
             You need to connect your Discord account, and be a member of the
             Hand Engineering Discord to join raffles. Connect your Discord
             profile here:

@@ -2,6 +2,7 @@ import type { User } from "@prisma/client";
 import type { MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import type { LoaderFunction } from "@remix-run/server-runtime";
+import invariant from "tiny-invariant";
 import Banner from "~/components/Banner";
 import RaffleItem from "~/components/RaffleItem";
 import { getDiscordProfileByUserId } from "~/models/discordProfile.server";
@@ -15,6 +16,7 @@ import { getRaffleEntriesByUserId } from "~/models/raffleEntry.server";
 import { authenticator } from "~/services/auth.server";
 import commerce from "~/services/commerce.server";
 import { getDiscordGuildMembershipByProfileId } from "~/services/discord.server";
+import { generateLoginLink } from "~/utils/discord";
 
 type LoaderData = {
   rafflesWithMatchingProducts?: RaffleWithMatchingProducts[];
@@ -24,6 +26,7 @@ type LoaderData = {
   isMemberOfDiscord: boolean;
   currentUrl: string;
   user?: User;
+  discordLinkUrl: string;
 };
 
 export let loader: LoaderFunction = async ({ request }) => {
@@ -32,6 +35,10 @@ export let loader: LoaderFunction = async ({ request }) => {
   let user = await authenticator.isAuthenticated(request);
 
   const discordProfile = user && (await getDiscordProfileByUserId(user.id));
+
+  invariant(process.env.BASE_URL, "BASE_URL not set");
+
+  const discordLinkUrl = generateLoginLink(process.env.BASE_URL, "/raffles");
 
   const rafflesWithMatchingProducts = await Promise.all(
     raffles.map(async (raffle) => {
@@ -67,6 +74,7 @@ export let loader: LoaderFunction = async ({ request }) => {
     isMemberOfDiscord: isMemberOfDiscord,
     currentUrl: request.url,
     user,
+    discordLinkUrl,
   };
 };
 
@@ -110,6 +118,7 @@ export default function Raffles() {
     discordProfile,
     isMemberOfDiscord,
     user,
+    discordLinkUrl,
   } = useLoaderData() as LoaderData;
 
   return (
@@ -123,7 +132,10 @@ export default function Raffles() {
       ) : null}
 
       {!discordProfile && user ? (
-        <Banner linkText="Connect your Discord Account" linkUrl="/dashboard">
+        <Banner
+          linkText="Connect your Discord Account"
+          linkUrl={discordLinkUrl}
+        >
           You need to connect your Discord account, and be a member of the Hand
           Engineering Discord to join raffles. Connect your Discord profile
           here:
