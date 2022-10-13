@@ -20,12 +20,6 @@ export default function Header({
             Engineering
           </h1>
           <br />
-          {user ? (
-            <p>
-              {user.email}
-              {isAdmin ? " (admin)" : null}
-            </p>
-          ) : null}
         </Link>
       </div>
       <div className="flex h-full w-full flex-col items-start gap-12 md:flex-row">
@@ -73,7 +67,13 @@ export default function Header({
 
         <div className="h-full w-full flex-1">
           <h2 className="mb-2 border-b-2 border-solid border-neutral-700 pb-2 font-semibold text-neutral-700">
-            Account
+            Account{" "}
+            {user ? (
+              <span className="font-light">
+                ({user.email}
+                {isAdmin ? " <admin>" : null})
+              </span>
+            ) : null}
           </h2>
           <ul className="space-y-2">
             {user ? (
