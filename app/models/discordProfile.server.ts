@@ -34,8 +34,8 @@ export async function createDiscordProfile(
   id: string,
   userId: string,
   displayName: string,
-  displayAvatarUrl: string,
-  authToken: string
+  authToken: string,
+  displayAvatarUrl: string | undefined = ""
 ) {
   const existingDiscordProfile = await prisma.discordProfile.findUnique({
     where: {
