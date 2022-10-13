@@ -80,7 +80,7 @@ export default function Index() {
     dimensionsMetafield && JSON.parse(dimensionsMetafield.value);
   const weight = weightMetafield && JSON.parse(weightMetafield.value);
 
-  console.log({ metafields });
+  console.log({ product });
 
   return (
     <>
@@ -90,7 +90,12 @@ export default function Index() {
             <h1 className="mb-6 font-soehneBreit text-2xl text-primary-500">
               {product.title}
             </h1>
-            <p className="mb-6">{product.description}</p>
+            {product.descriptionHtml ? (
+              <div
+                className="mb-6"
+                dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
+              />
+            ) : null}
           </div>
         </div>
         <div className="col-span-2">
