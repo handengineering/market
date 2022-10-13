@@ -37,7 +37,7 @@ export default function Header({
             <ul className="space-y-2">
               <li>
                 <a
-                  href="https://hand.engineering/products"
+                  href="/products"
                   className="text-primary-700 hover:text-primary-500"
                 >
                   All Products

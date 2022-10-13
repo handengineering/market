@@ -662,7 +662,7 @@ let getProductQuery = /* GraphQL */ `
           { namespace: "options", key: "icons" }
           { namespace: "details", key: "accessories" }
           { namespace: "details", key: "components" }
-          { namespace: "details", key: "list.dimension" }
+          { namespace: "details", key: "dimensions" }
           { namespace: "details", key: "weight" }
         ]
       ) {
