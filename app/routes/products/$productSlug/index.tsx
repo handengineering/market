@@ -80,8 +80,6 @@ export default function Index() {
     dimensionsMetafield && JSON.parse(dimensionsMetafield.value);
   const weight = weightMetafield && JSON.parse(weightMetafield.value);
 
-  console.log({ product });
-
   return (
     <>
       <div className="mb-6 grid-cols-3 gap-16 md:grid">
