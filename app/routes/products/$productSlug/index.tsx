@@ -1,14 +1,17 @@
+import type { MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import type { LoaderFunction } from "@remix-run/server-runtime";
 
 import { marked } from "marked";
 import { useState } from "react";
 import invariant from "tiny-invariant";
+import Image from "~/components/Image";
 import type { FullProduct } from "~/models/ecommerce-provider.server";
 import commerce from "~/services/commerce.server";
 
 type LoaderData = {
   product: FullProduct;
+  currentUrl: string;
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
@@ -20,7 +23,39 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
   invariant(productSlug, "productSlug found");
 
-  return { product };
+  const currentUrl = request.url;
+
+  return { product, currentUrl };
+};
+
+export let meta: MetaFunction<typeof loader> = ({
+  data,
+}: {
+  data: LoaderData;
+  params: any;
+}) => {
+  const { product } = data;
+
+  const { title, description, image } = product;
+
+  const fullDescription = `${title}. ${description}`;
+
+  return {
+    title: `${title}`,
+    description: fullDescription,
+    "twitter:card": `${title}`,
+    "twitter:site": "@haveanicedayeng",
+    "twitter:title": `${title}`,
+    "twitter:description": `${fullDescription}.`,
+    "twitter:creator": "@haveanicedayeng",
+    "twitter:image": image,
+    "og:title": `${title} Raffle`,
+    "og:type": "website",
+    "og:url": data.currentUrl,
+    "og:image": image,
+    "og:description": fullDescription,
+    "og:site_name": "Hand Engineering",
+  };
 };
 
 export default function Index() {
@@ -59,7 +94,7 @@ export default function Index() {
           </div>
         </div>
         <div className="col-span-2">
-          <img
+          <Image
             src={selectedImage}
             alt={product.title}
             className="mb-6 aspect-video w-full object-cover"
@@ -67,7 +102,7 @@ export default function Index() {
           <div className="mb-6 grid grid-cols-6 gap-6">
             {product.images.map((image, index) => {
               return (
-                <img
+                <Image
                   key={index}
                   src={image}
                   alt={product.title}

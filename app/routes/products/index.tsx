@@ -36,7 +36,11 @@ export default function Products() {
           <div key={product.id} className="mb-6">
             <Link to={product.slug}>
               <h3 className="mb-6">{product.title}</h3>
-              <Image src={product.image} alt={product.title} />
+              <Image
+                src={product.image}
+                alt={product.title}
+                className="aspect-video object-cover"
+              />
             </Link>
           </div>
         ))}
