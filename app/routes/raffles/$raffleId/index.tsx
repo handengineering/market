@@ -161,7 +161,10 @@ function getRaffleActivityInfo(
             color={canEnterRaffle ? "disabled" : "primary"}
             size="large"
             disabled={canEnterRaffle}
-            className="w-full"
+            className={clsx(
+              "w-full",
+              raffleActivityStatus === "UPCOMING" ? "text-sm" : null
+            )}
           >
             {raffleActivityStatus === "ACTIVE"
               ? "Enter Raffle"
@@ -297,8 +300,8 @@ export default function Index() {
           <div className="grid-cols-3 gap-16 md:grid">
             <div className="col-span-2">
               <div className="flex flex-col">
-                <div className="flex items-center gap-4 md:basis-2/3">
-                  <h1 className="mb-4 font-soehneBreit text-2xl text-primary-500">
+                <div className="mb-4 flex items-center gap-4 md:basis-2/3">
+                  <h1 className="font-soehneBreit text-2xl text-primary-500">
                     {name}
                   </h1>
 

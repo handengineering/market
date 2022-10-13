@@ -26,7 +26,7 @@ const classes = {
   },
   size: {
     small: "text-sm py-0 px-2 rounded-md",
-    large: "text-xl py-4 px-8 rounded-md",
+    large: "text-l py-4 px-8 rounded-md",
   },
 };
 

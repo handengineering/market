@@ -22,6 +22,7 @@ import type { User } from "@prisma/client";
 import permissions from "prisma/permissions";
 import { authenticator } from "./services/auth.server";
 import { checkPermissions } from "./services/permissions.server";
+import Footer from "./components/Footer";
 
 export const links: LinksFunction = () => {
   return [
@@ -75,6 +76,8 @@ export default function App() {
         <Main>
           <Outlet />
         </Main>
+
+        <Footer />
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
