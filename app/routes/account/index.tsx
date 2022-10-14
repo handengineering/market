@@ -16,23 +16,17 @@ import type {
 } from "~/models/discordProfile.server";
 import type { ActionFunction } from "@remix-run/node";
 import { generateLoginLink } from "~/utils/discord";
-
-const guildId = "605444240016801879";
+import { isMemberOfGuild } from "~/services/discord.server";
 
 type LoaderData = {
   discordProfile: DiscordProfile | null;
-  result: DiscordGuildMember | null;
+  isMemberOfDiscordGuild: boolean;
   loginLink: string;
 };
 
 export default function Account() {
-  const { discordProfile, result, loginLink } =
+  const { discordProfile, isMemberOfDiscordGuild, loginLink } =
     useLoaderData() as unknown as LoaderData;
-  const hasJoinedDiscord =
-    discordProfile &&
-    result &&
-    result.user &&
-    result.user.id === discordProfile.id;
 
   return (
     <>
@@ -53,8 +47,9 @@ export default function Account() {
           </span>
 
           <span>
-            You {hasJoinedDiscord ? "are" : "are not"} a member of our Discord.{" "}
-            {!hasJoinedDiscord ? (
+            You {isMemberOfDiscordGuild ? "are" : "are not"} a member of our
+            Discord.{" "}
+            {!isMemberOfDiscordGuild ? (
               <a
                 href="https://discord.gg/handengineering"
                 className="text-primary-500"
@@ -82,36 +77,19 @@ export default function Account() {
 }
 
 export let loader: LoaderFunction = async ({ request }) => {
-  invariant(process.env.DISCORD_BOT_TOKEN, "DISCORD_BOT_TOKEN must be set");
-
-  let discordBotToken = process.env.DISCORD_BOT_TOKEN;
   let user = await authenticator.isAuthenticated(request, {
     failureRedirect: "/login",
   });
 
   const discordProfile = await getDiscordProfileByUserId(user.id);
-
-  const authHeaders = {
-    Authorization: `Bot ${discordBotToken}`,
-  };
-
   invariant(process.env.BASE_URL, "BASE_URL must be set");
 
   const loginLink = generateLoginLink(process.env.BASE_URL, "/account");
 
-  let discordGuildMember =
-    discordProfile &&
-    (await fetch(
-      `https://discordapp.com/api/guilds/${guildId}/members/${discordProfile.id}`,
-      {
-        headers: authHeaders,
-      }
-    ));
+  const isMemberOfDiscordGuild =
+    discordProfile && isMemberOfGuild(discordProfile.id);
 
-  const result: DiscordGuildMember | null =
-    discordGuildMember && (await discordGuildMember.json());
-
-  return { discordProfile, result, loginLink };
+  return { discordProfile, isMemberOfDiscordGuild, loginLink };
 };
 
 export let action: ActionFunction = async ({ request }) => {
