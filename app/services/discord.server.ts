@@ -47,7 +47,9 @@ async function getCachedGuildMembers() {
   if (discordGuildMembers) {
     return discordGuildMembers;
   } else {
-    return await fetchAllGuildMembers();
+    const allGuildMembers = await fetchAllGuildMembers();
+    redisClient.setEx("discordGuildMembers", 5, allGuildMembers);
+    return allGuildMembers;
   }
 }
 
