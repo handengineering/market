@@ -8,6 +8,7 @@ setInterval(async () => {
   const allGuildMembers = await fetchAllGuildMembers();
   const parsedGuildMembers = JSON.parse(allGuildMembers);
   parsedGuildMembers.length > 0 &&
+    process.env.REDIS_URL &&
     (await redisClient.set("discordGuildMembers", allGuildMembers));
 }, 60000);
 
