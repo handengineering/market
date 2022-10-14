@@ -1,4 +1,4 @@
-import type { RaffleEntryStatus } from "@prisma/client";
+import type { RaffleEntry, RaffleEntryStatus } from "@prisma/client";
 import { prisma } from "~/db.server";
 import type { Raffle } from "~/models/raffle.server";
 import type { User } from "~/models/user.server";
@@ -14,6 +14,13 @@ export async function createRaffleEntry(
       userId,
     },
   });
+}
+
+export async function updateRaffleEntryCheckoutUrlById(
+  id: RaffleEntry["id"],
+  checkoutUrl: RaffleEntry["checkoutUrl"]
+) {
+  return prisma.raffleEntry.update({ where: { id }, data: { checkoutUrl } });
 }
 
 export async function getRaffleEntriesByUserId(userId: User["id"]) {

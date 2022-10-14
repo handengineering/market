@@ -29,7 +29,7 @@ import { marked } from "marked";
 import type { MetaFunction } from "@remix-run/node";
 import type { DiscordProfile, User } from "@prisma/client";
 import Banner from "~/components/Banner";
-import { getDiscordGuildMembershipByProfileId } from "~/services/discord.server";
+import { isMemberOfGuild } from "~/services/discord.server";
 import { generateLoginLink } from "~/utils/discord";
 
 type RaffleWithMatchingProducts = Raffle & {
@@ -54,11 +54,8 @@ export let loader: LoaderFunction = async ({ request, params }) => {
 
   const discordProfile = user && (await getDiscordProfileByUserId(user.id));
 
-  const discordGuildProfile =
-    discordProfile &&
-    (await getDiscordGuildMembershipByProfileId(discordProfile.id));
-
-  const isMemberOfDiscord = !!discordGuildProfile?.user?.id;
+  const isMemberOfDiscord =
+    discordProfile && (await isMemberOfGuild(discordProfile.id));
 
   if (!raffle) {
     return redirect("/raffles");

@@ -15,7 +15,7 @@ import type { RaffleEntry } from "~/models/raffleEntry.server";
 import { getRaffleEntriesByUserId } from "~/models/raffleEntry.server";
 import { authenticator } from "~/services/auth.server";
 import commerce from "~/services/commerce.server";
-import { getDiscordGuildMembershipByProfileId } from "~/services/discord.server";
+import { isMemberOfGuild } from "~/services/discord.server";
 import { generateLoginLink } from "~/utils/discord";
 
 type LoaderData = {
@@ -60,11 +60,8 @@ export let loader: LoaderFunction = async ({ request }) => {
 
   let currentDateTime = new Date().toISOString();
 
-  const discordGuildProfile =
-    discordProfile &&
-    (await getDiscordGuildMembershipByProfileId(discordProfile.id));
-
-  const isMemberOfDiscord = discordGuildProfile?.user?.id;
+  const isMemberOfDiscord =
+    discordProfile && (await isMemberOfGuild(discordProfile.id));
 
   return {
     raffleEntries,

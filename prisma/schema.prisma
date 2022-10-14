@@ -62,15 +62,16 @@ model Raffle {
 }
 
 model RaffleEntry {
-  id        String               @id @default(cuid())
-  raffleId  String
-  userId    String
-  status    RaffleEntryStatus    @default(CREATED)
-  createdAt DateTime             @default(now())
-  updatedAt DateTime             @updatedAt
-  raffle    Raffle               @relation(fields: [raffleId], references: [id], onDelete: Cascade)
-  user      User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
-  products  RaffleEntryProduct[]
+  id          String               @id @default(cuid())
+  raffleId    String
+  userId      String
+  status      RaffleEntryStatus    @default(CREATED)
+  checkoutUrl String?
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+  raffle      Raffle               @relation(fields: [raffleId], references: [id], onDelete: Cascade)
+  user        User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  products    RaffleEntryProduct[]
 }
 
 model RaffleEntryProduct {
