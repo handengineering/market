@@ -17,7 +17,7 @@ async function fetchGuildMembersChunk(lastUserId?: string) {
   );
 }
 
-async function fetchAllGuildMembers(
+export async function fetchAllGuildMembers(
   previousMembers: any[] = [],
   lastUserId?: string
 ): Promise<string> {
@@ -41,22 +41,12 @@ async function fetchAllGuildMembers(
   }
 }
 
-async function getCachedGuildMembers() {
+export async function isMemberOfGuild(id: string): Promise<boolean> {
   const discordGuildMembers = await redisClient.get("discordGuildMembers");
 
-  if (discordGuildMembers) {
-    return discordGuildMembers;
-  } else {
-    const allGuildMembers = await fetchAllGuildMembers();
-    await redisClient.setEx("discordGuildMembers", 5, allGuildMembers);
-    return allGuildMembers;
-  }
-}
+  const parsedResult = discordGuildMembers && JSON.parse(discordGuildMembers);
 
-export async function isMemberOfGuild(id: string): Promise<boolean> {
-  const discordGuildMembers = await getCachedGuildMembers();
-
-  const parsedResult = JSON.parse(discordGuildMembers);
+  console.log(parsedResult, discordGuildMembers);
   const matchingUser = parsedResult.find(
     (resultItem: { user: { id: string } }) => resultItem.user.id === id
   );
