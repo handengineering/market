@@ -1,0 +1,13 @@
+name: Refresh Discord Guild Members
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+jobs:
+  refresh-feed:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch API Data 📦
+        uses: JamesIves/fetch-api-data-action@v2
+        with:
+          endpoint: https://market.hand.engineering/discord/refresh
+          configuration: '{ "method": "GET"}'
