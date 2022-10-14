@@ -46,7 +46,6 @@ export async function isMemberOfGuild(id: string): Promise<boolean> {
 
   const parsedResult = discordGuildMembers && JSON.parse(discordGuildMembers);
 
-  console.log(parsedResult, discordGuildMembers);
   const matchingUser = parsedResult.find(
     (resultItem: { user: { id: string } }) => resultItem.user.id === id
   );
