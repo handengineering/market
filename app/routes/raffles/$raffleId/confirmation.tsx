@@ -10,7 +10,10 @@ import Label from "~/components/Label";
 import Select, { Option } from "~/components/Select";
 import type { FullProduct } from "~/models/ecommerce-provider.server";
 import { getRaffleById } from "~/models/raffle.server";
-import { getRaffleEntriesByRaffleIdAndUserId } from "~/models/raffleEntry.server";
+import {
+  getRaffleEntriesByRaffleIdAndUserId,
+  updateRaffleEntryCheckoutUrlById,
+} from "~/models/raffleEntry.server";
 import { getRaffleEntryProductsByRaffleEntryId } from "~/models/raffleEntryProduct.server";
 import { authenticator } from "~/services/auth.server";
 import commerce from "~/services/commerce.server";
@@ -149,33 +152,44 @@ export let action: ActionFunction = async ({ request, params }) => {
 
   const formData = await request.formData();
 
-  let serializedFormDataQuantities = serializeFormDataQuantities(formData);
+  const checkoutUrl = raffleEntry.checkoutUrl;
 
-  let serializedFormDataOptionQuantities =
-    serializeFormDataOptionQuantities(formData);
+  if (checkoutUrl) {
+    return redirect(checkoutUrl);
+  } else {
+    let serializedFormDataQuantities = serializeFormDataQuantities(formData);
 
-  invariant(
-    serializedFormDataQuantities,
-    "serializedFormDataQuantities not found"
-  );
+    let serializedFormDataOptionQuantities =
+      serializeFormDataOptionQuantities(formData);
 
-  let selectedAccessories = getSelectedAccessories(
-    fullMatchingAccessories,
-    serializedFormDataQuantities
-  );
+    invariant(
+      serializedFormDataQuantities,
+      "serializedFormDataQuantities not found"
+    );
 
-  let selectedAccessoriesWithOptions = getSelectedAccessoriesWithOptions(
-    fullMatchingAccessories,
-    serializedFormDataOptionQuantities
-  );
+    let selectedAccessories = getSelectedAccessories(
+      fullMatchingAccessories,
+      serializedFormDataQuantities
+    );
 
-  const checkoutUrl = await commerce.getCheckoutUrl("en", [
-    { variantId: matchingVariant.id, quantity: 1 },
-    ...selectedAccessories,
-    ...selectedAccessoriesWithOptions,
-  ]);
+    let selectedAccessoriesWithOptions = getSelectedAccessoriesWithOptions(
+      fullMatchingAccessories,
+      serializedFormDataOptionQuantities
+    );
 
-  return redirect(checkoutUrl);
+    const generatedCheckoutUrl = await commerce.getCheckoutUrl("en", [
+      { variantId: matchingVariant.id, quantity: 1 },
+      ...selectedAccessories,
+      ...selectedAccessoriesWithOptions,
+    ]);
+
+    const updatedRaffleEntry = await updateRaffleEntryCheckoutUrlById(
+      raffleEntry.id,
+      generatedCheckoutUrl
+    );
+
+    return redirect(updatedRaffleEntry.checkoutUrl || "/raffles");
+  }
 };
 
 export default function Confirmation() {
