@@ -1,55 +1,60 @@
 import redisClient from "~/services/redis.server";
 
-export async function getDiscordGuildMembershipByProfileId(
-  id: string
-): Promise<boolean> {
+async function fetchGuildMembersChunk(lastUserId?: string) {
   let discordBotToken = process.env.DISCORD_BOT_TOKEN;
 
   const authHeaders = {
     Authorization: `Bot ${discordBotToken}`,
   };
 
-  async function getMoreGuildMembers(
-    previousMembers: any[],
-    lastUserId?: string
-  ): Promise<string> {
-    const discordGuildMembers = await redisClient.get("discordGuildMembers");
-    if (discordGuildMembers) {
-      return discordGuildMembers;
-    } else {
-      const snowflakeQuery = lastUserId ? `&after=${lastUserId}` : "";
+  const snowflakeQuery = lastUserId ? `&after=${lastUserId}` : "";
 
-      const response = await fetch(
-        `https://discordapp.com/api/guilds/${process.env.DISCORD_GUILD_ID}/members?limit=1000${snowflakeQuery}`,
-        {
-          headers: authHeaders,
-        }
-      );
-
-      const clonedResponse = response.clone();
-
-      const newMembers = await clonedResponse.json();
-
-      const members =
-        newMembers.length > 0
-          ? [...previousMembers, ...newMembers]
-          : previousMembers;
-
-      const lastItem = members[members.length - 1];
-
-      if (newMembers.length > 0) {
-        return await getMoreGuildMembers(members, lastItem.user.id);
-      } else {
-        const stringifiedMembers = JSON.stringify(members);
-        redisClient.setEx("discordGuildMembers", 10, stringifiedMembers);
-        return stringifiedMembers;
-      }
+  return fetch(
+    `https://discordapp.com/api/guilds/${process.env.DISCORD_GUILD_ID}/members?limit=1000${snowflakeQuery}`,
+    {
+      headers: authHeaders,
     }
+  );
+}
+
+async function fetchAllGuildMembers(
+  previousMembers: any[] = [],
+  lastUserId?: string
+): Promise<string> {
+  const response = await fetchGuildMembersChunk(lastUserId);
+
+  const clonedResponse = response.clone();
+
+  const newMembers = await clonedResponse.json();
+
+  const members =
+    newMembers.length > 0
+      ? [...previousMembers, ...newMembers]
+      : previousMembers;
+
+  const lastItem = members[members.length - 1];
+
+  if (newMembers.length > 0) {
+    return await fetchAllGuildMembers(members, lastItem.user.id);
+  } else {
+    return JSON.stringify(members);
   }
+}
 
-  const result = await getMoreGuildMembers([]);
+async function getCachedGuildMembers() {
+  const discordGuildMembers = await redisClient.get("discordGuildMembers");
 
-  const parsedResult = JSON.parse(result);
+  if (discordGuildMembers) {
+    return discordGuildMembers;
+  } else {
+    return await fetchAllGuildMembers();
+  }
+}
+
+export async function isMemberOfGuild(id: string): Promise<boolean> {
+  const discordGuildMembers = await getCachedGuildMembers();
+
+  const parsedResult = JSON.parse(discordGuildMembers);
   const matchingUser = parsedResult.find(
     (resultItem: { user: { id: string } }) => resultItem.user.id === id
   );
