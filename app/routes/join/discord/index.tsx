@@ -4,33 +4,23 @@ import Button from "~/components/Button";
 import { getDiscordProfileByUserId } from "~/models/discordProfile.server";
 import { authenticator } from "~/services/auth.server";
 import type { LoaderFunction } from "@remix-run/server-runtime";
-import type { User } from "~/models/user.server";
 import type {
   DiscordGuildMember,
   DiscordProfile,
 } from "~/models/discordProfile.server";
-import type { Raffle } from "~/models/raffle.server";
 import { generateLoginLink } from "~/utils/discord";
 
 const guildId = "605444240016801879";
 const guildInviteUrl = "https://discord.gg/NjzC8pe";
 
 type LoaderData = {
-  user: User;
-  raffles: Raffle[];
   discordProfile: DiscordProfile | null;
-  result: DiscordGuildMember | null;
   loginLink: string;
 };
 
 export default function JoinDiscord() {
-  const { discordProfile, result, loginLink } =
+  const { discordProfile, loginLink } =
     useLoaderData() as unknown as LoaderData;
-  const hasJoinedDiscord =
-    discordProfile &&
-    result &&
-    result.user &&
-    result.user.id === discordProfile.id;
 
   return (
     <div className="flex flex-col items-center justify-center rounded bg-primary-500 p-12 text-neutral-100">
@@ -47,7 +37,7 @@ export default function JoinDiscord() {
         to enter Hand Engineering raffles.
       </p>
 
-      {!hasJoinedDiscord ? (
+      {!discordProfile ? (
         <a href={loginLink}>
           <Button color="secondary" size="large">
             Connect Discord Profile
@@ -66,9 +56,6 @@ export default function JoinDiscord() {
 }
 
 export let loader: LoaderFunction = async ({ request }) => {
-  invariant(process.env.DISCORD_BOT_TOKEN, "DISCORD_BOT_TOKEN must be set");
-
-  let discordBotToken = process.env.DISCORD_BOT_TOKEN;
   let user = await authenticator.isAuthenticated(request, {
     failureRedirect: "/login",
   });
@@ -79,21 +66,5 @@ export let loader: LoaderFunction = async ({ request }) => {
 
   const loginLink = generateLoginLink(process.env.BASE_URL, "/raffles");
 
-  const authHeaders = {
-    Authorization: `Bot ${discordBotToken}`,
-  };
-
-  let discordGuildMember =
-    discordProfile &&
-    (await fetch(
-      `https://discordapp.com/api/guilds/${guildId}/members/${discordProfile.id}`,
-      {
-        headers: authHeaders,
-      }
-    ));
-
-  const result: DiscordGuildMember | null =
-    discordGuildMember && (await discordGuildMember.json());
-
-  return { user, discordProfile, result, loginLink };
+  return { discordProfile, loginLink };
 };
