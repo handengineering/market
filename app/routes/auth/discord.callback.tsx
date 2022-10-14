@@ -58,8 +58,8 @@ export let action: ActionFunction = async ({ request }) => {
     id,
     user.id,
     username,
-    avatar || "",
-    accessToken?.toString()
+    accessToken?.toString(),
+    avatar || ""
   );
 
   return redirect(decodedState.redirectTo || "/");

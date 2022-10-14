@@ -33,7 +33,7 @@ export default function Account() {
       <DiscordStatusWrapper>
         {discordProfile && discordProfile.displayAvatarUrl && (
           <DiscordAvatar
-            src={`https://cdn.discordapp.com/avatars/${discordProfile.id}/${discordProfile.displayAvatarUrl}`}
+            src={`https://cdn.discordapp.com/avatars/${discordProfile.id}/${discordProfile.displayAvatarUrl}.png`}
           />
         )}
         <DiscordStatusTextFields>
