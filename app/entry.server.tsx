@@ -6,7 +6,9 @@ import redisClient from "./services/redis.server";
 
 setInterval(async () => {
   const allGuildMembers = await fetchAllGuildMembers();
-  await redisClient.set("discordGuildMembers", allGuildMembers);
+  const parsedGuildMembers = JSON.parse(allGuildMembers);
+  parsedGuildMembers.length > 0 &&
+    (await redisClient.set("discordGuildMembers", allGuildMembers));
 }, 60000);
 
 export default function handleRequest(
