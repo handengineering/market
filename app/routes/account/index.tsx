@@ -10,10 +10,7 @@ import {
 } from "~/models/discordProfile.server";
 import { authenticator } from "~/services/auth.server";
 import type { LoaderFunction } from "@remix-run/server-runtime";
-import type {
-  DiscordGuildMember,
-  DiscordProfile,
-} from "~/models/discordProfile.server";
+import type { DiscordProfile } from "~/models/discordProfile.server";
 import type { ActionFunction } from "@remix-run/node";
 import { generateLoginLink } from "~/utils/discord";
 import { isMemberOfGuild } from "~/services/discord.server";

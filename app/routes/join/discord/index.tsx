@@ -4,13 +4,9 @@ import Button from "~/components/Button";
 import { getDiscordProfileByUserId } from "~/models/discordProfile.server";
 import { authenticator } from "~/services/auth.server";
 import type { LoaderFunction } from "@remix-run/server-runtime";
-import type {
-  DiscordGuildMember,
-  DiscordProfile,
-} from "~/models/discordProfile.server";
+import type { DiscordProfile } from "~/models/discordProfile.server";
 import { generateLoginLink } from "~/utils/discord";
 
-const guildId = "605444240016801879";
 const guildInviteUrl = "https://discord.gg/NjzC8pe";
 
 type LoaderData = {
