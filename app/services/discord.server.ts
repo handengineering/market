@@ -40,11 +40,9 @@ export async function getDiscordGuildMembershipByProfileId(
       if (newMembers.length > 0) {
         return await getMoreGuildMembers(members, lastItem.user.id);
       } else {
-        return redisClient.setEx(
-          "discordGuildMembers",
-          10,
-          JSON.stringify(members)
-        );
+        const stringifiedMembers = JSON.stringify(members);
+        redisClient.setEx("discordGuildMembers", 10, stringifiedMembers);
+        return stringifiedMembers;
       }
     }
   }
