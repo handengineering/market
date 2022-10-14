@@ -60,11 +60,9 @@ export let loader: LoaderFunction = async ({ request }) => {
 
   let currentDateTime = new Date().toISOString();
 
-  const discordGuildProfile =
+  const isMemberOfDiscord =
     discordProfile &&
     (await getDiscordGuildMembershipByProfileId(discordProfile.id));
-
-  const isMemberOfDiscord = discordGuildProfile?.user?.id;
 
   return {
     raffleEntries,

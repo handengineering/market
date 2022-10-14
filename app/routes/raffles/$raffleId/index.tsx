@@ -54,11 +54,9 @@ export let loader: LoaderFunction = async ({ request, params }) => {
 
   const discordProfile = user && (await getDiscordProfileByUserId(user.id));
 
-  const discordGuildProfile =
+  const isMemberOfDiscord =
     discordProfile &&
     (await getDiscordGuildMembershipByProfileId(discordProfile.id));
-
-  const isMemberOfDiscord = !!discordGuildProfile?.user?.id;
 
   if (!raffle) {
     return redirect("/raffles");
