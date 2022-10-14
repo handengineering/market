@@ -58,7 +58,7 @@ export let action: ActionFunction = async ({ request }) => {
     id,
     user.id,
     username,
-    avatar,
+    avatar || "",
     accessToken?.toString()
   );
 
