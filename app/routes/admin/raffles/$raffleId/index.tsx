@@ -10,11 +10,11 @@ import Button from "~/components/Button";
 import Input from "~/components/Input";
 import Label from "~/components/Label";
 import { prisma } from "~/db.server";
+import { getDiscordProfileByUserId } from "~/models/discordProfile.server";
 import type { FullProduct } from "~/models/ecommerce-provider.server";
 import { deleteRaffleById, getRaffleById } from "~/models/raffle.server";
 import { getRaffleEntriesByRaffleId } from "~/models/raffleEntry.server";
 import { getRaffleEntryProductsByRaffleEntryId } from "~/models/raffleEntryProduct.server";
-import type { User } from "~/models/user.server";
 import { getUserById } from "~/models/user.server";
 import { getUsers } from "~/models/user.server";
 import commerce from "~/services/commerce.server";
@@ -25,14 +25,14 @@ type RaffleEntryWithVariants = {
   id: string;
   userId: string;
   status: RaffleEntryStatus;
+  email: string;
+  discordUsername: string;
   productVariantIds: string[];
 };
 
 type LoaderData = {
   createdRaffleEntries?: RaffleEntryWithVariants[];
-  raffleEntriesWithVariants: RaffleEntryWithVariants[];
   drawnRaffleEntries?: RaffleEntryWithVariants[];
-  users?: User[];
   product: FullProduct;
 };
 
@@ -76,8 +76,15 @@ export let loader: LoaderFunction = async ({ request, params }) => {
         raffleEntry.id
       );
 
+      const matchingUser = users.find((user) => user.id === raffleEntry.userId);
+      const matchingDiscordProfile = await getDiscordProfileByUserId(
+        raffleEntry.userId
+      );
+
       return {
         id: raffleEntry.id,
+        email: matchingUser?.email,
+        discordUsername: matchingDiscordProfile?.displayName,
         userId: raffleEntry.userId,
         status: raffleEntry.status,
         productVariantIds: selectedVariants.map(
@@ -178,7 +185,7 @@ export let action: ActionFunction = async ({ request, params }) => {
 };
 
 export default function Index() {
-  const { createdRaffleEntries, drawnRaffleEntries, users, product } =
+  const { createdRaffleEntries, drawnRaffleEntries, product } =
     useLoaderData() as LoaderData;
   const [canRemoveAll, setCanRemoveAll] = useState(false);
 
@@ -199,152 +206,146 @@ export default function Index() {
         {product.title}
       </h1>
       <div className="grid gap-6 md:grid-cols-3">
-        {users && (
-          <>
-            <div className="mb-8">
-              <h2 className="mb-8 font-soehneBreit text-lg">
-                Created Raffle Entries ({createdRaffleEntries?.length})
-              </h2>
-              <ul>
-                {createdRaffleEntries &&
-                  createdRaffleEntries
-                    .filter((raffleEntry) => {
-                      const isMatching =
-                        !filtering ||
-                        (raffleEntry.productVariantIds &&
-                          filteredVariantIds.some((filteredVariantId) =>
-                            raffleEntry.productVariantIds.includes(
-                              filteredVariantId
-                            )
-                          ));
-                      return isMatching;
-                    })
-                    .map((raffleEntry) => {
-                      const matchingUser = users.find((user) => {
-                        return user.id === raffleEntry.userId;
-                      });
-
-                      return (
-                        <li
-                          key={raffleEntry.id}
-                          className="mb-2 rounded bg-yellow-200 p-2"
-                        >
-                          {matchingUser?.email}
-                        </li>
-                      );
-                    })}
-              </ul>
-            </div>
-            <div className="mb-8">
-              <h2 className="mb-8 font-soehneBreit text-lg">Controls</h2>
-              <Form method="post">
-                <Label>
-                  Draw Count
-                  <Input type="number" name="drawCount" />
-                </Label>
-                <Button
-                  type="button"
-                  onClick={() => setFiltering(!filtering)}
-                  color={filtering ? "secondary" : "primary"}
-                  className="mb-4"
-                >
-                  Filtering Engage
-                </Button>
-                <div className="mb-4">
-                  {product.variants.map((variant, index) => {
-                    return (
-                      <div key="index">
-                        <input
-                          type="checkbox"
-                          className="mr-2 h-4 w-4"
-                          id={variant.id}
-                          onClick={(e) =>
-                            handleVariantFilterButtonPress(e, variant.id)
-                          }
-                          checked={filteredVariantIds.includes(variant.id)}
-                        />
-                        <label htmlFor={variant.id}>{variant.title}</label>
-                      </div>
-                    );
-                  })}
-                </div>
-
-                <Button
-                  name="action"
-                  value="draw"
-                  color="primary"
-                  className="mb-2 w-full last:mb-0"
-                >
-                  Draw Participants
-                </Button>
-
-                {canRemoveAll ? (
-                  <Button
-                    name="action"
-                    value="removeAll"
-                    color="danger"
-                    className="mb-2 w-full last:mb-0"
-                  >
-                    Confirm Remove All Partipants
-                  </Button>
-                ) : (
-                  <Button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setCanRemoveAll(true);
-                    }}
-                    className="mb-2 w-full last:mb-0"
-                  >
-                    Remove All Particpants
-                  </Button>
-                )}
-                <Button
-                  name="action"
-                  value="sendConfirmation"
-                  color="danger"
-                  className="mb-2 w-full last:mb-0"
-                >
-                  Send Confirmation and Archive
-                </Button>
-                <Button
-                  size="small"
-                  name="action"
-                  value="deleteRaffle"
-                  color="danger"
-                  className="mb-2 last:mb-0"
-                >
-                  Delete Raffle
-                </Button>
-              </Form>
-            </div>
-            <div className="mb-8">
-              <h2 className="mb-8 font-soehneBreit text-lg">
-                Drawn Raffle Entries ({drawnRaffleEntries?.length})
-              </h2>
-
-              <ul>
-                {drawnRaffleEntries &&
-                  drawnRaffleEntries.map((raffleEntry) => {
-                    const matchingUser = users.find((user) => {
-                      return user.id === raffleEntry.userId;
-                    });
-
+        <>
+          <div className="mb-8">
+            <h2 className="mb-8 font-soehneBreit text-lg">
+              Created Raffle Entries ({createdRaffleEntries?.length})
+            </h2>
+            <ul>
+              {createdRaffleEntries &&
+                createdRaffleEntries
+                  .filter((raffleEntry) => {
+                    const isMatching =
+                      !filtering ||
+                      (raffleEntry.productVariantIds &&
+                        filteredVariantIds.some((filteredVariantId) =>
+                          raffleEntry.productVariantIds.includes(
+                            filteredVariantId
+                          )
+                        ));
+                    return isMatching;
+                  })
+                  .map((raffleEntry) => {
                     return (
                       <li
                         key={raffleEntry.id}
-                        className={clsx(
-                          "mb-2 rounded bg-green-200 p-2",
-                          canRemoveAll && "bg-red-200"
-                        )}
+                        className="mb-2 rounded bg-yellow-200 p-2"
                       >
-                        {matchingUser?.email}
+                        {raffleEntry.email}{" "}
+                        {raffleEntry.discordUsername &&
+                          `(${raffleEntry.discordUsername})`}
                       </li>
                     );
                   })}
-              </ul>
-            </div>
-          </>
-        )}
+            </ul>
+          </div>
+          <div className="mb-8">
+            <h2 className="mb-8 font-soehneBreit text-lg">Controls</h2>
+            <Form method="post">
+              <Label>
+                Draw Count
+                <Input type="number" name="drawCount" />
+              </Label>
+              <Button
+                type="button"
+                onClick={() => setFiltering(!filtering)}
+                color={filtering ? "secondary" : "primary"}
+                className="mb-4"
+              >
+                Filtering Engage
+              </Button>
+              <div className="mb-4">
+                {product.variants.map((variant, index) => {
+                  return (
+                    <div key="index">
+                      <input
+                        type="checkbox"
+                        className="mr-2 h-4 w-4"
+                        id={variant.id}
+                        onClick={(e) =>
+                          handleVariantFilterButtonPress(e, variant.id)
+                        }
+                        checked={filteredVariantIds.includes(variant.id)}
+                      />
+                      <label htmlFor={variant.id}>{variant.title}</label>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <Button
+                name="action"
+                value="draw"
+                color="primary"
+                className="mb-2 w-full last:mb-0"
+              >
+                Draw Participants
+              </Button>
+
+              {canRemoveAll ? (
+                <Button
+                  name="action"
+                  value="removeAll"
+                  color="danger"
+                  className="mb-2 w-full last:mb-0"
+                >
+                  Confirm Remove All Partipants
+                </Button>
+              ) : (
+                <Button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setCanRemoveAll(true);
+                  }}
+                  className="mb-2 w-full last:mb-0"
+                >
+                  Remove All Particpants
+                </Button>
+              )}
+              <Button
+                name="action"
+                value="sendConfirmation"
+                color="danger"
+                className="mb-2 w-full last:mb-0"
+              >
+                Send Confirmation and Archive
+              </Button>
+              <Button
+                size="small"
+                name="action"
+                value="deleteRaffle"
+                color="danger"
+                className="mb-2 last:mb-0"
+              >
+                Delete Raffle
+              </Button>
+            </Form>
+          </div>
+          <div className="mb-8">
+            <h2 className="mb-8 font-soehneBreit text-lg">
+              Drawn Raffle Entries ({drawnRaffleEntries?.length})
+            </h2>
+
+            <ul>
+              {drawnRaffleEntries &&
+                drawnRaffleEntries.map((raffleEntry) => {
+                  return (
+                    <li
+                      key={raffleEntry.id}
+                      className={clsx(
+                        "mb-2 rounded bg-green-200 p-2",
+                        canRemoveAll && "bg-red-200"
+                      )}
+                    >
+                      {raffleEntry.email}{" "}
+                      {raffleEntry.discordUsername &&
+                        `(${raffleEntry.discordUsername})`}{" "}
+                    </li>
+                  );
+                })}
+            </ul>
+          </div>
+        </>
       </div>
     </>
   );
