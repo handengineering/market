@@ -1,11 +1,16 @@
 import { Form, Link, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import Button from "~/components/Button";
-import { getDiscordProfileByUserId } from "~/models/discordProfile.server";
+import {
+  deleteDiscordProfileById,
+  getDiscordProfileByUserId,
+} from "~/models/discordProfile.server";
 import { authenticator } from "~/services/auth.server";
 import type { LoaderFunction } from "@remix-run/server-runtime";
 import type { DiscordProfile } from "~/models/discordProfile.server";
 import { generateLoginLink } from "~/utils/discord";
+import type { ActionFunction } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 
 const guildInviteUrl = "https://discord.gg/NjzC8pe";
 
@@ -40,10 +45,7 @@ export default function JoinDiscord() {
           </Button>
         </a>
       ) : (
-        <Form
-          method="post"
-          action={`/discordProfile/${discordProfile.id}/delete`}
-        >
+        <Form method="post">
           <Button color="danger">Remove Discord Profile</Button>
         </Form>
       )}
@@ -63,4 +65,24 @@ export let loader: LoaderFunction = async ({ request }) => {
   const loginLink = generateLoginLink(process.env.BASE_URL, "/raffles");
 
   return { discordProfile, loginLink };
+};
+
+export let action: ActionFunction = async ({ request }) => {
+  let user = await authenticator.isAuthenticated(request, {
+    failureRedirect: "/login",
+  });
+
+  const discordProfile = await getDiscordProfileByUserId(user.id);
+
+  invariant(discordProfile, `DiscordProfile not found for User ${user.id}`);
+
+  if ((discordProfile.userId = user.id)) {
+    try {
+      await deleteDiscordProfileById(discordProfile.id);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  return redirect("/join/discord");
 };

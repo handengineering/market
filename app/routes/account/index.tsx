@@ -6,12 +6,14 @@ import DiscordStatusTextFields from "~/components/DiscordStatusTextFields";
 import DiscordStatusWrapper from "~/components/DiscordStatusWrapper";
 import {
   createDiscordProfile,
+  deleteDiscordProfileById,
   getDiscordProfileByUserId,
 } from "~/models/discordProfile.server";
 import { authenticator } from "~/services/auth.server";
 import type { LoaderFunction } from "@remix-run/server-runtime";
 import type { DiscordProfile } from "~/models/discordProfile.server";
 import type { ActionFunction } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 import { generateLoginLink } from "~/utils/discord";
 import { useEffect } from "react";
 
@@ -75,10 +77,8 @@ export default function Account() {
           <Button color="primary">Connect Discord Profile</Button>
         </a>
       ) : (
-        <Form
-          method="post"
-          action={`/discordProfile/${discordProfile.id}/delete`}
-        >
+        <Form method="post">
+          <input type="hidden" name="action" value="removeDiscordProfile" />
           <Button color="danger">Remove Discord Profile</Button>
         </Form>
       )}
@@ -105,6 +105,25 @@ export let action: ActionFunction = async ({ request }) => {
   invariant(user, "user not found");
 
   const formData = await request.formData();
+
+  const action = await formData.get("action");
+
+  if (action === "removeDiscordProfile") {
+    const discordProfile = await getDiscordProfileByUserId(user.id);
+
+    invariant(discordProfile, `DiscordProfile not found for User ${user.id}`);
+
+    if ((discordProfile.userId = user.id)) {
+      try {
+        await deleteDiscordProfileById(discordProfile.id);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    return redirect("/account");
+  }
+
   const tokenType = await formData.get("tokenType");
   const accessToken = await formData.get("accessToken");
 
