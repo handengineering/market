@@ -1,11 +1,10 @@
 export async function isMemberOfGuild(id: string): Promise<boolean> {
-  const discordGuildMembers = await redisClient.get("discordGuildMembers");
+  const discordGuildMemberIds = await redisClient.get("discordGuildMemberIds");
 
-  const parsedResult = discordGuildMembers && JSON.parse(discordGuildMembers);
+  const parsedResult: string[] =
+    discordGuildMemberIds && JSON.parse(discordGuildMemberIds);
 
-  const matchingUser = parsedResult.find(
-    (resultItem: { user: { id: string } }) => resultItem.user.id === id
-  );
+  const matchingUser = parsedResult.find((resultItem) => resultItem === id);
 
   return !!matchingUser;
 }
