@@ -1,5 +1,10 @@
 import type { RaffleEntryProduct } from "@prisma/client";
-import { Form, useLoaderData } from "@remix-run/react";
+import {
+  Form,
+  useLoaderData,
+  useSubmit,
+  useTransition,
+} from "@remix-run/react";
 import type {
   ActionFunction,
   ErrorBoundaryComponent,
@@ -7,6 +12,7 @@ import type {
 } from "@remix-run/server-runtime";
 import { redirect } from "@remix-run/server-runtime";
 import { isAfter, isBefore } from "date-fns";
+import type { FormEvent } from "react";
 import { useEffect, useState } from "react";
 import invariant from "tiny-invariant";
 import Button from "~/components/Button";
@@ -156,6 +162,8 @@ export let ErrorBoundary: ErrorBoundaryComponent = ({ error }) => (
 export default function Configure() {
   const { raffleWithMatchingProducts, raffleEntry, selectedVariant } =
     useLoaderData() as LoaderData;
+  const submit = useSubmit();
+  const transition = useTransition();
 
   const product = raffleWithMatchingProducts?.products[0];
 
@@ -201,8 +209,12 @@ export default function Configure() {
 
   const { descriptionHtml } = firstProduct;
 
+  const handleChange = (e: FormEvent<HTMLFormElement>) => {
+    submit(e?.currentTarget, { replace: true });
+  };
+
   return product ? (
-    <Form method="post">
+    <Form method="post" onSubmit={(e) => handleChange(e)}>
       <div className="mb-8 flex flex-col gap-6 md:flex-row">
         <div className="flex flex-1 flex-col items-start gap-6">
           <Image src={product.image} />
@@ -234,7 +246,11 @@ export default function Configure() {
             size="large"
             disabled={!!raffleEntry}
           >
-            {raffleEntry ? "Raffle Entry Submitted" : "Submit Options"}
+            {transition.state !== "idle"
+              ? "Submitting..."
+              : raffleEntry
+              ? "Raffle Entry Submitted"
+              : "Submit Options"}
           </Button>
         </div>
       </div>

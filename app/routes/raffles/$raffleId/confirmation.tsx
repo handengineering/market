@@ -1,6 +1,12 @@
-import { Form, useLoaderData } from "@remix-run/react";
+import {
+  Form,
+  useLoaderData,
+  useSubmit,
+  useTransition,
+} from "@remix-run/react";
 import type { ActionFunction, LoaderFunction } from "@remix-run/server-runtime";
 import { redirect } from "@remix-run/server-runtime";
+import type { FormEvent } from "react";
 import React, { useState } from "react";
 import invariant from "tiny-invariant";
 import Button from "~/components/Button";
@@ -209,6 +215,9 @@ export let action: ActionFunction = async ({ request, params }) => {
 };
 
 export default function Confirmation() {
+  const submit = useSubmit();
+  const transition = useTransition();
+
   const { product, matchingAccessories, selectedVariant } =
     useLoaderData() as LoaderData;
   const initialVariant = product.variants.find(
@@ -292,8 +301,12 @@ export default function Confirmation() {
     .map((val) => val.value)
     .join("");
 
+  const handleChange = (e: FormEvent<HTMLFormElement>) => {
+    submit(e?.currentTarget, { replace: true });
+  };
+
   return (
-    <Form method="post">
+    <Form method="post" onSubmit={(e) => handleChange(e)}>
       <div className="grid gap-6 md:grid-cols-2">
         <div className="flex flex-1 flex-col items-start gap-6">
           <Image src={product.image} />
@@ -303,7 +316,7 @@ export default function Confirmation() {
               <b>{formattedEstimatedTotalBeforeShipping}</b>
             </div>
             <Button color="primary" size="large" className="w-full">
-              Confirm Entry
+              {transition.state !== "idle" ? "Submitting..." : "Confirm Entry"}
             </Button>
           </div>
         </div>
