@@ -8,7 +8,10 @@ import FlexContainer from "~/components/FlexContainer";
 import Image from "~/components/Image";
 import Label from "~/components/Label";
 import Select, { Option } from "~/components/Select";
-import type { FullProduct } from "~/models/ecommerce-provider.server";
+import type {
+  FullProduct,
+  ProductVariant,
+} from "~/models/ecommerce-provider.server";
 import { getRaffleById } from "~/models/raffle.server";
 import {
   getRaffleEntriesByRaffleIdAndUserId,
@@ -36,6 +39,7 @@ export interface ActionData {
 export interface LoaderData {
   product: FullProduct;
   matchingAccessories?: FullProduct[];
+  selectedVariant: ProductVariant;
 }
 
 export let loader: LoaderFunction = async ({ request, params }) => {
@@ -89,7 +93,19 @@ export let loader: LoaderFunction = async ({ request, params }) => {
     fullMatchingAccessoriesPromises
   );
 
-  return { product, matchingAccessories: fullMatchingAccessories };
+  const raffleEntryProduct = await getRaffleEntryProductsByRaffleEntryId(
+    raffleEntry.id
+  );
+
+  const selectedVariant = product.variants.find((variant) => {
+    return variant.id === raffleEntryProduct[0].productVariantId;
+  });
+
+  return {
+    product,
+    matchingAccessories: fullMatchingAccessories,
+    selectedVariant,
+  };
 };
 
 export let action: ActionFunction = async ({ request, params }) => {
@@ -193,7 +209,8 @@ export let action: ActionFunction = async ({ request, params }) => {
 };
 
 export default function Confirmation() {
-  const { product, matchingAccessories } = useLoaderData() as LoaderData;
+  const { product, matchingAccessories, selectedVariant } =
+    useLoaderData() as LoaderData;
   const initialVariant = product.variants.find(
     (variant) => variant.id === product.defaultVariantId
   );
@@ -291,7 +308,11 @@ export default function Confirmation() {
           </div>
         </div>
         <div className="mb-8 flex flex-1 flex-col justify-between overflow-hidden">
-          <h1 className="mb-8 font-soehneBreit text-xl">{product.title}</h1>
+          <h1 className="mb-2 font-soehneBreit text-xl">{product.title}</h1>
+          <h2 className="mb-8 font-soehneBreit text-lg">
+            {selectedVariant.title}
+          </h2>
+
           <p className="mb-8">
             You have been selected to recieve a spot in the {product.title}{" "}
             group buy. Before you checkout, you may want to include some extra
