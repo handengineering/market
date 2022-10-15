@@ -344,15 +344,16 @@ export default function Index() {
               />
             </div>
             <div className="col-span-1 flex flex-col">
-              {getRaffleActivityInfo(
-                raffleEntry,
-                raffleWithMatchingProducts,
-                canEnterRaffle,
-                raffleActivityStatus,
-                getRaffleActivitySubtitle,
-                isMemberOfDiscordGuild,
-                fetcher.type === "done"
-              )}
+              {user &&
+                getRaffleActivityInfo(
+                  raffleEntry,
+                  raffleWithMatchingProducts,
+                  canEnterRaffle,
+                  raffleActivityStatus,
+                  getRaffleActivitySubtitle,
+                  isMemberOfDiscordGuild,
+                  fetcher.type === "done"
+                )}
               <div>
                 <p className="mb-8 text-2xl">
                   {firstRaffleProduct.formattedPrice}
