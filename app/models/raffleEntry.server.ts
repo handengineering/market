@@ -16,6 +16,13 @@ export async function createRaffleEntry(
   });
 }
 
+export async function updateRaffleEntryStatusById(
+  id: RaffleEntry["id"],
+  status: RaffleEntry["status"]
+) {
+  return prisma.raffleEntry.update({ where: { id }, data: { status } });
+}
+
 export async function updateRaffleEntryCheckoutUrlById(
   id: RaffleEntry["id"],
   checkoutUrl: RaffleEntry["checkoutUrl"]

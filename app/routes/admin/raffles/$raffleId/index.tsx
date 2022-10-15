@@ -1,9 +1,9 @@
 import { RaffleEntryStatus } from "@prisma/client";
-import { Form, useLoaderData } from "@remix-run/react";
+import { Form, useLoaderData, useSubmit } from "@remix-run/react";
 import type { ActionFunction, LoaderFunction } from "@remix-run/server-runtime";
 import { redirect } from "@remix-run/server-runtime";
 import clsx from "clsx";
-import type { MouseEvent } from "react";
+import type { ChangeEvent, FormEvent } from "react";
 import { useState } from "react";
 import invariant from "tiny-invariant";
 import Button from "~/components/Button";
@@ -13,7 +13,10 @@ import { prisma } from "~/db.server";
 import { getDiscordProfileByUserId } from "~/models/discordProfile.server";
 import type { FullProduct } from "~/models/ecommerce-provider.server";
 import { deleteRaffleById, getRaffleById } from "~/models/raffle.server";
-import { getRaffleEntriesByRaffleId } from "~/models/raffleEntry.server";
+import {
+  getRaffleEntriesByRaffleId,
+  updateRaffleEntryStatusById,
+} from "~/models/raffleEntry.server";
 import { getRaffleEntryProductsByRaffleEntryId } from "~/models/raffleEntryProduct.server";
 import { getUserById } from "~/models/user.server";
 import { getUsers } from "~/models/user.server";
@@ -112,26 +115,27 @@ export let action: ActionFunction = async ({ request, params }) => {
   const raffle = await getRaffleById(raffleId);
 
   const formData = await request.formData();
-  const drawCount = formData.get("drawCount");
-
-  const createdRaffleEntries = raffleEntries?.filter(
-    (raffleEntry) => raffleEntry.status === RaffleEntryStatus.CREATED
-  );
 
   const drawnRaffleEntries = raffleEntries?.filter(
     (raffleEntry) => raffleEntry.status === RaffleEntryStatus.DRAWN
   );
 
-  const shuffledCreatedRaffleEntries = shuffleArray(createdRaffleEntries);
-
-  if (typeof drawCount !== "string") {
-    throw "drawCount must be a string";
-  }
-
-  const shuffledCreatedRaffleEntriesToBeDrawn =
-    shuffledCreatedRaffleEntries.slice(0, parseInt(drawCount));
-
   if (formData.get("action") === "draw") {
+    const drawCount = formData.get("drawCount");
+
+    if (typeof drawCount !== "string") {
+      throw "drawCount must be a string";
+    }
+
+    const createdRaffleEntries = raffleEntries?.filter(
+      (raffleEntry) => raffleEntry.status === RaffleEntryStatus.CREATED
+    );
+
+    const shuffledCreatedRaffleEntries = shuffleArray(createdRaffleEntries);
+
+    const shuffledCreatedRaffleEntriesToBeDrawn =
+      shuffledCreatedRaffleEntries.slice(0, parseInt(drawCount));
+
     return await prisma.raffleEntry.updateMany({
       where: {
         userId: {
@@ -178,6 +182,19 @@ export let action: ActionFunction = async ({ request, params }) => {
     return redirect("/admin/raffles");
   }
 
+  if (formData.get("action") === "updateRaffleEntry") {
+    const raffleEntryId = formData.get("raffleEntryId");
+    const status = formData.get("raffleStatus");
+
+    raffleEntryId &&
+      status &&
+      (await updateRaffleEntryStatusById(
+        raffleEntryId.toString(),
+        status.toString() as RaffleEntryStatus
+      ));
+    return redirect(request.url);
+  }
+
   if (formData.get("action") === "deleteRaffle") {
     raffle && deleteRaffleById(raffle.id);
     return redirect("/admin/raffles");
@@ -192,12 +209,20 @@ export default function Index() {
   const [filteredVariantIds, setFilteredVariantIds] = useState<string[]>([]);
   const [filtering, setFiltering] = useState<boolean>(true);
 
-  const handleVariantFilterButtonPress = (e: MouseEvent, variantId: string) => {
+  const handleVariantFilterButtonPress = (
+    e: ChangeEvent<HTMLInputElement>,
+    variantId: string
+  ) => {
     const newFilteredVariantIds = filteredVariantIds.includes(variantId)
       ? filteredVariantIds.filter((i) => i !== variantId)
       : [...filteredVariantIds, variantId];
-    console.log(filteredVariantIds);
     setFilteredVariantIds(newFilteredVariantIds);
+  };
+
+  const submitRaffleEntryStatusChange = useSubmit();
+
+  const handleRaffleStatusChange = (e: FormEvent<HTMLFormElement>): void => {
+    submitRaffleEntryStatusChange(e.currentTarget);
   };
 
   return (
@@ -234,6 +259,36 @@ export default function Index() {
                         {raffleEntry.email}{" "}
                         {raffleEntry.discordUsername &&
                           `(${raffleEntry.discordUsername})`}
+                        <Form
+                          method="post"
+                          onChange={(e) => handleRaffleStatusChange(e)}
+                          className="inline"
+                        >
+                          <input
+                            type="hidden"
+                            name="action"
+                            value="updateRaffleEntry"
+                          />
+                          <input
+                            type="hidden"
+                            name="raffleEntryId"
+                            value={raffleEntry.id}
+                          />
+                          <select
+                            name="raffleStatus"
+                            value={raffleEntry.status}
+                          >
+                            {Object.values(RaffleEntryStatus).map(
+                              (status, index) => {
+                                return (
+                                  <option key={index} value={status}>
+                                    {status}
+                                  </option>
+                                );
+                              }
+                            )}
+                          </select>
+                        </Form>
                       </li>
                     );
                   })}
@@ -262,7 +317,7 @@ export default function Index() {
                         type="checkbox"
                         className="mr-2 h-4 w-4"
                         id={variant.id}
-                        onClick={(e) =>
+                        onChange={(e) =>
                           handleVariantFilterButtonPress(e, variant.id)
                         }
                         checked={filteredVariantIds.includes(variant.id)}
@@ -339,7 +394,34 @@ export default function Index() {
                     >
                       {raffleEntry.email}{" "}
                       {raffleEntry.discordUsername &&
-                        `(${raffleEntry.discordUsername})`}{" "}
+                        `(${raffleEntry.discordUsername})`}
+                      <Form
+                        method="post"
+                        onChange={(e) => handleRaffleStatusChange(e)}
+                        className="inline"
+                      >
+                        <input
+                          type="hidden"
+                          name="action"
+                          value="updateRaffleEntry"
+                        />
+                        <input
+                          type="hidden"
+                          name="raffleEntryId"
+                          value={raffleEntry.id}
+                        />
+                        <select name="raffleStatus" value={raffleEntry.status}>
+                          {Object.values(RaffleEntryStatus).map(
+                            (status, index) => {
+                              return (
+                                <option key={index} value={status}>
+                                  {status}
+                                </option>
+                              );
+                            }
+                          )}
+                        </select>
+                      </Form>
                     </li>
                   );
                 })}
