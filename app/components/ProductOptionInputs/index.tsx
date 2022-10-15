@@ -27,7 +27,7 @@ export default function ProductOptionInputs({
 }: ProductOptionInputsProps) {
   const selectedOption = selectedOptions && selectedOptions[option.name];
   return (
-    <div key={option.name} className="mb-6 last:mb-0">
+    <div key={option.name} className="mb-8 last:mb-0">
       <h4 style={{ marginBottom: 0 }}>{option.name}</h4>
       <Label>{selectedOption}</Label>
       <div key={option.name} className="flex items-start gap-4">

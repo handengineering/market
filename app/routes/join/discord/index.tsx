@@ -23,9 +23,9 @@ export default function JoinDiscord() {
       <h1 className=" font-soehneBreit text-xl">
         Join Hand Engineering Market
       </h1>
-      <h2 className="mb-6 text-neutral-600">Connect Discord Profile</h2>
+      <h2 className="mb-8 text-neutral-600">Connect Discord Profile</h2>
 
-      <p className="mb-6 text-lg">
+      <p className="mb-8 text-lg">
         You must connect your Discord profile and be a member of the{" "}
         <Link to={guildInviteUrl} className="text-green-500">
           Hand Engineering Discord{" "}

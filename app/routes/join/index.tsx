@@ -81,7 +81,7 @@ export default function Join() {
 
   return (
     <div className="flex h-full flex-col items-center md:py-12">
-      <h1 className="mb-6 font-soehneBreit text-xl">Join</h1>
+      <h1 className="mb-8 font-soehneBreit text-xl">Join</h1>
       <FormWrapper>
         <Form method="post">
           <Label htmlFor="email">Email</Label>

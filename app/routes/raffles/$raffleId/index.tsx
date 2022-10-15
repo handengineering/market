@@ -319,7 +319,7 @@ export default function Index() {
                       {formatDateTime(endDateTime)}{" "}
                     </p>
                   </div>
-                  <div className="mb-6 text-sm text-neutral-700">
+                  <div className="mb-8 text-sm text-neutral-700">
                     {getRaffleActivitySubtitle(raffleActivityStatus)}
                   </div>
                 </div>
@@ -343,7 +343,7 @@ export default function Index() {
                 </div>
               ) : null}
               <div>
-                <p className="mb-6 text-2xl">
+                <p className="mb-8 text-2xl">
                   {firstRaffleProduct.formattedPrice}
                 </p>
                 {componentsMetafield ? (

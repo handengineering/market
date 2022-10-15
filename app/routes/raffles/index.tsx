@@ -120,7 +120,7 @@ export default function Raffles() {
 
   return (
     <>
-      <h1 className="mb-6 font-soehneBreit text-xl">All Raffles</h1>
+      <h1 className="mb-8 font-soehneBreit text-xl">All Raffles</h1>
 
       {!user ? (
         <Banner linkText="Join Hand Engineering Market" linkUrl="/login">

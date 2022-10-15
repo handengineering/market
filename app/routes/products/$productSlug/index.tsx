@@ -82,15 +82,15 @@ export default function Index() {
 
   return (
     <>
-      <div className="mb-6 grid-cols-3 gap-16 md:grid">
+      <div className="mb-8 grid-cols-3 gap-16 md:grid">
         <div className="col-span-1 flex flex-col">
           <div>
-            <h1 className="mb-6 font-soehneBreit text-2xl text-primary-500">
+            <h1 className="mb-8 font-soehneBreit text-2xl text-primary-500">
               {product.title}
             </h1>
             {product.descriptionHtml ? (
               <div
-                className="mb-6"
+                className="mb-8"
                 dangerouslySetInnerHTML={{ __html: product.descriptionHtml }}
               />
             ) : null}
@@ -100,9 +100,9 @@ export default function Index() {
           <Image
             src={selectedImage}
             alt={product.title}
-            className="mb-6 aspect-video w-full object-cover"
+            className="mb-8 aspect-video w-full object-cover"
           />
-          <div className="mb-6 grid grid-cols-3 gap-6 md:grid-cols-6">
+          <div className="mb-8 grid grid-cols-3 gap-6 md:grid-cols-6">
             {product.images.map((image, index) => {
               return (
                 <Image
@@ -118,7 +118,7 @@ export default function Index() {
         </div>
       </div>
 
-      <div className="mb-6 flex flex-col gap-6 md:flex-row">
+      <div className="mb-8 flex flex-col gap-6 md:flex-row">
         {componentsMetafield ? (
           <div
             dangerouslySetInnerHTML={{

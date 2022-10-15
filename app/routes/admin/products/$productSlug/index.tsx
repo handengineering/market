@@ -29,7 +29,7 @@ export default function ProductSlug() {
   return (
     <div>
       <h1 className="mb-2 font-soehneBreit text-xl">Products</h1>
-      <h2 className="mb-6">{product.title}</h2>
+      <h2 className="mb-8">{product.title}</h2>
 
       <ul>
         {product.variants.map((productVariant) => {

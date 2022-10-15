@@ -45,14 +45,14 @@ export default function Raffles() {
 
   return (
     <div className="w-full">
-      <h2 className="mb-6 font-soehneBreit text-lg">All Raffles</h2>
+      <h2 className="mb-8 font-soehneBreit text-lg">All Raffles</h2>
       <div className="grid w-full gap-6 md:grid-cols-3">
         {rafflesWithMatchingProducts &&
           rafflesWithMatchingProducts.map((raffle) => {
             return (
               <Card
                 key={raffle.id}
-                className="mb-6 items-center justify-center space-y-6"
+                className="mb-8 items-center justify-center space-y-6"
               >
                 <h2 className="whitespace-nowrap text-lg text-primary-500">
                   {raffle.name}
@@ -66,7 +66,7 @@ export default function Raffles() {
               </Card>
             );
           })}
-        <Card className="mb-6 items-center justify-center space-y-6">
+        <Card className="mb-8 items-center justify-center space-y-6">
           <h2 className="whitespace-nowrap text-lg text-primary-500">
             New Raffle
           </h2>

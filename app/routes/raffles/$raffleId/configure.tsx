@@ -203,16 +203,16 @@ export default function Configure() {
 
   return product ? (
     <Form method="post">
-      <div className="mb-6 flex flex-col gap-6 md:flex-row">
+      <div className="mb-8 flex flex-col gap-6 md:flex-row">
         <div className="flex flex-1 flex-col items-start gap-6">
           <Image src={product.image} />
         </div>
         <div className="flex w-full max-w-xs flex-initial flex-col justify-between">
-          <div className="mb-6">
+          <div className="mb-8">
             <h1 className="mb-2 font-soehneBreit text-2xl ">
               {raffleWithMatchingProducts?.name}
             </h1>
-            <p className="mb-6 font-soehneBreit text-xl ">
+            <p className="mb-8 font-soehneBreit text-xl ">
               {raffleWithMatchingProducts.products[0].formattedPrice}
             </p>
             <div>
@@ -243,7 +243,7 @@ export default function Configure() {
           <ul className="mb-0 flex">
             {Object.keys(selectedOptions).map((selectedOptionKey) => {
               return (
-                <li key={selectedOptionKey} className="mr-6">
+                <li key={selectedOptionKey} className="mr-8">
                   <b>{selectedOptionKey}</b>{" "}
                   {selectedOptions[selectedOptionKey]}
                 </li>
@@ -266,7 +266,7 @@ export default function Configure() {
 
         {secondaryImages
           ? secondaryImages.map((image, index) => {
-              return <Image key={index} src={image} className="mb-6" />;
+              return <Image key={index} src={image} className="mb-8" />;
             })
           : null}
       </div>

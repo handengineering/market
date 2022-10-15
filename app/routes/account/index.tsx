@@ -27,7 +27,7 @@ export default function Account() {
 
   return (
     <>
-      <h1 className="mb-6 font-soehneBreit text-xl">Account Settings</h1>
+      <h1 className="mb-8 font-soehneBreit text-xl">Account Settings</h1>
       <h2>Discord Status</h2>
 
       <DiscordStatusWrapper>

@@ -281,7 +281,7 @@ export default function Confirmation() {
         <div className="flex flex-1 flex-col items-start gap-6">
           <Image src={product.image} />
           <div className="w-full bg-neutral-200 p-6">
-            <div className="mb-6 w-full rounded bg-yellow-200 p-6 text-xl">
+            <div className="mb-8 w-full rounded bg-yellow-200 p-6 text-xl">
               Total (before shipping & tax):{" "}
               <b>{formattedEstimatedTotalBeforeShipping}</b>
             </div>
@@ -290,9 +290,9 @@ export default function Confirmation() {
             </Button>
           </div>
         </div>
-        <div className="mb-6 flex flex-1 flex-col justify-between overflow-hidden">
-          <h1 className="mb-6 font-soehneBreit text-xl">{product.title}</h1>
-          <p className="mb-6">
+        <div className="mb-8 flex flex-1 flex-col justify-between overflow-hidden">
+          <h1 className="mb-8 font-soehneBreit text-xl">{product.title}</h1>
+          <p className="mb-8">
             You have been selected to recieve a spot in the {product.title}{" "}
             group buy. Before you checkout, you may want to include some extra
             parts.
@@ -308,7 +308,7 @@ export default function Confirmation() {
 
                 <div
                   key={matchingAccessory.id}
-                  className="mb-6 flex w-full gap-6"
+                  className="mb-8 flex w-full gap-6"
                 >
                   <div className="flex-shrink-0 flex-grow-0 basis-24">
                     <Image src={matchingAccessory.image} className="h-20" />

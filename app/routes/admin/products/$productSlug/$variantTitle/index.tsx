@@ -99,9 +99,9 @@ export default function VariantTitle() {
   return (
     <div>
       <div className="flex flex-col gap-6 md:flex-row">
-        <div className="mb-6 flex-1">
+        <div className="mb-8 flex-1">
           <h1>{product.title}</h1>
-          <h2 className="mb-6">{productVariant.title}</h2>
+          <h2 className="mb-8">{productVariant.title}</h2>
           <Form method="post">
             <Label htmlFor="count">Count</Label>
             <Input type="number" name="count" />
@@ -109,7 +109,7 @@ export default function VariantTitle() {
           </Form>
         </div>
         {matchingSerialNumbers ? (
-          <div className="mb-6 ">
+          <div className="mb-8 ">
             <table className="w-full table-fixed border border-neutral-500 font-soehneMono">
               <thead>
                 <tr>
