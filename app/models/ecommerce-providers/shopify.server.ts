@@ -86,6 +86,7 @@ export function createShopifyProvider({
             image:
               item.image?.originalSrc ||
               item.product.images.edges[0].node.originalSrc,
+            thumbnail: item.product.images.edges[0].node.transformedSrc,
             metafields: item.product.metafields,
             title: item.product.title,
             formattedOptions: item.title,
@@ -177,6 +178,7 @@ export function createShopifyProvider({
           defaultVariantId: variants.edges[0].node.id,
           tags,
           image: images.edges[0].node.originalSrc,
+          thumbnail: images.edges[0].node.transformedSrc,
           slug: handle,
           metafields,
           title,
@@ -264,6 +266,7 @@ export function createShopifyProvider({
         id,
         defaultVariantId: defaultVariantId!,
         image: images.edges[0].node.originalSrc,
+        thumbnail: images.edges[0].node.transformedSrc,
         images: images.edges.map(
           ({ node: { originalSrc } }: any) => originalSrc
         ),
@@ -371,6 +374,7 @@ export function createShopifyProvider({
               defaultVariantId: variants.edges[0].node.id,
               tags,
               image: images.edges[0].node.originalSrc,
+              thumbnail: images.edges[0].node.transformedSrc,
               slug: handle,
               title,
               metafields,
@@ -435,6 +439,7 @@ export function createShopifyProvider({
             image:
               item.image?.originalSrc ||
               item.product.images.edges[0].node.originalSrc,
+            thumbnail: item.product.images.edges[0].node.transformedSrc,
             title: item.product.title,
             metafields: item.product.metafields,
             formattedOptions: item.title,
@@ -734,6 +739,7 @@ let getProductQuery = /* GraphQL */ `
         edges {
           node {
             originalSrc
+            transformedSrc(maxWidth: 100, maxHeight: 100)
             altText
             width
             height

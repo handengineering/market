@@ -46,6 +46,7 @@ export interface Product {
   formattedOptions?: string;
   tags: string[];
   image: string;
+  thumbnail: string;
   slug: string;
   defaultVariantId: string;
   metafields: ProductMetafield[];

@@ -345,7 +345,7 @@ export default function Confirmation() {
                   className="mb-8 flex w-full gap-6"
                 >
                   <div className="flex-shrink-0 flex-grow-0 basis-24">
-                    <Image src={matchingAccessory.image} className="h-20" />
+                    <Image src={matchingAccessory.thumbnail} className="h-20" />
                   </div>
                   <div className="flex-1">
                     {!hasOptions && (
