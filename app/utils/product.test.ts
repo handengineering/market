@@ -45,6 +45,7 @@ const product: FullProduct = {
   image: "image-src",
   title: "Test Product",
   images: [],
+  thumbnail: "image-src",
   tags: [],
   availableForSale: true,
   options: [
