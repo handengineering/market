@@ -102,7 +102,7 @@ export default function Index() {
             alt={product.title}
             className="mb-6 aspect-video w-full object-cover"
           />
-          <div className="mb-6 grid grid-cols-6 gap-6">
+          <div className="mb-6 grid grid-cols-3 gap-6 md:grid-cols-6">
             {product.images.map((image, index) => {
               return (
                 <Image
