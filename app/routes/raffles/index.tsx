@@ -1,7 +1,8 @@
 import type { User } from "@prisma/client";
 import type { MetaFunction } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { useFetcher, useLoaderData } from "@remix-run/react";
 import type { LoaderFunction } from "@remix-run/server-runtime";
+import { useEffect } from "react";
 import invariant from "tiny-invariant";
 import Banner from "~/components/Banner";
 import RaffleItem from "~/components/RaffleItem";
@@ -15,7 +16,6 @@ import type { RaffleEntry } from "~/models/raffleEntry.server";
 import { getRaffleEntriesByUserId } from "~/models/raffleEntry.server";
 import { authenticator } from "~/services/auth.server";
 import commerce from "~/services/commerce.server";
-import { isMemberOfGuild } from "~/services/discord.server";
 import { generateLoginLink } from "~/utils/discord";
 
 type LoaderData = {
@@ -23,7 +23,6 @@ type LoaderData = {
   raffleEntries?: RaffleEntry[];
   currentDateTime: string;
   discordProfile: { id: string } | null;
-  isMemberOfDiscord: boolean;
   currentUrl: string;
   user?: User;
   discordLinkUrl: string;
@@ -60,15 +59,11 @@ export let loader: LoaderFunction = async ({ request }) => {
 
   let currentDateTime = new Date().toISOString();
 
-  const isMemberOfDiscord =
-    discordProfile && (await isMemberOfGuild(discordProfile.id));
-
   return {
     raffleEntries,
     rafflesWithMatchingProducts,
     currentDateTime,
     discordProfile: discordProfile,
-    isMemberOfDiscord: isMemberOfDiscord,
     currentUrl: request.url,
     user,
     discordLinkUrl,
@@ -113,10 +108,19 @@ export default function Raffles() {
     rafflesWithMatchingProducts,
     currentDateTime,
     discordProfile,
-    isMemberOfDiscord,
     user,
     discordLinkUrl,
   } = useLoaderData() as LoaderData;
+
+  const fetcher = useFetcher();
+
+  useEffect(() => {
+    if (fetcher.type === "init") {
+      fetcher.load(`/discordProfile/${discordProfile?.id}/isGuildMember`);
+    }
+  }, [fetcher, discordProfile]);
+
+  const isMemberOfDiscord = fetcher.data;
 
   return (
     <>
@@ -138,7 +142,7 @@ export default function Raffles() {
           here:
         </Banner>
       ) : null}
-      {!isMemberOfDiscord && discordProfile && user ? (
+      {!isMemberOfDiscord && discordProfile && fetcher.type === "done" ? (
         <Banner
           linkText="Join Hand Engineering on Discord"
           linkUrl="https://discord.gg/handengineering"
@@ -160,7 +164,11 @@ export default function Raffles() {
                 raffle={raffle}
                 currentDateTime={currentDateTime}
                 raffleEntryExists={raffleEntryExists}
-                disabled={!isMemberOfDiscord}
+                disabled={
+                  !isMemberOfDiscord &&
+                  !!discordProfile &&
+                  fetcher.type === "done"
+                }
               />
             );
           })}

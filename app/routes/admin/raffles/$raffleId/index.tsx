@@ -136,7 +136,7 @@ export let action: ActionFunction = async ({ request, params }) => {
     const shuffledCreatedRaffleEntriesToBeDrawn =
       shuffledCreatedRaffleEntries.slice(0, parseInt(drawCount));
 
-    return await prisma.raffleEntry.updateMany({
+    await prisma.raffleEntry.updateMany({
       where: {
         userId: {
           in: shuffledCreatedRaffleEntriesToBeDrawn.map(
@@ -149,6 +149,18 @@ export let action: ActionFunction = async ({ request, params }) => {
         status: RaffleEntryStatus.DRAWN,
       },
     });
+
+    return await prisma.raffleEntry.updateMany({
+      where: {
+        userId: {
+          in: createdRaffleEntries.map((raffleEntry) => raffleEntry.userId),
+        },
+        raffleId: raffleId,
+      },
+      data: {
+        status: RaffleEntryStatus.ARCHIVED,
+      },
+    });
   }
 
   if (formData.get("action") === "removeAll") {
@@ -156,6 +168,24 @@ export let action: ActionFunction = async ({ request, params }) => {
       where: {
         userId: {
           in: drawnRaffleEntries.map((raffleEntry) => raffleEntry.userId),
+        },
+        raffleId: raffleId,
+      },
+      data: {
+        status: RaffleEntryStatus.CREATED,
+      },
+    });
+  }
+
+  if (formData.get("action") === "restoreArchived") {
+    const archivedRaffleEntries = raffleEntries?.filter(
+      (raffleEntry) => raffleEntry.status === RaffleEntryStatus.ARCHIVED
+    );
+
+    return await prisma.raffleEntry.updateMany({
+      where: {
+        userId: {
+          in: archivedRaffleEntries.map((raffleEntry) => raffleEntry.userId),
         },
         raffleId: raffleId,
       },
@@ -327,7 +357,6 @@ export default function Index() {
                   );
                 })}
               </div>
-
               <Button
                 name="action"
                 value="draw"
@@ -336,27 +365,6 @@ export default function Index() {
               >
                 Draw Participants
               </Button>
-
-              {canRemoveAll ? (
-                <Button
-                  name="action"
-                  value="removeAll"
-                  color="danger"
-                  className="mb-2 w-full last:mb-0"
-                >
-                  Confirm Remove All Partipants
-                </Button>
-              ) : (
-                <Button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setCanRemoveAll(true);
-                  }}
-                  className="mb-2 w-full last:mb-0"
-                >
-                  Remove All Particpants
-                </Button>
-              )}
               <Button
                 name="action"
                 value="sendConfirmation"
@@ -366,6 +374,14 @@ export default function Index() {
                 Send Confirmation and Archive
               </Button>
               <Button
+                name="action"
+                value="restoreArchived"
+                color="secondary"
+                className="mb-2 w-full last:mb-0"
+              >
+                Restore Archived Raffle Entries
+              </Button>
+              <Button
                 size="small"
                 name="action"
                 value="deleteRaffle"
@@ -373,7 +389,28 @@ export default function Index() {
                 className="mb-2 last:mb-0"
               >
                 Delete Raffle
-              </Button>
+              </Button>{" "}
+              {canRemoveAll ? (
+                <Button
+                  name="action"
+                  size="small"
+                  value="removeAll"
+                  color="danger"
+                  className="mb-2 last:mb-0"
+                >
+                  Confirm Remove All Partipants
+                </Button>
+              ) : (
+                <Button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setCanRemoveAll(true);
+                  }}
+                  className="mb-2 last:mb-0"
+                >
+                  Remove All Particpants
+                </Button>
+              )}
             </Form>
           </div>
           <div className="mb-8">

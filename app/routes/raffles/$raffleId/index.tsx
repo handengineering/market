@@ -1,4 +1,4 @@
-import { Link, useLoaderData } from "@remix-run/react";
+import { Link, useFetcher, useLoaderData } from "@remix-run/react";
 import type { LoaderFunction } from "@remix-run/server-runtime";
 import { redirect } from "@remix-run/server-runtime";
 import clsx from "clsx";
@@ -29,8 +29,8 @@ import { marked } from "marked";
 import type { MetaFunction } from "@remix-run/node";
 import type { DiscordProfile, User } from "@prisma/client";
 import Banner from "~/components/Banner";
-import { isMemberOfGuild } from "~/services/discord.server";
 import { generateLoginLink } from "~/utils/discord";
+import { useEffect } from "react";
 
 type RaffleWithMatchingProducts = Raffle & {
   products: (FullProduct | undefined)[];
@@ -53,9 +53,6 @@ export let loader: LoaderFunction = async ({ request, params }) => {
   const raffleEntries = user && (await getRaffleEntriesByUserId(user.id));
 
   const discordProfile = user && (await getDiscordProfileByUserId(user.id));
-
-  const isMemberOfDiscord =
-    discordProfile && (await isMemberOfGuild(discordProfile.id));
 
   if (!raffle) {
     return redirect("/raffles");
@@ -104,7 +101,6 @@ export let loader: LoaderFunction = async ({ request, params }) => {
     currentUrl: request.url,
     user,
     discordProfile,
-    isMemberOfDiscord,
     discordLinkUrl,
   };
 };
@@ -148,9 +144,16 @@ function getRaffleActivityInfo(
   raffleWithMatchingProducts: RaffleWithMatchingProducts,
   canEnterRaffle: boolean,
   raffleActivityStatus: RaffleActivityStatus,
-  getRaffleActivitySubtitle: (status: RaffleActivityStatus) => string
+  getRaffleActivitySubtitle: (status: RaffleActivityStatus) => string,
+  isMemberOfDiscordGuild: boolean,
+  fetcherIsDone: boolean
 ) {
-  if (!raffleEntry && raffleActivityStatus !== "PAST") {
+  if (
+    !raffleEntry &&
+    raffleActivityStatus !== "PAST" &&
+    isMemberOfDiscordGuild &&
+    fetcherIsDone
+  ) {
     return (
       <>
         <Link to={`/raffles/${raffleWithMatchingProducts.id}/configure`}>
@@ -159,7 +162,7 @@ function getRaffleActivityInfo(
             size="large"
             disabled={canEnterRaffle}
             className={clsx(
-              "w-full",
+              "mb-4 w-full",
               raffleActivityStatus === "UPCOMING" ? "text-sm" : null
             )}
           >
@@ -174,25 +177,24 @@ function getRaffleActivityInfo(
 
   if (raffleEntry) {
     return (
-      <>
-        Entry successful!{" "}
-        <div className="text-yellow-700">
-          Sent on {formatDateTime(raffleEntry.createdAt)}
+      <div className="mb-4">
+        <div className="text-neutral-500">
+          Entry Sent on {formatDateTime(raffleEntry.createdAt)}
         </div>
-        <div className="text-yellow-700">
+        <div className="text-primary-500">
           Status: {getRaffleStatusText(raffleEntry.status)}
         </div>
-      </>
+      </div>
     );
   }
 
   return (
-    <>
+    <div className="mb-4">
       You didn't enter this raffle{" "}
-      <div className="text-yellow-700">
+      <div className="text-neutral-500">
         Raffle drawn on {formatDateTime(raffleWithMatchingProducts.endDateTime)}
       </div>
-    </>
+    </div>
   );
 }
 
@@ -202,9 +204,18 @@ export default function Index() {
     raffleEntry,
     user,
     discordProfile,
-    isMemberOfDiscord,
     discordLinkUrl,
   } = useLoaderData() as unknown as LoaderData;
+
+  const fetcher = useFetcher();
+
+  const isMemberOfDiscordGuild = fetcher.data;
+
+  useEffect(() => {
+    if (fetcher.type === "init") {
+      fetcher.load(`/discordProfile/${discordProfile?.id}/isGuildMember`);
+    }
+  }, [fetcher, discordProfile]);
 
   const { startDateTime, status, endDateTime, name } =
     raffleWithMatchingProducts;
@@ -284,7 +295,9 @@ export default function Index() {
             profile here:
           </Banner>
         ) : null}
-        {!isMemberOfDiscord && discordProfile && user ? (
+        {!isMemberOfDiscordGuild &&
+        discordProfile &&
+        fetcher.type === "done" ? (
           <Banner
             linkText="Join Hand Engineering on Discord"
             linkUrl="https://discord.gg/handengineering"
@@ -331,17 +344,15 @@ export default function Index() {
               />
             </div>
             <div className="col-span-1 flex flex-col">
-              {user && discordProfile && isMemberOfDiscord ? (
-                <div className="mb-4 rounded-md bg-yellow-100 p-4">
-                  {getRaffleActivityInfo(
-                    raffleEntry,
-                    raffleWithMatchingProducts,
-                    canEnterRaffle,
-                    raffleActivityStatus,
-                    getRaffleActivitySubtitle
-                  )}
-                </div>
-              ) : null}
+              {getRaffleActivityInfo(
+                raffleEntry,
+                raffleWithMatchingProducts,
+                canEnterRaffle,
+                raffleActivityStatus,
+                getRaffleActivitySubtitle,
+                isMemberOfDiscordGuild,
+                fetcher.type === "done"
+              )}
               <div>
                 <p className="mb-8 text-2xl">
                   {firstRaffleProduct.formattedPrice}

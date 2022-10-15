@@ -1,4 +1,4 @@
-import { Form, useLoaderData } from "@remix-run/react";
+import { Form, useFetcher, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import Button from "~/components/Button";
 import DiscordAvatar from "~/components/DiscordAvatar";
@@ -13,17 +13,26 @@ import type { LoaderFunction } from "@remix-run/server-runtime";
 import type { DiscordProfile } from "~/models/discordProfile.server";
 import type { ActionFunction } from "@remix-run/node";
 import { generateLoginLink } from "~/utils/discord";
-import { isMemberOfGuild } from "~/services/discord.server";
+import { useEffect } from "react";
 
 type LoaderData = {
   discordProfile: DiscordProfile | null;
-  isMemberOfDiscordGuild: boolean;
   loginLink: string;
 };
 
 export default function Account() {
-  const { discordProfile, isMemberOfDiscordGuild, loginLink } =
+  const { discordProfile, loginLink } =
     useLoaderData() as unknown as LoaderData;
+
+  const fetcher = useFetcher();
+
+  useEffect(() => {
+    if (fetcher.type === "init") {
+      fetcher.load(`/discordProfile/${discordProfile?.id}/isGuildMember`);
+    }
+  }, [fetcher, discordProfile]);
+
+  const isMemberOfDiscordGuild = fetcher.data;
 
   return (
     <>
@@ -44,16 +53,20 @@ export default function Account() {
           </span>
 
           <span>
-            You {isMemberOfDiscordGuild ? "are" : "are not"} a member of our
-            Discord.{" "}
-            {!isMemberOfDiscordGuild ? (
-              <a
-                href="https://discord.gg/handengineering"
-                className="text-primary-500"
-              >
-                Join the Hand Engineering Discord
-              </a>
-            ) : null}
+            {fetcher.type === "done" && (
+              <>
+                You {isMemberOfDiscordGuild ? "are" : "are not"} a member of our
+                Discord.{" "}
+                {!isMemberOfDiscordGuild ? (
+                  <a
+                    href="https://discord.gg/handengineering"
+                    className="text-primary-500"
+                  >
+                    Join the Hand Engineering Discord
+                  </a>
+                ) : null}
+              </>
+            )}
           </span>
         </DiscordStatusTextFields>
       </DiscordStatusWrapper>
@@ -83,10 +96,7 @@ export let loader: LoaderFunction = async ({ request }) => {
 
   const loginLink = generateLoginLink(process.env.BASE_URL, "/account");
 
-  const isMemberOfDiscordGuild =
-    discordProfile && isMemberOfGuild(discordProfile.id);
-
-  return { discordProfile, isMemberOfDiscordGuild, loginLink };
+  return { discordProfile, loginLink };
 };
 
 export let action: ActionFunction = async ({ request }) => {
