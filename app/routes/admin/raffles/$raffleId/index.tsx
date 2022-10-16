@@ -408,7 +408,7 @@ export default function Index() {
                   }}
                   className="mb-2 last:mb-0"
                 >
-                  Remove All Particpants
+                  Remove All Participants
                 </Button>
               )}
             </Form>
