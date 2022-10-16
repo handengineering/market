@@ -14,6 +14,7 @@ import FlexContainer from "~/components/FlexContainer";
 import Image from "~/components/Image";
 import Label from "~/components/Label";
 import Select, { Option } from "~/components/Select";
+import { getDiscordProfileByUserId } from "~/models/discordProfile.server";
 import type {
   FullProduct,
   ProductVariant,
@@ -179,6 +180,7 @@ export let action: ActionFunction = async ({ request, params }) => {
   if (checkoutUrl) {
     return redirect(checkoutUrl);
   } else {
+    let discordProfile = await getDiscordProfileByUserId(user.id);
     let serializedFormDataQuantities = serializeFormDataQuantities(formData);
 
     let serializedFormDataOptionQuantities =
@@ -199,11 +201,22 @@ export let action: ActionFunction = async ({ request, params }) => {
       serializedFormDataOptionQuantities
     );
 
-    const generatedCheckoutUrl = await commerce.getCheckoutUrl("en", [
-      { variantId: matchingVariant.id, quantity: 1 },
-      ...selectedAccessories,
-      ...selectedAccessoriesWithOptions,
-    ]);
+    let raffleEntryInfo = `Raffle entry: ${raffleEntry.id}. Item: ${matchingVariant.title}. User: ${user.email}.`;
+    let discordInfo = `Discord profile: ${discordProfile?.id} (${discordProfile?.displayName})`;
+
+    let note = discordProfile
+      ? `${raffleEntryInfo} ${discordInfo}`
+      : raffleEntryInfo;
+
+    const generatedCheckoutUrl = await commerce.getCheckoutUrl(
+      "en",
+      [
+        { variantId: matchingVariant.id, quantity: 1 },
+        ...selectedAccessories,
+        ...selectedAccessoriesWithOptions,
+      ],
+      note
+    );
 
     const updatedRaffleEntry = await updateRaffleEntryCheckoutUrlById(
       raffleEntry.id,

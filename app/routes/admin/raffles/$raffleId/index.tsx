@@ -123,18 +123,66 @@ export let action: ActionFunction = async ({ request, params }) => {
   if (formData.get("action") === "draw") {
     const drawCount = formData.get("drawCount");
 
+    const filteredVariantIdsJson = formData.get("filteredVariantIds");
+
+    invariant(filteredVariantIdsJson, "filteredVariantIdsJson not found");
+
+    const filteredVariantIds = JSON.parse(filteredVariantIdsJson.toString());
+    const filteringJson = formData.get("filtering");
+
+    const filtering = filteringJson && JSON.parse(filteringJson.toString());
+    const users = await getUsers();
+
+    const raffleEntriesWithVariants = await Promise.all(
+      raffleEntries.map(async (raffleEntry) => {
+        const selectedVariants = await getRaffleEntryProductsByRaffleEntryId(
+          raffleEntry.id
+        );
+
+        const matchingUser = users.find(
+          (user) => user.id === raffleEntry.userId
+        );
+        const matchingDiscordProfile = await getDiscordProfileByUserId(
+          raffleEntry.userId
+        );
+
+        return {
+          id: raffleEntry.id,
+          email: matchingUser?.email,
+          discordUsername: matchingDiscordProfile?.displayName,
+          userId: raffleEntry.userId,
+          status: raffleEntry.status,
+          productVariantIds: selectedVariants.map(
+            (variant) => variant.productVariantId
+          ),
+        };
+      })
+    );
+
     if (typeof drawCount !== "string") {
       throw "drawCount must be a string";
     }
 
-    const createdRaffleEntries = raffleEntries?.filter(
+    const createdRaffleEntries = raffleEntriesWithVariants?.filter(
       (raffleEntry) => raffleEntry.status === RaffleEntryStatus.CREATED
     );
 
-    const shuffledCreatedRaffleEntries = shuffleArray(createdRaffleEntries);
+    const filteredRaffleEntries = createdRaffleEntries.filter((raffleEntry) => {
+      const isMatching =
+        !filtering ||
+        (raffleEntry.productVariantIds &&
+          filteredVariantIds.some((filteredVariantId: string) =>
+            raffleEntry.productVariantIds.includes(filteredVariantId)
+          ));
+      return isMatching;
+    });
 
-    const shuffledCreatedRaffleEntriesToBeDrawn =
-      shuffledCreatedRaffleEntries.slice(0, parseInt(drawCount));
+    const shuffledRaffleEntries = shuffleArray(filteredRaffleEntries);
+
+    const shuffledCreatedRaffleEntriesToBeDrawn = shuffledRaffleEntries.slice(
+      0,
+      parseInt(drawCount)
+    );
 
     await prisma.raffleEntry.updateMany({
       where: {
@@ -156,6 +204,7 @@ export let action: ActionFunction = async ({ request, params }) => {
           in: createdRaffleEntries.map((raffleEntry) => raffleEntry.userId),
         },
         raffleId: raffleId,
+        status: "CREATED",
       },
       data: {
         status: RaffleEntryStatus.ARCHIVED,
@@ -327,6 +376,16 @@ export default function Index() {
           <div className="mb-8">
             <h2 className="mb-8 font-soehneBreit text-lg">Controls</h2>
             <Form method="post">
+              <input
+                type="hidden"
+                name="filteredVariantIds"
+                value={JSON.stringify(filteredVariantIds)}
+              />
+              <input
+                type="hidden"
+                name="filtering"
+                value={JSON.stringify(filtering)}
+              />
               <Label>
                 Draw Count
                 <Input type="number" name="drawCount" />
