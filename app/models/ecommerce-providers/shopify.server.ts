@@ -134,7 +134,7 @@ export function createShopifyProvider({
 
       return categories;
     },
-    async getCheckoutUrl(locale, items) {
+    async getCheckoutUrl(locale, items, note) {
       let lineItems = items.map((item) => ({
         quantity: item.quantity,
         merchandiseId: item.variantId,
@@ -149,7 +149,7 @@ export function createShopifyProvider({
         },
         body: JSON.stringify({
           query: createCheckoutUrlMutation,
-          variables: { lineItems },
+          variables: { lineItems, note },
         }),
       }).then((res) => res.json());
 
@@ -471,8 +471,8 @@ function formatPrice({
 }
 
 let createCheckoutUrlMutation = /* GraphQL */ `
-  mutation calculateCart($lineItems: [CartLineInput!]) {
-    cartCreate(input: { lines: $lineItems }) {
+  mutation calculateCart($lineItems: [CartLineInput!], $note: String) {
+    cartCreate(input: { lines: $lineItems, note: $note }) {
       cart {
         checkoutUrl
       }

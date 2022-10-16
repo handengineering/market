@@ -123,7 +123,11 @@ export interface EcommerceProvider {
     count: number,
     nocache?: boolean
   ): Promise<Category[]>;
-  getCheckoutUrl(language: Language, items: CartItem[]): Promise<string>;
+  getCheckoutUrl(
+    language: Language,
+    items: CartItem[],
+    note?: string
+  ): Promise<string>;
   getFeaturedProducts(language: Language): Promise<Product[]>;
   getPage(language: Language, slug: string): Promise<FullPage | undefined>;
   getPages(language: Language): Promise<Page[]>;
