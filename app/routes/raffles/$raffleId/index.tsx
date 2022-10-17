@@ -22,7 +22,7 @@ import { getRaffleEntriesByUserId } from "~/models/raffleEntry.server";
 import { authenticator } from "~/services/auth.server";
 import commerce from "~/services/commerce.server";
 import { formatDateTime } from "~/utils/date";
-import type { RaffleActivityStatus } from "~/utils/raffle";
+import { RaffleActivityStatus } from "~/utils/raffle";
 import { getRaffleActivityStatus, getRaffleStatusText } from "~/utils/raffle";
 import durationMachine from "./durationMachine";
 import { marked } from "marked";
@@ -173,13 +173,17 @@ function getRaffleActivityInfo(
   if (raffleEntry) {
     return (
       <div className="mb-4">
-        <div className="text-neutral-500">
-          Entry Sent on {formatDateTime(raffleEntry.createdAt)}
-        </div>
         <div className="text-primary-500">
-          Status: {getRaffleStatusText(raffleEntry.status)}
+          Entry status: {getRaffleStatusText(raffleEntry.status)}
         </div>
-        <Link to="configure">Edit raffle entry</Link>
+        <div className="text-neutral-700 text-sm mb-2">
+          Sent on {formatDateTime(raffleEntry.createdAt)}
+        </div>
+        <Link to="configure">
+          <Button color="tertiary" size="small" className="text-sm">
+            Edit raffle entry
+          </Button>
+        </Link>
       </div>
     );
   }
@@ -328,9 +332,11 @@ export default function Index() {
                       {formatDateTime(endDateTime)}{" "}
                     </p>
                   </div>
-                  <div className="mb-8 text-sm text-neutral-700">
-                    {getRaffleActivitySubtitle(raffleActivityStatus)}
-                  </div>
+                  {raffleActivityStatus === RaffleActivityStatus.UPCOMING ? (
+                    <div className="mb-8 text-sm text-neutral-700">
+                      {getRaffleActivitySubtitle(raffleActivityStatus)}
+                    </div>
+                  ) : null}
                 </div>
               </div>
               <img
