@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = "${env('DATABASE_URL')}&connection_limit=40&pool_timeout=20"
+  url      = "${env('DATABASE_URL')}&connection_limit=5&pool_timeout=20"
 }
 
 model User {
