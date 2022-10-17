@@ -15,14 +15,6 @@ if (process.env.NODE_ENV === "production") {
 } else {
   if (!global.__db__) {
     global.__db__ = new PrismaClient();
-    global.__db__ = new PrismaClient({
-      datasources: {
-        db: {
-          url: `${process.env
-            .DATABASE_URL!}&connection_limit=40&pool_timeout=20`,
-        },
-      },
-    });
   }
   prisma = global.__db__;
   prisma.$connect();
