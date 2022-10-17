@@ -108,6 +108,7 @@ jobs:
         run: docker-compose up -d && sleep 3
         env:
           DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/postgres"
+          DATABASE_PARAMS: ""
 
       - name: 🛠 Setup Database
         run: npx prisma migrate reset --force
