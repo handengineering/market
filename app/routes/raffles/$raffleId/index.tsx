@@ -184,6 +184,7 @@ function getRaffleActivityInfo(
         <div className="text-primary-500">
           Status: {getRaffleStatusText(raffleEntry.status)}
         </div>
+        <Link to="configure">Edit raffle entry</Link>
       </div>
     );
   }

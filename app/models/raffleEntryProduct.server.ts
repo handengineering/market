@@ -25,3 +25,19 @@ export async function getRaffleEntryProductsByRaffleEntryId(
     },
   });
 }
+
+export async function updateRaffleEntryProductVariant(
+  productId: Product["id"],
+  productVariantId: ProductVariant["id"],
+  raffleEntryId: RaffleEntry["id"]
+) {
+  return prisma.raffleEntryProduct.updateMany({
+    where: {
+      productId,
+      raffleEntryId,
+    },
+    data: {
+      productVariantId,
+    },
+  });
+}

@@ -27,12 +27,14 @@ import type {
 import type { Raffle } from "~/models/raffle.server";
 import { getRaffleById } from "~/models/raffle.server";
 import type { RaffleEntry } from "~/models/raffleEntry.server";
+import { getRaffleEntriesByRaffleIdAndUserId } from "~/models/raffleEntry.server";
 import { deleteRaffleEntriesByRaffleIdAndUserId } from "~/models/raffleEntry.server";
 import { createRaffleEntry } from "~/models/raffleEntry.server";
 import { getRaffleEntriesByUserId } from "~/models/raffleEntry.server";
 import {
   createRaffleEntryProduct,
   getRaffleEntryProductsByRaffleEntryId,
+  updateRaffleEntryProductVariant,
 } from "~/models/raffleEntryProduct.server";
 import { authenticator } from "~/services/auth.server";
 import commerce from "~/services/commerce.server";
@@ -141,6 +143,25 @@ export let action: ActionFunction = async ({ request, params }) => {
 
   await deleteRaffleEntriesByRaffleIdAndUserId(raffle.id, user.id);
 
+  const existingRaffleEntry = await getRaffleEntriesByRaffleIdAndUserId(
+    raffle.id,
+    user.id
+  );
+
+  if (existingRaffleEntry && existingRaffleEntry[0]) {
+    return (
+      product &&
+      existingRaffleEntry[0] &&
+      matchingVariant &&
+      (await updateRaffleEntryProductVariant(
+        product.id,
+        matchingVariant.id,
+        existingRaffleEntry[0].id
+      )) &&
+      redirect(`/raffles/${raffleId}`)
+    );
+  }
+
   let raffleEntry = await createRaffleEntry(raffleId, user.id);
 
   return (
@@ -241,15 +262,11 @@ export default function Configure() {
               })}
             </div>
           </div>
-          <Button
-            color={raffleEntry ? undefined : "primary"}
-            size="large"
-            disabled={!!raffleEntry}
-          >
+          <Button color="primary" size="large">
             {transition.state !== "idle"
               ? "Submitting..."
               : raffleEntry
-              ? "Raffle Entry Submitted"
+              ? "Confirm Changes"
               : "Submit Options"}
           </Button>
         </div>
