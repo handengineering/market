@@ -411,7 +411,20 @@ export default function Index() {
                         }
                         checked={filteredVariantIds.includes(variant.id)}
                       />
-                      <label htmlFor={variant.id}>{variant.title}</label>
+                      <label htmlFor={variant.id}>
+                        {" "}
+                        {createdRaffleEntries
+                          ?.filter((raffleEntry) =>
+                            raffleEntry.productVariantIds.includes(variant.id)
+                          )
+                          .length.toString()}
+                        ◀ {variant.title} ▶{" "}
+                        {drawnRaffleEntries
+                          ?.filter((raffleEntry) =>
+                            raffleEntry.productVariantIds.includes(variant.id)
+                          )
+                          .length.toString()}
+                      </label>
                     </div>
                   );
                 })}
