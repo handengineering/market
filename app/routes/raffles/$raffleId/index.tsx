@@ -148,12 +148,7 @@ function getRaffleActivityInfo(
   isMemberOfDiscordGuild: boolean,
   fetcherIsDone: boolean
 ) {
-  if (
-    !raffleEntry &&
-    raffleActivityStatus !== "PAST" &&
-    isMemberOfDiscordGuild &&
-    fetcherIsDone
-  ) {
+  if (!raffleEntry && raffleActivityStatus !== "PAST") {
     return (
       <>
         <Link to={`/raffles/${raffleWithMatchingProducts.id}/configure`}>
