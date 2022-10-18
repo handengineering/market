@@ -72,6 +72,9 @@ export async function createDiscordProfile(
   return user;
 }
 
+export async function getDiscordProfiles() {
+  return prisma.discordProfile.findMany();
+}
 export async function getDiscordProfileByUserId(id: User["id"]) {
   return prisma.discordProfile.findUnique({ where: { userId: id } });
 }

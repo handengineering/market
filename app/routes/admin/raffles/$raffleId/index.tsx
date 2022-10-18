@@ -10,14 +10,20 @@ import Button from "~/components/Button";
 import Input from "~/components/Input";
 import Label from "~/components/Label";
 import { prisma } from "~/db.server";
-import { getDiscordProfileByUserId } from "~/models/discordProfile.server";
+import {
+  getDiscordProfileByUserId,
+  getDiscordProfiles,
+} from "~/models/discordProfile.server";
 import type { FullProduct } from "~/models/ecommerce-provider.server";
 import { deleteRaffleById, getRaffleById } from "~/models/raffle.server";
 import {
   getRaffleEntriesByRaffleId,
   updateRaffleEntryStatusById,
 } from "~/models/raffleEntry.server";
-import { getRaffleEntryProductsByRaffleEntryId } from "~/models/raffleEntryProduct.server";
+import {
+  getRaffleEntryProducts,
+  getRaffleEntryProductsByRaffleEntryId,
+} from "~/models/raffleEntryProduct.server";
 import { getUserById } from "~/models/user.server";
 import { getUsers } from "~/models/user.server";
 import commerce from "~/services/commerce.server";
@@ -73,15 +79,20 @@ export let loader: LoaderFunction = async ({ request, params }) => {
 
   const users = await getUsers();
 
+  const raffleEntryProducts = await getRaffleEntryProducts();
+
+  const discordProfiles = await getDiscordProfiles();
+
   const raffleEntriesWithVariants = await Promise.all(
     raffleEntries.map(async (raffleEntry) => {
-      const selectedVariants = await getRaffleEntryProductsByRaffleEntryId(
-        raffleEntry.id
+      const selectedVariants = raffleEntryProducts.filter(
+        (raffleEntryProduct) =>
+          raffleEntryProduct.raffleEntryId === raffleEntry.id
       );
 
       const matchingUser = users.find((user) => user.id === raffleEntry.userId);
-      const matchingDiscordProfile = await getDiscordProfileByUserId(
-        raffleEntry.userId
+      const matchingDiscordProfile = discordProfiles.find(
+        (discordProfile) => discordProfile.userId === raffleEntry.userId
       );
 
       return {
@@ -90,9 +101,9 @@ export let loader: LoaderFunction = async ({ request, params }) => {
         discordUsername: matchingDiscordProfile?.displayName,
         userId: raffleEntry.userId,
         status: raffleEntry.status,
-        productVariantIds: selectedVariants.map(
-          (variant) => variant.productVariantId
-        ),
+        productVariantIds: selectedVariants
+          ? selectedVariants.map((variant) => variant.productVariantId)
+          : [],
       };
     })
   );
