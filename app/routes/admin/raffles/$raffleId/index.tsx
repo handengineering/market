@@ -503,48 +503,63 @@ export default function Index() {
 
             <ul>
               {drawnRaffleEntries &&
-                drawnRaffleEntries.map((raffleEntry) => {
-                  return (
-                    <li
-                      key={raffleEntry.id}
-                      className={clsx(
-                        "mb-2 rounded bg-green-200 p-2",
-                        canRemoveAll && "bg-red-200"
-                      )}
-                    >
-                      {raffleEntry.email}{" "}
-                      {raffleEntry.discordUsername &&
-                        `(${raffleEntry.discordUsername})`}
-                      <Form
-                        method="post"
-                        onChange={(e) => handleRaffleStatusChange(e)}
-                        className="inline"
+                drawnRaffleEntries
+                  .filter((raffleEntry) => {
+                    const isMatching =
+                      !filtering ||
+                      (raffleEntry.productVariantIds &&
+                        filteredVariantIds.some((filteredVariantId) =>
+                          raffleEntry.productVariantIds.includes(
+                            filteredVariantId
+                          )
+                        ));
+                    return isMatching;
+                  })
+                  .map((raffleEntry) => {
+                    return (
+                      <li
+                        key={raffleEntry.id}
+                        className={clsx(
+                          "mb-2 rounded bg-green-200 p-2",
+                          canRemoveAll && "bg-red-200"
+                        )}
                       >
-                        <input
-                          type="hidden"
-                          name="action"
-                          value="updateRaffleEntry"
-                        />
-                        <input
-                          type="hidden"
-                          name="raffleEntryId"
-                          value={raffleEntry.id}
-                        />
-                        <select name="raffleStatus" value={raffleEntry.status}>
-                          {Object.values(RaffleEntryStatus).map(
-                            (status, index) => {
-                              return (
-                                <option key={index} value={status}>
-                                  {status}
-                                </option>
-                              );
-                            }
-                          )}
-                        </select>
-                      </Form>
-                    </li>
-                  );
-                })}
+                        {raffleEntry.email}{" "}
+                        {raffleEntry.discordUsername &&
+                          `(${raffleEntry.discordUsername})`}
+                        <Form
+                          method="post"
+                          onChange={(e) => handleRaffleStatusChange(e)}
+                          className="inline"
+                        >
+                          <input
+                            type="hidden"
+                            name="action"
+                            value="updateRaffleEntry"
+                          />
+                          <input
+                            type="hidden"
+                            name="raffleEntryId"
+                            value={raffleEntry.id}
+                          />
+                          <select
+                            name="raffleStatus"
+                            value={raffleEntry.status}
+                          >
+                            {Object.values(RaffleEntryStatus).map(
+                              (status, index) => {
+                                return (
+                                  <option key={index} value={status}>
+                                    {status}
+                                  </option>
+                                );
+                              }
+                            )}
+                          </select>
+                        </Form>
+                      </li>
+                    );
+                  })}
             </ul>
           </div>
         </>
