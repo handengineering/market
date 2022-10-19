@@ -176,14 +176,21 @@ function getRaffleActivityInfo(
         <div className="text-primary-500">
           Entry status: {getRaffleStatusText(raffleEntry.status)}
         </div>
-        <div className="text-neutral-700 text-sm mb-2">
+        <div
+          className={clsx(
+            "text-sm text-neutral-700",
+            raffleActivityStatus === RaffleActivityStatus.ACTIVE ? "mb-2" : null
+          )}
+        >
           Sent on {formatDateTime(raffleEntry.createdAt)}
         </div>
-        <Link to="configure">
-          <Button color="tertiary" size="small" className="text-sm">
-            Edit raffle entry
-          </Button>
-        </Link>
+        {raffleActivityStatus === RaffleActivityStatus.ACTIVE ? (
+          <Link to="configure">
+            <Button color="tertiary" size="small" className="text-sm">
+              Edit raffle entry
+            </Button>
+          </Link>
+        ) : null}
       </div>
     );
   }
