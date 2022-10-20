@@ -100,6 +100,7 @@ export let loader: LoaderFunction = async ({ request, params }) => {
         id: raffleEntry.id,
         email: matchingUser?.email,
         discordUsername: matchingDiscordProfile?.displayName,
+        checkoutUrl: raffleEntry.checkoutUrl,
         userId: raffleEntry.userId,
         status: raffleEntry.status,
         productVariantIds: selectedVariants
@@ -559,8 +560,7 @@ export default function Index() {
                         {raffleEntry.email}{" "}
                         {raffleEntry.discordUsername &&
                           `(${raffleEntry.discordUsername})`}{" "}
-                        {raffleEntry.checkoutUrl &&
-                          `(${raffleEntry.checkoutUrl})`}{" "}
+                        {raffleEntry.checkoutUrl}
                         <Form
                           method="post"
                           onChange={(e) => handleRaffleStatusChange(e)}
