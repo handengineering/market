@@ -533,9 +533,17 @@ export default function Index() {
             <h2 className="mb-8 font-soehneBreit text-lg">
               Drawn Raffle Entries ({drawnRaffleEntries?.length}) (
               {
-                drawnRaffleEntries?.filter(
-                  (raffleEntry) => !!raffleEntry.checkoutUrl
-                ).length
+                drawnRaffleEntries?.filter((raffleEntry) => {
+                  const isMatching =
+                    !filtering ||
+                    (raffleEntry.productVariantIds &&
+                      filteredVariantIds.some((filteredVariantId) =>
+                        raffleEntry.productVariantIds.includes(
+                          filteredVariantId
+                        )
+                      ));
+                  return isMatching && !!raffleEntry.checkoutUrl;
+                }).length
               }{" "}
               created checkout)
             </h2>
