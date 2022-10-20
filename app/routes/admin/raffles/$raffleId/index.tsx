@@ -287,6 +287,7 @@ export let action: ActionFunction = async ({ request, params }) => {
 
       user &&
         raffle &&
+        !entry.checkoutUrl &&
         (await sendConfirmationEmail(
           user.email,
           raffle.name,
