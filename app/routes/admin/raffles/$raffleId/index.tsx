@@ -150,6 +150,7 @@ export let action: ActionFunction = async ({ request, params }) => {
 
     const filtering = filteringJson && JSON.parse(filteringJson.toString());
     const users = await getUsers();
+    const discordProfiles = await getDiscordProfiles();
 
     const raffleEntriesWithVariants = await Promise.all(
       raffleEntries.map(async (raffleEntry) => {
@@ -160,8 +161,9 @@ export let action: ActionFunction = async ({ request, params }) => {
         const matchingUser = users.find(
           (user) => user.id === raffleEntry.userId
         );
-        const matchingDiscordProfile = await getDiscordProfileByUserId(
-          raffleEntry.userId
+
+        const matchingDiscordProfile = discordProfiles.find(
+          (discordProfile) => discordProfile.userId === raffleEntry.userId
         );
 
         return {
