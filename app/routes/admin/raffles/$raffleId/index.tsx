@@ -531,7 +531,13 @@ export default function Index() {
           </div>
           <div className="mb-8">
             <h2 className="mb-8 font-soehneBreit text-lg">
-              Drawn Raffle Entries ({drawnRaffleEntries?.length})
+              Drawn Raffle Entries ({drawnRaffleEntries?.length}) (
+              {
+                drawnRaffleEntries?.filter(
+                  (raffleEntry) => !!raffleEntry.checkoutUrl
+                ).length
+              }{" "}
+              created checkout)
             </h2>
 
             <ul>
