@@ -132,6 +132,11 @@ export let action: ActionFunction = async ({ request, params }) => {
     (raffleEntry) => raffleEntry.status === RaffleEntryStatus.DRAWN
   );
 
+  const drawnButNotPaidRaffleEntries = raffleEntries?.filter(
+    (raffleEntry) =>
+      raffleEntry.status === RaffleEntryStatus.DRAWN && !raffleEntry.checkoutUrl
+  );
+
   if (formData.get("action") === "draw") {
     const drawCount = formData.get("drawCount");
 
@@ -235,6 +240,22 @@ export let action: ActionFunction = async ({ request, params }) => {
       },
       data: {
         status: RaffleEntryStatus.CREATED,
+      },
+    });
+  }
+
+  if (formData.get("action") === "cancelOrdersWithoutCheckoutUrl") {
+    return await prisma.raffleEntry.updateMany({
+      where: {
+        userId: {
+          in: drawnButNotPaidRaffleEntries.map(
+            (raffleEntry) => raffleEntry.userId
+          ),
+        },
+        raffleId: raffleId,
+      },
+      data: {
+        status: RaffleEntryStatus.CANCELED,
       },
     });
   }
@@ -496,6 +517,15 @@ export default function Index() {
                   Remove All Participants
                 </Button>
               )}
+              <Button
+                name="action"
+                size="small"
+                value="cancelOrdersWithoutCheckoutUrl"
+                color="danger"
+                className="mb-2 last:mb-0"
+              >
+                Cancel Unpaid Raffle Entries
+              </Button>
             </Form>
           </div>
           <div className="mb-8">
